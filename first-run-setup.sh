@@ -1,30 +1,21 @@
 #!/bin/bash
 echo "[*] Starting initial setup..."
 
-# NVMe and Jellyfin setup - temporarily disabled
-: '
-echo "[*] Checking for PCIe config..."
-CONFIG_LINE="dtparam=pciex1=true"
-CONFIG_FILE="/boot/firmware/config.txt"
-if ! grep -q "$CONFIG_LINE" "$CONFIG_FILE"; then
-    echo "$CONFIG_LINE" | sudo tee -a "$CONFIG_FILE"
-    echo "[*] PCIe enabled in config.txt (reboot required)."
-else
-    echo "[*] PCIe already enabled in config.txt."
-fi
-
-echo "[*] Mounting NVMe to /mnt/nvme..."
-sudo mkdir -p /mnt/nvme
-sudo mount /dev/nvme0n1p1 /mnt/nvme 2>/dev/null || echo "[!] NVMe not mounted (likely not connected yet)."
-'
-
-# Docker setup
+# Install Docker & Docker Compose
 echo "[*] Installing Docker..."
-sudo apt-get update
-sudo apt-get install -y docker.io docker-compose
+sudo apt update && sudo apt install -y docker.io docker-compose
 
-# Pull and run containers
+# Add current user to docker group
+sudo usermod -aG docker $USER
+
+# Create OpenWRT config directory
+mkdir -p openwrt/config
+
+# Copy default OpenWRT config files
+cp -r openwrt/default_config/* openwrt/config/
+
+# Start Docker stack
 echo "[*] Starting Docker stack..."
-sudo docker-compose up -d
+docker-compose up -d
 
-echo "[*] Setup complete."
+echo "[*] Setup complete. You may need to reboot or log out/in for docker group changes to take effect."

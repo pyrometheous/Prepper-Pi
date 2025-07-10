@@ -1,4 +1,5 @@
-version: '3'
+version: "3.9"
+
 services:
   traefik:
     image: traefik:v2.11
@@ -10,4 +11,12 @@ services:
       - "80:80"
       - "8080:8080"
     volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+
+  openwrt:
+    image: ghcr.io/openwrt/rootfs:latest
+    privileged: true
+    network_mode: "bridge"
+    restart: always
+    volumes:
+      - ./openwrt/config:/etc/config
