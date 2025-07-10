@@ -7,6 +7,16 @@ COMPOSE_FILE="$MOUNT_POINT/docker-compose.yml"
 
 echo "[*] Starting initial setup..."
 
+# Ensure PCIe is enabled for NVMe support
+CONFIG_FILE="/boot/firmware/config.txt"
+if ! grep -q "^dtparam=pciex1=on" "$CONFIG_FILE"; then
+  echo "[*] Enabling PCIe for NVMe in config.txt..."
+  echo "dtparam=pciex1=on" | sudo tee -a "$CONFIG_FILE"
+else
+  echo "[*] PCIe already enabled in config.txt."
+fi
+
+
 if ! grep -qs "$MOUNT_POINT " /proc/mounts; then
     echo "[*] Mounting NVMe to $MOUNT_POINT..."
     sudo mkdir -p $MOUNT_POINT
