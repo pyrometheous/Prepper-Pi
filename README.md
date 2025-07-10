@@ -1,20 +1,39 @@
-# Prepper Pi Initial Setup
+# Prepper-Pi
 
-This archive sets up the core Docker stack and folder structure for your Raspberry Pi NVMe-based server.
+An offline-capable Raspberry Pi-based media server and local Wi-Fi access point with Docker support.
 
-## Instructions
+## Features
 
-1. Copy the contents of this archive to your Raspberry Pi (e.g., `/home/pi/setup`).
-2. SSH into the Raspberry Pi and run:
-   ```bash
-   cd /home/pi/setup
-   sudo ./first-run-setup.sh
-   ```
+- Wi-Fi access point using OpenWRT in Docker
+- Traefik reverse proxy for subdomain routing
+- Jellyfin media server
+- File browser for transferring files from USB to NVMe
+- All app configs and media stored on NVMe SSD
 
-This script installs Docker, mounts your NVMe drive, creates necessary folders, and deploys Jellyfin, Traefik, OpenWRT, and FileBrowser.
+## SSH Setup
 
-## Directory Structure
+1. SSH into your Raspberry Pi:
 
-- `/mnt/nvme/configs/*`: Configuration for each app
-- `/mnt/nvme/media/*`: Your media library
-- `/mnt/nvme/transfer`: Use FileBrowser to move content from flash drives here
+```bash
+ssh pi@<your-pi-ip>
+```
+
+(Default username/password is `pi`/`raspberry`, unless changed.)
+
+2. Clone the repository:
+
+```bash
+git clone https://github.com/pyrometheous/Prepper-Pi.git
+cd Prepper-Pi
+```
+
+3. Run the setup script:
+
+```bash
+chmod +x startup.sh
+./startup.sh
+```
+
+This will:
+- Set up necessary folders
+- Deploy Docker services
