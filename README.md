@@ -7,5 +7,5 @@ sudo apt update && sudo apt install -y git && git clone https://github.com/pyrom
 ```
 ## One Line CLeanup
 ```bash
-git clone https://github.com/pyrometheous/Prepper-Pi.git && cd Prepper-Pi && bash cleanup.sh && cd .. && rm -rf Prepper-Pi
+sudo bash cleanup.sh && cd .. && rm -rf Prepper-Pi
 ```
