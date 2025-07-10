@@ -1,39 +1,13 @@
 # Prepper-Pi
 
-An offline-capable Raspberry Pi-based media server and local Wi-Fi access point with Docker support.
+## Quick Start
 
-## Features
-
-- Wi-Fi access point using OpenWRT in Docker
-- Traefik reverse proxy for subdomain routing
-- Jellyfin media server
-- File browser for transferring files from USB to NVMe
-- All app configs and media stored on NVMe SSD
-
-## SSH Setup
-
-1. SSH into your Raspberry Pi:
+SSH into the Pi and run the following:
 
 ```bash
-ssh pi@<your-pi-ip>
+sudo apt update && sudo apt install -y git && git clone https://github.com/pyrometheous/Prepper-Pi.git && cd Prepper-Pi && bash first-run-setup.sh
 ```
 
-(Default username/password is `pi`/`raspberry`, unless changed.)
+This will install Docker, deploy the stack, and (in future) configure NVMe storage.
 
-2. Clone the repository:
-
-```bash
-git clone https://github.com/pyrometheous/Prepper-Pi.git
-cd Prepper-Pi
-```
-
-3. Run the setup script:
-
-```bash
-chmod +x startup.sh
-./startup.sh
-```
-
-This will:
-- Set up necessary folders
-- Deploy Docker services
+Note: NVMe and Jellyfin setup is temporarily disabled in `first-run-setup.sh`.

@@ -1,5 +1,4 @@
-version: '3.8'
-
+version: '3'
 services:
   traefik:
     image: traefik:v2.11
@@ -9,30 +8,6 @@ services:
       - "--entrypoints.web.address=:80"
     ports:
       - "80:80"
+      - "8080:8080"
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
-    restart: unless-stopped
-
-  openwrt:
-    image: openwrtorg/rootfs
-    privileged: true
-    network_mode: "host"
-    restart: unless-stopped
-
-  jellyfin:
-    image: jellyfin/jellyfin
-    volumes:
-      - /mnt/nvme/config/jellyfin:/config
-      - /mnt/nvme/media:/media
-    ports:
-      - "8096:8096"
-    restart: unless-stopped
-
-  filebrowser:
-    image: filebrowser/filebrowser
-    ports:
-      - "8081:80"
-    volumes:
-      - /mnt/nvme:/srv
-      - /mnt/nvme/config/filebrowser:/config
-    restart: unless-stopped
