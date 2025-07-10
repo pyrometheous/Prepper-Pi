@@ -16,7 +16,7 @@ services:
     restart: unless-stopped
 
   openwrt:
-    image: openwrtorg/rootfs:x86-64
+    image: ghcr.io/openwrt/rootfs:x86-64
     container_name: openwrt
     privileged: true
     network_mode: bridge
@@ -26,3 +26,4 @@ services:
     volumes:
       - ./openwrt/default_config:/etc/config
     restart: unless-stopped
+
