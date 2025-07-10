@@ -1,9 +1,9 @@
-version: '3'
+version: "3.9"
 
 services:
   traefik:
     image: traefik:v2.11
-    container_name: traefik
+    container_name: prepper-pi_traefik
     command:
       - "--api.insecure=true"
       - "--providers.docker=true"
@@ -12,13 +12,16 @@ services:
       - "80:80"
       - "8080:8080"
     volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock"
+      - /var/run/docker.sock:/var/run/docker.sock
 
   openwrt:
-    image: ghcr.io/home-assistant/addon-openwrt/aarch64:latest
+    image: ghcr.io/openwrt/rootfs:latest
     container_name: openwrt
     privileged: true
-    network_mode: host
+    network_mode: bridge
     volumes:
-      - ./openwrt:/etc/openwrt
-    restart: unless-stopped
+      - ./openwrt:/etc/config
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.openwrt.rule=Host(`openwrt.prepper-pi.local`)"
+      - "traefik.http.services.openwrt.loadbalancer.server.port=80"
