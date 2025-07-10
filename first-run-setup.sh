@@ -1,4 +1,9 @@
 #!/bin/bash
+# Enable PCIe (needed for NVMe)
+if ! grep -q 'dtparam=pciex1=true' /boot/firmware/config.txt; then
+  echo 'dtparam=pciex1=true' | sudo tee -a /boot/firmware/config.txt
+fi
+
 set -e
 
 NVME_DEV="/dev/nvme0n1p1"
