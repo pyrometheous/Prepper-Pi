@@ -1,5 +1,2 @@
-git
 docker.io
-docker-compose-plugin
-curl
-unzip
+docker-compose

@@ -1,12 +1,13 @@
 #!/bin/bash
+
 echo "[*] Stopping and removing Docker containers..."
-if docker compose down; then
-    echo "[*] Docker containers removed."
+if command -v docker-compose &> /dev/null; then
+  docker-compose down || echo "[-] Could not run docker-compose down"
 else
-    echo "[-] Could not run docker compose down"
+  echo "[-] docker-compose not found"
 fi
 
 echo "[*] Removing OpenWRT config directory..."
-rm -rf openwrt-config
+rm -rf openwrt-data
 
 echo "[*] Cleanup complete."
