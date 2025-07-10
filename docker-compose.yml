@@ -1,9 +1,8 @@
-version: "3.8"
+version: '3.8'
 
 services:
   traefik:
     image: traefik:v2.11
-    container_name: traefik
     command:
       - "--api.insecure=true"
       - "--providers.docker=true"
@@ -15,13 +14,10 @@ services:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
 
   openwrt:
-    image: liuqingdong/openwrt:latest
-    container_name: openwrt
+    image: openwrtorg/rootfs:x86-64
+    network_mode: "bridge"
     privileged: true
-    network_mode: bridge
-    ports:
-      - "2222:22"
-      - "8081:80"
-    volumes:
-      - ./openwrt-config:/etc/config
     restart: unless-stopped
+    volumes:
+      - ./openwrt/etc:/etc/config
+    command: [ "/sbin/init" ]
