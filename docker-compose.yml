@@ -1,5 +1,4 @@
 version: '3.8'
-
 services:
   traefik:
     image: traefik:v2.11
@@ -11,13 +10,27 @@ services:
       - "80:80"
       - "8080:8080"
     volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - /var/run/docker.sock:/var/run/docker.sock
 
   openwrt:
-    image: openwrtorg/rootfs:x86-64
-    network_mode: "bridge"
+    image: albrechtloh/openwrt-docker:latest
+    container_name: openwrt
     privileged: true
-    restart: unless-stopped
+    networks:
+      maclan:
+        ipv4_address: 10.20.30.1
+    ports:
+      - "8081:80"
     volumes:
-      - ./openwrt/etc:/etc/config
-    command: [ "/sbin/init" ]
+      - ./openwrt_config:/etc/openwrt
+    restart: unless-stopped
+
+networks:
+  maclan:
+    driver: macvlan
+    driver_opts:
+      parent: wlan0
+    ipam:
+      config:
+        - subnet: 10.20.30.0/24
+          gateway: 10.20.30.1

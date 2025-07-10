@@ -1,13 +1,13 @@
 # Prepper Pi
 
-## 🛠 One-Line Setup Command (copy and paste):
+## 🛠 One-Line Setup Command
 
 ```bash
-sudo apt update && sudo apt install -y git && git clone https://github.com/pyrometheous/Prepper-Pi.git && cd Prepper-Pi && bash first-run-setup.sh && cd .. && sudo docker ps
+sudo apt update && sudo apt install -y git && git clone https://github.com/pyrometheous/Prepper-Pi.git && cd Prepper-Pi && sudo bash first-run-setup.sh && cd .. && sudo docker ps
 ```
 
-## 🧹 One-Line Cleanup:
+## 🧹 One-Line Cleanup Command
 
 ```bash
-git clone https://github.com/pyrometheous/Prepper-Pi.git && cd Prepper-Pi && bash cleanup.sh && cd .. && rm -rf Prepper-Pi
+git clone https://github.com/pyrometheous/Prepper-Pi.git && cd Prepper-Pi && sudo bash cleanup.sh && cd .. && rm -rf Prepper-Pi
 ```

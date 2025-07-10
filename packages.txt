@@ -1,3 +1,4 @@
 docker.io
 docker-compose
 iproute2
+git

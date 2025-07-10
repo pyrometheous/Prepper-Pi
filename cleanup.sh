@@ -1,12 +1,8 @@
 #!/bin/bash
-
 echo "[*] Stopping and removing Docker containers..."
-docker-compose down || echo "[-] Docker compose down failed or was not installed."
+docker-compose down || echo "[-] Could not run docker-compose down"
 
 echo "[*] Removing OpenWRT config directory..."
-rm -rf openwrt/etc
-
-echo "[*] Removing macvlan interface if exists..."
-ip link delete macvlan0 2>/dev/null || echo "[-] macvlan0 not present."
+rm -rf openwrt_config
 
 echo "[*] Cleanup complete."
