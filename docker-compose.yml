@@ -1,29 +1,27 @@
-version: '3.8'
+version: "3.8"
 
 services:
   traefik:
     image: traefik:v2.11
     container_name: traefik
     command:
-      - --api.insecure=true
-      - --providers.docker=true
-      - --entrypoints.web.address=:80
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--entrypoints.web.address=:80"
     ports:
       - "80:80"
       - "8080:8080"
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    restart: unless-stopped
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
 
   openwrt:
-    image: ghcr.io/openwrt/rootfs:x86-64
+    image: liuqingdong/openwrt:latest
     container_name: openwrt
     privileged: true
     network_mode: bridge
     ports:
-      - "2222:22"   # SSH access (optional)
-      - "1080:80"   # LuCI Web Interface (adjust as needed)
+      - "2222:22"
+      - "8081:80"
     volumes:
-      - ./openwrt/default_config:/etc/config
+      - ./openwrt-config:/etc/config
     restart: unless-stopped
-
