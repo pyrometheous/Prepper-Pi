@@ -1,11 +1,8 @@
 #!/bin/bash
 echo "[*] Starting initial setup..."
 
+# Start Docker containers using modern compose syntax
 echo "[*] Starting Docker stack..."
-if command -v docker compose &>/dev/null; then
-    docker compose up -d
-else
-    docker-compose up -d
-fi
+docker compose up -d
 
 echo "[*] Setup complete."
