@@ -1,13 +1,11 @@
-# Prepper-Pi
+# Prepper Pi
 
-## Quick Start
-
-SSH into the Pi and run the following:
+## 🛠 One-Line Setup Command (copy and paste):
 
 ```bash
-sudo apt update && sudo apt install -y git && git clone https://github.com/pyrometheous/Prepper-Pi.git && cd Prepper-Pi && bash first-run-setup.sh
+sudo apt update && sudo apt install -y git && git clone https://github.com/pyrometheous/Prepper-Pi.git && cd Prepper-Pi && sudo apt install -y $(cat packages.txt) && bash first-run-setup.sh && cd .. && sudo docker ps
 ```
 
-This will install Docker, deploy the stack, and (in future) configure NVMe storage.
+## 📦 Required Packages
 
-Note: NVMe and Jellyfin setup is temporarily disabled in `first-run-setup.sh`.
+You can modify `packages.txt` to include or remove any Debian packages your setup needs.
