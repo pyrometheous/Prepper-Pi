@@ -1,21 +1,20 @@
 #!/bin/bash
+set -e
+
 echo "[*] Starting initial setup..."
 
-# Install Docker & Docker Compose
-echo "[*] Installing Docker..."
-sudo apt update && sudo apt install -y docker.io docker-compose
+# Install Docker if not already installed
+if ! command -v docker &> /dev/null; then
+    echo "[*] Installing Docker..."
+    sudo apt update
+    sudo apt install -y docker.io docker-compose
+    sudo systemctl enable docker
+    sudo systemctl start docker
+    sudo usermod -aG docker $USER
+fi
 
-# Add current user to docker group
-sudo usermod -aG docker $USER
-
-# Create OpenWRT config directory
-mkdir -p openwrt/config
-
-# Copy default OpenWRT config files
-cp -r openwrt/default_config/* openwrt/config/
-
-# Start Docker stack
+# Create Docker network and start Traefik
 echo "[*] Starting Docker stack..."
 docker-compose up -d
 
-echo "[*] Setup complete. You may need to reboot or log out/in for docker group changes to take effect."
+echo "[*] Setup complete."
