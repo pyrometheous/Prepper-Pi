@@ -1,0 +1,132 @@
+version: '3.8'
+
+services:
+  # OpenWRT Router in Docker with macvlan
+  openwrt:
+    image: openwrt/rootfs:x86-64-23.05.2
+    container_name: openwrt
+    restart: unless-stopped
+    privileged: true
+    cap_add:
+      - NET_ADMIN
+      - SYS_ADMIN
+    networks:
+      openwrt_net:
+        ipv4_address: 10.20.30.1
+    volumes:
+      - ./openwrt/config:/etc/config
+      - ./openwrt/data:/root
+      - /dev/net/tun:/dev/net/tun
+    command: ["/sbin/init"]
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.openwrt.rule=Host(`openwrt.local`) || Host(`10.20.30.1`)"
+      - "traefik.http.services.openwrt.loadbalancer.server.port=80"
+
+  # Reverse proxy and load balancer
+  traefik:
+    image: traefik:v2.11
+    container_name: traefik
+    restart: unless-stopped
+    command:
+      - --api.insecure=true
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --entrypoints.web.address=:80
+      - --entrypoints.websecure.address=:443
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"  # Traefik dashboard
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - default
+      - openwrt_net
+
+  # Container management
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    restart: unless-stopped
+    ports:
+      - "9000:9000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.portainer.rule=Host(`portainer.local`) || Host(`prepper-pi.local`) && PathPrefix(`/portainer`)"
+      - "traefik.http.services.portainer.loadbalancer.server.port=9000"
+
+  # Media server
+  jellyfin:
+    image: jellyfin/jellyfin:latest
+    container_name: jellyfin
+    restart: unless-stopped
+    ports:
+      - "8096:8096"
+    volumes:
+      - jellyfin_config:/config
+      - jellyfin_cache:/cache
+      - ./media:/media:ro
+    environment:
+      - JELLYFIN_PublishedServerUrl=http://jellyfin.local
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.jellyfin.rule=Host(`jellyfin.local`)"
+      - "traefik.http.services.jellyfin.loadbalancer.server.port=8096"
+
+  # Landing page / dashboard
+  homepage:
+    image: ghcr.io/gethomepage/homepage:latest
+    container_name: homepage
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./homepage:/app/config
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.homepage.rule=Host(`prepper-pi.local`) || Host(`10.20.30.40`)"
+      - "traefik.http.services.homepage.loadbalancer.server.port=3000"
+
+  # File sharing
+  samba:
+    image: dperson/samba:latest
+    container_name: samba
+    restart: unless-stopped
+    ports:
+      - "139:139"
+      - "445:445"
+    volumes:
+      - ./media:/media
+      - ./shares:/shares
+    environment:
+      - USERID=1000
+      - GROUPID=1000
+    command: >
+      -s "Media;/media;yes;no;yes;all;none;all;Prepper Pi Media Share"
+      -s "Public;/shares;yes;no;yes;all;none;all;Public File Share"
+
+volumes:
+  portainer_data:
+  jellyfin_config:
+  jellyfin_cache:
+
+networks:
+  # Default bridge network for most services
+  default:
+    driver: bridge
+
+  # Macvlan network for OpenWRT to have direct network access
+  openwrt_net:
+    driver: macvlan
+    driver_opts:
+      parent: eth0  # Change this to your primary network interface
+    ipam:
+      config:
+        - subnet: 10.20.30.0/24
+          gateway: 10.20.30.1
+          ip_range: 10.20.30.0/24

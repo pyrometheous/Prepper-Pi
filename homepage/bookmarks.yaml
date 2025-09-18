@@ -1,0 +1,28 @@
+---
+# Homepage bookmarks
+- Search Engines:
+    - DuckDuckGo:
+        - abbr: DDG
+          href: https://duckduckgo.com/
+
+- Emergency Resources:
+    - NOAA Weather:
+        - abbr: NOAA
+          href: https://www.weather.gov/
+    - Emergency Frequencies:
+        - abbr: Radio
+          href: http://prepper-pi.local/radio-frequencies
+    - First Aid Guide:
+        - abbr: First Aid
+          href: http://prepper-pi.local/first-aid
+
+- Offline Resources:
+    - Local Wikipedia:
+        - abbr: Wiki
+          href: http://prepper-pi.local/wikipedia
+    - Survival Guides:
+        - abbr: Survival
+          href: http://prepper-pi.local/survival-guides
+    - Technical Manuals:
+        - abbr: Manuals
+          href: http://prepper-pi.local/manuals
