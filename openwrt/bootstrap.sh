@@ -5,21 +5,26 @@
 
 echo "🚀 Bootstrapping OpenWRT container..."
 
-# Update package lists
-echo "📦 Updating package lists..."
-opkg update
+# Update package lists and install packages (only on first boot)
+FLAG=/root/.prepper_pi_bootstrap_done
+if [ ! -f "$FLAG" ]; then
+    echo "📦 First boot: updating package lists..."
+    opkg update
+    echo "📡 Installing wireless and captive portal packages..."
+    opkg install opennds iw wpad-basic-mbedtls dnsmasq-full
+    touch "$FLAG"
+else
+    echo "📦 Packages already installed, skipping update..."
+fi
 
-# Install essential wireless and captive portal packages
-echo "📡 Installing wireless and captive portal packages..."
-opkg install opennds iw wpad-basic-mbedtls dnsmasq-full
-
-# Enable and configure services
+# Enable and configure services with existence checks
 echo "⚙️ Enabling services..."
-/etc/init.d/opennds enable
-/etc/init.d/network enable
-/etc/init.d/wireless enable
-/etc/init.d/dnsmasq enable
-/etc/init.d/firewall enable
+en() { [ -x "/etc/init.d/$1" ] && /etc/init.d/$1 enable; }
+rs() { [ -x "/etc/init.d/$1" ] && /etc/init.d/$1 restart; }
+
+en network
+en dnsmasq
+en opennds
 
 echo "📶 Configuring wireless..."
 # Set regulatory domain first
@@ -58,9 +63,9 @@ uci set system.@system[0].hostname='prepper-pi'
 uci commit system
 
 echo "🚦 Restarting network and captive portal..."
-/etc/init.d/network restart
-/etc/init.d/dnsmasq restart
-/etc/init.d/opennds restart
+rs network
+rs dnsmasq
+rs opennds
 wifi reload
 
 echo "✅ Bootstrap complete, starting init..."

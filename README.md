@@ -53,6 +53,8 @@ Prepper Pi is a complete field-deployable system combining solar power, over-the
 sudo apt update && sudo apt install -y git && git clone https://github.com/pyrometheous/Prepper-Pi.git && cd Prepper-Pi && sudo bash first-run-setup.sh
 ```
 
+**On Raspberry Pi:** Copy `docker-compose.pi.yml` to `docker-compose.override.yml` before `docker compose up -d`.
+
 ### 🗑️ System Removal
 
 ```bash
@@ -269,6 +271,22 @@ RPi5 Ethernet ← host networking → OpenWRT Container
 
 **Validation Script:** Run `./verify-ap.sh` to check AP configuration and device mapping.
 
+**Manual Client Tests:**
+```bash
+# Test DNS resolution (should work from connected client)
+nslookup example.com 10.20.30.1
+
+# Test captive portal redirect (should return 302/303 redirect)
+curl -I http://neverssl.com/ | head -n 5
+```
+
+**Success Indicators:**
+- `iw list` shows AP in "Supported interface modes"
+- `iw dev` lists wlan* interfaces; `wifi status` shows SSIDs
+- `logread` shows dnsmasq DHCPACK lines when clients connect
+- DNS queries to 10.20.30.1 return responses
+- HTTP requests redirect to http://10.20.30.40/ until portal accepted
+
 ## ⚠️ Configuration Status & Testing Needed
 
 **Phase 1 WiFi AP Configuration:**
@@ -303,6 +321,7 @@ These improvements address the audit findings. Phase 1 is now properly configure
 - [ ] `docker compose up -d` starts all services without errors
 - [ ] `./verify-ap.sh` shows ARM64 OpenWRT image loads successfully
 - [ ] `iw list` inside container shows WiFi device with AP mode support
+- [ ] `iw dev` lists wlan* interfaces and `wifi status` shows SSIDs
 - [ ] OpenNDS service starts and configures captive portal
 - [ ] DHCP assigns addresses in 10.20.30.0/24 range
 
@@ -312,6 +331,7 @@ These improvements address the audit findings. Phase 1 is now properly configure
 - [ ] All services accessible through landing page links
 - [ ] `nslookup example.com 10.20.30.1` returns DNS response
 - [ ] `curl -I http://neverssl.com/` returns HTTP 302/303 redirect
+- [ ] `logread` shows dnsmasq DHCPACK entries for connected clients
 
 **Future Hardware Ready:**
 - [ ] Tvheadend service template ready (uncomment when TV tuner added)

@@ -39,6 +39,10 @@ docker exec -it openwrt sh -c '
   
   echo "=== DHCP/DNS logs (last 100 lines) ==="
   logread 2>/dev/null | tail -n 100 | grep -Ei "dnsmasq|DHCP" || echo "No DHCP logs found"
+  echo ""
+  
+  echo "=== Kernel wireless drivers and radio logs ==="
+  dmesg 2>/dev/null | egrep -i "cfg80211|mac80211|wlan|mt76|ath|brcm" | tail -n 20 || echo "No wireless driver logs found"
 '
 
 echo ""
@@ -66,6 +70,10 @@ docker exec -it openwrt sh -c '
   
   echo "=== OpenNDS status ==="
   /etc/init.d/opennds status 2>/dev/null || echo "OpenNDS service not running"
+  echo ""
+  
+  echo "=== OpenNDS process check ==="
+  ps 2>/dev/null | grep -i opennds | grep -v grep || echo "No OpenNDS process found"
 '
 
 echo ""
