@@ -9,7 +9,7 @@ config opennds
 	option checkinterval '600'
 	option preauth 'none'
 	option binauth '/usr/lib/opennds/binauth_log.sh'
-	option redirectURL 'http://10.20.30.40/'
+	option redirectURL 'http://10.20.30.40:3000/'
 	option splashpage '/etc/opennds/htdocs/splash.html'
 	option statuspage '/etc/opennds/htdocs/status.html'
 	option webroot '/etc/opennds/htdocs/'
