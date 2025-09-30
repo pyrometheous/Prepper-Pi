@@ -35,9 +35,16 @@ Prepper Pi is a complete field-deployable system combining solar power, over-the
 5. **Antenna Mounting**: Install TV and LoRa antennas with proper grounding
 6. **Integration Testing**: Verify all systems before field deployment
 
-*See [wiring.md](wiring.md) for detailed component layout and connection diagrams.*
+*See [docs/wiring.md](docs/wiring.md) for detailed component layout and connection diagrams.*
 
-## 🖥️ Software Setup
+## � Documentation
+
+### 📖 Complete Documentation
+- **[📝 Documentation Index](docs/README.md)** - Overview of all technical documentation
+- **[🔧 Components & BOM](docs/components.md)** - Complete parts list with specifications and phases  
+- **[⚡ Wiring & Assembly](docs/wiring.md)** - Electrical specifications, diagrams, and safety guidelines
+
+## �🖥️ Software Setup
 
 ### ⚡ Automated Installation
 
@@ -128,7 +135,7 @@ RPi5 Ethernet ← macvlan bridge → Docker Services
 
 ## 📋 Hardware Requirements
 
-> **📝 Complete Components List:** See [components.md](components.md) for detailed specifications, part numbers, and development phase status.
+> **📝 Complete Components List:** See [docs/components.md](docs/components.md) for detailed specifications, part numbers, and development phase status.
 
 ### 🖥️ Base Requirements (Currently Owned)
 - **Raspberry Pi 5** (8GB) with adequate cooling solution

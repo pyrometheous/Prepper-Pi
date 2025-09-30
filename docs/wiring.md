@@ -4,7 +4,7 @@
 **I am not a licensed electrician.** This information reflects my understanding and personal experience, but I cannot guarantee that any design will work for your specific situation or be safe/compliant in your jurisdiction. **If you build this and something breaks, catches fire, or causes injury - that's on you.** Always consult qualified professionals and follow local electrical codes.
 
 ## 📋 PROJECT STATUS
-**This is a future hardware design document.** Currently only Phase 1 (WiFi infrastructure) hardware is owned and deployed. Phases 4-6 (RF, LoRa, Solar/Power) are blocked pending hardware acquisition. See [README.md](README.md) for current project status and development phases.
+**This is a future hardware design document.** Currently only Phase 1 (WiFi infrastructure) is currently deployed. Phases 4-6 (RF, LoRa, Solar/Power) are blocked pending hardware acquisition. See [../README.md](../README.md) for current project status and development phases.
 
 ## Legend
 🔴 DC power · 🔵 75 Ω TV coax (RG‑6) · 🟠 50 Ω RF (LMR‑240/400) · 🟩 USB/Ethernet/Data · ⚫ Ground/Bond  

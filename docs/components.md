@@ -1,6 +1,6 @@
 # Prepper-Pi Components List
 
-> **Project Status:** This components list reflects the planned hardware for the complete Prepper-Pi system. Currently, only Phase 1 (Compute & Core) components are owned. See [README.md](README.md) for development phases and current status.
+> **Project Status:** This components list reflects the planned hardware for the complete Prepper-Pi system. Currently, only Phase 1 (Compute & Core) components are owned. See [../README.md](../README.md) for development phases and current status.
 
 ## Complete Bill of Materials
 
