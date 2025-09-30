@@ -67,6 +67,7 @@ echo "🚦 Restarting network and captive portal..."
 rs network
 rs dnsmasq
 rs opennds
+rs uhttpd
 wifi reload
 
 echo "✅ Bootstrap complete, starting init..."

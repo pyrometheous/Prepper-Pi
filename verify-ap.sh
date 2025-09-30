@@ -104,7 +104,7 @@ echo ""
 echo "🧪 Manual client tests (run from connected device):"
 echo "   nslookup example.com 10.20.30.1"
 echo "   curl -I http://neverssl.com/ | head -n 5"
-echo "   Expected: HTTP 302/303 redirect to http://10.20.30.40/"
+echo "   Expected: HTTP 302/303 redirect to http://10.20.30.40:3000/"
 echo ""
 
 # C) Future hardware device mapping checks

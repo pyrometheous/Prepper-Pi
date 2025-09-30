@@ -100,7 +100,7 @@ Password: (blank)
 ### 2. 📊 Services Dashboard
 ```bash
 # Landing page with all service links
-http://10.20.30.40
+http://10.20.30.40:3000
 
 # Individual service access
 Jellyfin: http://10.20.30.40:8096
@@ -149,7 +149,7 @@ RPi5 Ethernet ← host networking → OpenWRT Container
 ### 🔗 Service Access
 | Service | Local Domain | IP Address | Port |
 |---------|--------------|------------|------|
-| Landing Page | prepper-pi.local | 10.20.30.40 | 80 |
+| Landing Page | prepper-pi.local | 10.20.30.40 | 3000 |
 | OpenWRT Web UI | openwrt.local | 10.20.30.1 | 80 |
 | Jellyfin Media Server | jellyfin.local | 10.20.30.40 | 8096 |
 | Portainer Management | portainer.local | 10.20.30.40 | 9000 |
@@ -262,7 +262,7 @@ RPi5 Ethernet ← host networking → OpenWRT Container
 **You should be able to:**
 1. Connect to "Prepper Pi" SSID with password `PrepperPi2024!`
 2. Get DHCP address from OpenWRT container (10.20.30.x range)
-3. Be redirected to landing page (http://10.20.30.40) via captive portal
+3. Be redirected to landing page (http://10.20.30.40:3000) via captive portal
 4. Access OpenWRT admin interface at http://10.20.30.1
 5. Open Jellyfin media server at http://10.20.30.40:8096
 6. Access Portainer management at http://10.20.30.40:9000
@@ -285,7 +285,7 @@ curl -I http://neverssl.com/ | head -n 5
 - `iw dev` lists wlan* interfaces; `wifi status` shows SSIDs
 - `logread` shows dnsmasq DHCPACK lines when clients connect
 - DNS queries to 10.20.30.1 return responses
-- HTTP requests redirect to http://10.20.30.40/ until portal accepted
+- HTTP requests redirect to http://10.20.30.40:3000/ until portal accepted
 
 ## ⚠️ Configuration Status & Testing Needed
 
@@ -327,7 +327,7 @@ These improvements address the audit findings. Phase 1 is now properly configure
 
 **Client Testing:**
 - [ ] "Prepper Pi" SSID broadcasts and accepts WPA2 connections
-- [ ] Captive portal redirects to http://10.20.30.40/ landing page
+- [ ] Captive portal redirects to http://10.20.30.40:3000/ landing page
 - [ ] All services accessible through landing page links
 - [ ] `nslookup example.com 10.20.30.1` returns DNS response
 - [ ] `curl -I http://neverssl.com/` returns HTTP 302/303 redirect
