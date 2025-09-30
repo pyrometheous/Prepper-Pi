@@ -12,7 +12,7 @@ Prepper Pi is a complete field-deployable system combining solar power, over-the
 - **Two TV channels** streaming simultaneously via dual ATSC tuner
 - **Two radio stations** (FM + NOAA) streaming via dual RTL-SDR setup
 - **LoRa mesh messaging** with text and GPS location sharing
-- **WiFi hotspot** serving multiple devices with captive portal
+- **WiFi hotspot** serving multiple devices with WPA2 security and captive portal
 - **Media streaming** from local Jellyfin library
 - **File sharing** via Samba network shares
 - **Solar power monitoring** via Victron SmartSolar Bluetooth interface
@@ -60,6 +60,30 @@ git clone https://github.com/pyrometheous/Prepper-Pi.git && cd Prepper-Pi && sud
 ```
 
 ## ⚙️ Configuration Steps
+
+### 🚦 Feature Implementation Status
+
+| Feature | Status | Notes |
+|---------|--------|-------|
+| **Phase 1: Core Infrastructure** | | |
+| Docker Service Stack | ✅ **Implemented** | OpenWRT, Portainer, Homepage, Jellyfin, Samba |
+| WiFi Access Point | ⚠️ **Experimental** | Configured but requires hardware validation |
+| Captive Portal | ⚠️ **Experimental** | OpenNDS configured, needs end-to-end testing |
+| Landing Page | ✅ **Implemented** | Homepage dashboard with service links |
+| **Phase 4: TV & Radio** | | |
+| TV Reception (ATSC) | 📋 **Planned** | Tvheadend service template ready |
+| FM Radio Streaming | 📋 **Planned** | RTL-SDR + Icecast template ready |
+| NOAA Weather Radio | 📋 **Planned** | RTL-SDR + Icecast template ready |
+| **Phase 5: LoRa Mesh** | | |
+| Mesh Networking | 📋 **Planned** | Meshtastic service template ready |
+| **Phase 6: Solar Power** | | |
+| Solar Charging | 📋 **Planned** | Hardware design phase |
+| Power Monitoring | 📋 **Planned** | Victron integration planned |
+
+**Status Legend:**
+- ✅ **Implemented** - Tested and working
+- ⚠️ **Experimental** - Configured but needs hardware validation  
+- 📋 **Planned** - Service templates ready, hardware needed
 
 ### 1. 🌐 Network Configuration
 ```bash
@@ -110,15 +134,14 @@ Internet/Cellular Modem (optional)
      |
    Router (host network)
      |
-RPi5 Ethernet ← macvlan bridge → Docker Services
-                      |
-               OpenWRT Container
-              (10.20.30.1 gateway)
-                      |
-                WiFi Access Point
-               "Prepper Pi" SSID
-                      |
-           Client devices (10.20.30.100-199)
+RPi5 Ethernet ← host networking → OpenWRT Container
+                      |                     |
+               Docker Bridge         WiFi Access Point
+              (172.20.0.0/16)        "Prepper Pi" SSID
+                      |              (10.20.30.0/24)
+               Container Services            |
+              (Jellyfin, Portainer)   Client devices
+                                    (10.20.30.100-199)
 ```
 
 ### 🔗 Service Access
@@ -232,22 +255,39 @@ RPi5 Ethernet ← macvlan bridge → Docker Services
 
 **⚠️ Important:** WiFi AP functionality is configured but not yet hardware-tested. Real-world deployment requires validation on Raspberry Pi with USB WiFi adapter.
 
-## ⚠️ Known Configuration Issues
+### 🧪 Smoke Test Validation
 
-**Current WiFi AP Setup Needs Validation:**
-- Docker OpenWRT configuration may require `host` networking mode instead of `macvlan`
-- USB WiFi device passthrough needs testing with proper device mounts
-- Firmware and driver availability in container requires verification
-- Captive portal functionality needs end-to-end testing
+**You should be able to:**
+1. Connect to "Prepper Pi" SSID with password `PrepperPi2024!`
+2. Get DHCP address from OpenWRT container (10.20.30.x range)
+3. Be redirected to landing page (http://10.20.30.40) via captive portal
+4. Access OpenWRT admin interface at http://10.20.30.1
+5. Open Jellyfin media server at http://10.20.30.40:8096
+6. Access Portainer management at http://10.20.30.40:9000
+7. Future: Tvheadend TV backend at http://10.20.30.40:9981 (Phase 4)
+8. Future: Meshtastic Web UI at http://10.20.30.40:2443 (Phase 5)
 
-**Recommended Testing Sequence:**
-1. Validate host kernel WiFi drivers and firmware 
-2. Test container device access with proper mounts
-3. Compare networking modes (macvlan vs host) for AP reliability
-4. Verify captive portal redirect functionality
-5. Document working configuration for deployment
+**Validation Script:** Run `./verify-ap.sh` to check AP configuration and device mapping.
 
-These issues will be addressed during Phase 1 hardware testing.
+## ⚠️ Configuration Status & Testing Needed
+
+**Phase 1 WiFi AP Configuration:**
+- ✅ **Fixed:** Docker OpenWRT now uses `host` networking mode for proper radio access
+- ✅ **Fixed:** USB WiFi device passthrough configured with `/dev/bus/usb` mount
+- ✅ **Fixed:** Firmware and driver access via `/lib/firmware` and `/sys/class/ieee80211` mounts  
+- ✅ **Fixed:** OpenNDS captive portal configured to redirect to landing page
+- ✅ **Fixed:** Default WiFi security upgraded to WPA2 (open mode available for emergencies)
+
+**Hardware Testing Required:**
+1. Validate USB WiFi adapter compatibility with Pi 5 and container access
+2. Test OpenWRT wireless driver initialization and AP mode activation
+3. Verify captive portal redirect functionality end-to-end
+4. Confirm DHCP assignment and client connectivity (10.20.30.0/24 range)
+5. Test service accessibility through landing page
+
+**Run Verification:** Use `./verify-ap.sh` to validate configuration before field deployment.
+
+These improvements address the audit findings. Phase 1 is now properly configured for hardware testing.
 
 ## 🙏 Acknowledgments
 
