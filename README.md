@@ -128,6 +128,8 @@ RPi5 Ethernet ← macvlan bridge → Docker Services
 
 ## 📋 Hardware Requirements
 
+> **📝 Complete Components List:** See [components.md](components.md) for detailed specifications, part numbers, and development phase status.
+
 ### 🖥️ Base Requirements (Currently Owned)
 - **Raspberry Pi 5** (8GB) with adequate cooling solution
 - **NVMe SSD** (1TB+) for media storage and OS performance
