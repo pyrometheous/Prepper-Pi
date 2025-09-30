@@ -86,10 +86,6 @@ echo 'tun' >> /etc/modules
 echo 'bridge' >> /etc/modules
 echo 'br_netfilter' >> /etc/modules
 
-# Update docker-compose.yml with correct interface
-print_status "Updating Docker Compose configuration..."
-sed -i "s/parent: eth0/parent: $INTERFACE/g" docker-compose.yml
-
 # Create required directories
 print_status "Creating directory structure..."
 mkdir -p media/{movies,tv,music,books}
