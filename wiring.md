@@ -1,67 +1,73 @@
-
 # Prepper‑Pi Field Box
-**TV / Ra┌──────────────────────────── RF & Compute Compartment ───────────────────────────┐
-│                                                                                  │
-│  📡 OTA Antenna (VHF‑Hi/UHF)                                                     │
-│    🔵─▶ 🎚️ Mast Preamp (CM‑7777HD; FM trap as needed; LTE filt)                 │
-│    🔵─▶ 🛡️ Coax Arrestor + Ground Block (at entry)                              │
-│    🔵─▶ 🔌 Power Inserter (from 12–15 V)                                        │
-│    🔵─▶ 📶 4‑Port 75 Ω Distribution Amp (CM‑3414)                                │
-│           │                 │                 │                 │              │
-│           │                 │                 │                 └─▶ 🔵 Spare    │Fi / LoRa + Solar‑UPS — Wiring & Components**  
-*(README-ready, emoji-friendly, copy‑pasteable.)*
 
----
+## ⚠️ DISCLAIMER
+**I am not a licensed electrician.** This information reflects my understanding and personal experience, but I cannot guarantee that any design will work for your specific situation or be safe/compliant in your jurisdiction. **If you build this and something breaks, catches fire, or causes injury - that's on you.** Always consult qualified professionals and follow local electrical codes.
 
 ## Legend
-🔴 DC power · 🔵 75 Ω TV coax (RG‑6) · 🟠 50 Ω RF (LMR‑240/400) · 🟩 USB/Ethernet/Data · ⚫ Ground/Bond  
-🧱 metal partition · 📦 enclosure wall/bulkhead · 🚧 fuse · 🔌 power inserter · 🛡️ lightning arrestor
+🔴 DC power · 🔵 75 Ω TV coax (RG‑6) · 🟠 50 Ω RF (LMR‑240/400) · 🟩 USB/Ethernet/Data · ⚫ Ground/Bond  
+🧱 metal partition · 📦 enclosure wall/bulkhead · 🚧 fuse · 🔌 power inserter · 🛡️ lightning arrestor  
+☀️ solar panel · 🔋 battery · 🔧 regulator/converter · 📡 antenna · 🎚️ amplifier · 📶 distribution amp  
+📻 radio/SDR · 📺 TV tuner · 💬 LoRa/mesh · 🚫 filter/notch · 📱 client device · 🎵 audio stream  
+🌧️ weather data · 🔵 spare output
+
+## ⚠️ SAFETY DISCLAIMER
+**This guide is for educational purposes.** Building electrical systems involves risks including fire, shock, and injury. 
+- **Consult local codes** - electrical work may require permits and professional installation
+- **Use proper PPE** - safety glasses, insulated tools, etc.
+- **Verify all connections** before applying power
+- **When in doubt, consult a qualified electrician**
+- The authors assume no responsibility for damage, injury, or regulatory violations
 
 ---
 
 ## System Diagram
 
 ```
-┌─────────────────────────────── Power Compartment ───────────────────────────────
+┌─────────────────────────────── Power Compartment ────────────────────────────────┐
 │
-│  ☀️  Solar Panel
-│    🔴──▶ 📦 MC4 bulkhead ─▶ 🔧 MPPT (Victron SmartSolar 75/15)
-│                              │
-│                              ▼
-│                         🔋 12 V LiFePO₄ (40–100 Ah)
-│                              │
-│   Preamp DC feed ──▶ 🔴 12–15 V ─▶ 🔌 Power Inserter (to OTA coax)
-│                              │
-│   12 V loads bus ──▶ 🔴 DC Distribution (🚧 fuses on each branch)
-│                              ├─▶ 🔧 12→5 V Buck (5 V/5 A) ─▶ 🟩 Pi 5 USB‑C
-│                              └─▶ 🔴 13.2 V Reg ─▶ 📶 4‑Port Distribution Amp
+│   ☀️  Solar Panel
+│     🔴──────▶ 📦 MC4 bulkhead ▶ 🔧 MPPT (75/15)
+│                           🔴▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶🔴                              │
+│                                      │
+│                                      ▼
+│                                🔋 12 V LiFePO₄
+│                                      │
+│       (preamp feed) ──▶ 🔴 12–15 V ─▶ 🔌 Power Inserter (to OTA coax)
+│                                      │
+│           loads bus  ──▶ 🔴 Fused 12 V DC Distribution
+│                                      ├─▶ 🔧 12→5 V Buck (5 V/5 A) ─▶🟩 Pi 5 USB-C
+│                                      └─▶ 🔴 13.2 V Reg  ─▶ 📶 Distribution Amp
 │
-│  ⚫ Ground Rod ─▶ ⚫ Bonding bar ─┬─▶ ⚫ MPPT & Battery −
-│                                  ├─▶ ⚫ Coax Ground Block/Arrestor
-│                                  └─▶ ⚫ Enclosure & 🧱 Partition
-└───────────────────────────────🧱 metal partition🧱─────────────────────────────
-
-┌──────────────────────────── RF & Compute Compartment ───────────────────────────
+│  ⚫ Ground Rod ───▶ ⚫ Bonding bar  ──┬─▶ ⚫ MPPT/- batt
+│                                      ├─▶ ⚫ Coax Ground Block/Arrestor
+│                                      └─▶ ⚫ Enclosure/Partition
+└───────────────────────────────────────────────────────────────────────────────────┘
+ ──────────────────────────────🧱 metal partition🧱────────────────────────────────
+┌──────────────────────────── RF & Compute Compartment ─────────────────────────────┐
 │
 │  📡 OTA Antenna (VHF‑Hi/UHF)
-│    🔵─▶ 🎚️ Mast Preamp (CM‑7777HD; FM trap as needed; LTE filt)                 │
-│    🔵─▶ 🛡️ Coax Arrestor + Ground Block (at entry)                              │
-│    🔵─▶ 🔌 Power Inserter (from 12–15 V)                                        │
-│    🔵─▶ 📶 4‑Port 75 Ω Distribution Amp (CM‑3414)                                │
-│           │                 │                 │                 │              │
-│           │                 │                 │                 └─▶ 🔵 Spare    │
-│           │                 │                                                   │
-│           │                 └─▶ 🔵 ▶ F→SMA ▶ 🚫🎚️ FM‑Notch ▶ 📻 RTL‑SDR #2 ▶ NOAA │
-│           │                                                                     │
-│           └─▶ 🔵 ▶ F→SMA ▶ 📻 RTL‑SDR #1 ▶ FM stream (Icecast/Liquidsoap)       │
-│                                                                                  │
-│  📺 TV: 🔵 ▶ USB ATSC **Dual** Tuner (Hauppauge dualHD) ▶ 🟩 Pi 5 ▶ Tvheadend   │
-│                                                                                  │
-│  🟠 LoRa: 🟠 915 MHz Omni (mast) ─▶ 🟠 bulkhead ─▶ 🟠 short LMR ─▶               │
-│           🟠 USB/HAT LoRa Radio (SX1262 class) ▶ 🟩 Pi 5 ▶ 💬 meshtasticd       │
-│                                                                                  │
-│  🟩 Pi 5 roles: OpenWrt AP + Docker (Tvheadend, Icecast/Liquidsoap, Meshtastic) │
-└──────────────────────────────────────────────────────────────────────────────────┘
+│    🔵─▶ 🎚️ Mast Preamp (CM‑7777HD; FM trap as needed; LTE filt)
+│    🔵─▶ 🛡️ Coax Arrestor + Ground Block (at entry
+│    🔵─▶ 🔌 Power Inserter (from 12–15 V)
+│    🔵─▶ 📶 4‑Port 75 Ω Distribution Amp (CM‑3414)
+│             │  │  │  │
+│             │  │  │  └──▶ 🔵 Spare Out
+│             │  │  │
+│             │  │  └──▶ 🔵▶ SMA pigtail ▶ 🚫🎚️ FM-Notch
+│             │  │                                     ▶ 📻 RTL-SDR #2
+│             │  │                                     ▶ 🟩 Icecast
+│             │  │                                     ▶ 🌧️ NOAA Wx
+│             │  │
+│             │  └──▶ 🔵▶ SMA pigtail ▶ 📻 RTL-SDR #1 ▶ 🟩 Icecast ▶ 🎵 FM
+│             │
+│             └──▶ 🔵▶ 📺 USB ATSC **Dual** Tuner ▶ 🟩 Pi 5 ▶ 🟩 Tvheadend ▶ 📱 Clients
+│
+│  🟠 LoRa branch
+│     🟠 Antenna (915 MHz omni on mast) ─▶ 🟠 bulkhead ▶ 🟠 short LMR to
+│     🟠 USB/HAT LoRa Radio ▶ 🟩 Pi 5 ▶ 💬 meshtasticd (Web UI + MQTT optional)
+│
+│  🟩 Pi 5 roles: OpenWrt AP + Docker (Tvheadend, Icecast/Liquidsoap, Meshtastic)
+└───────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ### Concurrency
@@ -82,7 +88,7 @@
 ---
 
 ## Components (Example Bill of Materials)
-> Substitute brands are fine; these are proven pairings from our design.
+> Substitute brands are fine; these are pairings from my design, your milage may varry.
 
 ### Compute & Core
 - Raspberry Pi 5 (8 GB) + Official 27 W USB‑C PSU (or your 5 V/5 A buck)  
