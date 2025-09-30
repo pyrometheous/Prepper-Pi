@@ -158,63 +158,62 @@ RPi5 Ethernet ← macvlan bridge → Docker Services
 - 📋 **Planned** - Not yet started
 - ❌ **Blocked** - Waiting on hardware/dependencies
 
-### Phase 1: Basic Infrastructure (Raspberry Pi 5 + Core Services)
+### Phase 1: Basic WiFi Infrastructure
 - [⭐] Raspberry Pi 5 setup with adequate cooling and NVMe storage
-- [⭐] Docker Compose service stack (OpenWRT, Jellyfin, Portainer, Homepage)
+- [⭐] Docker Compose service stack (OpenWRT, Portainer, Homepage)
 - [⭐] Basic WiFi hotspot using external USB WiFi adapter
-- [⭐] File sharing with Samba for local network access
-- [📋] Initial testing with indoor WiFi coverage and media streaming
+- [⭐] Landing page with captive portal and service links
+- [📋] Initial testing with indoor WiFi coverage and basic connectivity
 
-### Phase 2: Enhanced Networking & Media
-- [📋] External WiFi adapter configuration for improved range
-- [📋] Advanced OpenWRT configuration with multiple network zones
-- [📋] Jellyfin media library organization and mobile optimization
-- [📋] Basic power monitoring and system health dashboards
-- [📋] Indoor range testing and performance optimization
+### Phase 2: Emergency Resources & AI
+- [📋] Offline emergency resource database (first aid, survival guides)
+- [📋] Local LLM deployment for emergency consultation and guidance
+- [📋] Emergency communication protocols and documentation
+- [📋] Offline Wikipedia and essential reference materials
+- [📋] Testing AI response quality and resource accessibility
 
-### Phase 3: RF Communications (Acquire Hardware)
-- [❌] Dual RTL-SDR dongles for FM radio and NOAA weather reception
-- [❌] RTL-SDR antenna optimization for local broadcast reception
-- [❌] Software-defined radio integration with Docker services
-- [❌] Emergency broadcast monitoring and recording automation
+### Phase 3: Media Server & Storage
+- [📋] Jellyfin media server configuration and optimization
+- [📋] Media library organization on NVMe SSD storage
+- [📋] File sharing with Samba for local network access
+- [📋] Mobile-optimized interfaces for media streaming
+- [📋] Performance testing with multiple concurrent streams
 
-### Phase 4: Television Reception (Acquire Hardware)
+### Phase 4: TV & Radio Reception (Acquire Hardware)
 - [❌] Dual TV tuner USB devices for OTA broadcast reception
-- [❌] Antenna system for optimal local TV station reception
-- [❌] Tvheadend configuration and channel scanning
-- [❌] Automated recording and DVR functionality testing
+- [❌] Dual RTL-SDR dongles for FM radio and NOAA weather reception
+- [❌] Antenna system design and RF signal optimization
+- [❌] Tvheadend configuration and emergency broadcast monitoring
+- [❌] Integration testing with existing Docker services
 
-### Phase 5: Mesh Networking (Acquire Hardware)
+### Phase 5: LoRa Mesh Networking (Acquire Hardware)
 - [❌] LoRa radio modules and Meshtastic device integration
 - [❌] Mesh network configuration and range testing
 - [❌] Emergency messaging and offline communication protocols
 - [❌] Multi-node mesh deployment and routing optimization
+- [❌] Integration with emergency resource database
 
-### Phase 6: Power Systems (Acquire Hardware)
-- [❌] Solar panel and charge controller selection
-- [❌] LiFePO4 battery bank sizing and integration
-- [❌] Power monitoring and low-power mode implementation
-- [❌] Weatherproof enclosure design and deployment
+### Phase 6: Solar Power & Enclosure Design
+- [❌] Solar panel and charge controller selection and sizing
+- [❌] LiFePO4 battery bank integration with power monitoring
+- [❌] 3D printed enclosure design (with friend's assistance)
+- [❌] Weatherproof housing with proper ventilation and RF access
+- [❌] Power management and low-voltage disconnect systems
 
-### Phase 7: Advanced Features
-- [📋] Mobile-optimized web interfaces for all services
-- [📋] Offline emergency resource database and guides
-- [📋] System monitoring and automatic health reporting
-- [📋] Advanced networking with captive portal and content filtering
-
-### Phase 8: Field Deployment & Testing
-- [📋] Weatherproof enclosure assembly and testing
+### Phase 7: Field Testing & Deployment
 - [📋] Complete system integration and interference testing
+- [📋] Weatherproof enclosure assembly and sealing
 - [📋] Field deployment in target environment
-- [📋] Long-term reliability testing and optimization
+- [📋] Long-term reliability testing and performance optimization
+- [📋] Documentation of lessons learned and system improvements
 
-### 🔬 Current Testing Priorities
-1. **Raspberry Pi 5 Performance** - Verify cooling and NVMe performance under load
-2. **Docker Service Stack** - Test all services for stability and resource usage
-3. **WiFi Hotspot Range** - Measure coverage area with external USB adapter
-4. **Media Streaming** - Test Jellyfin performance with multiple concurrent streams
-5. **Network Configuration** - Validate OpenWRT routing and firewall rules
-6. **Power Consumption** - Baseline power usage before adding RF hardware
+### 🔬 Current Testing Priorities (Phase 1)
+1. **WiFi Hotspot Performance** - Measure coverage area and connection stability
+2. **Landing Page Functionality** - Test captive portal and service accessibility
+3. **Docker Service Stack** - Verify OpenWRT, Portainer, and Homepage stability
+4. **Raspberry Pi 5 Performance** - Monitor cooling and NVMe performance under load
+5. **Network Configuration** - Validate OpenWRT routing and basic connectivity
+6. **Power Consumption Baseline** - Measure current usage before adding hardware
 
 ## 🙏 Acknowledgments
 
