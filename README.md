@@ -35,7 +35,7 @@ Prepper Pi is a complete field-deployable system combining solar power, over-the
 5. **Antenna Mounting**: Install TV and LoRa antennas with proper grounding
 6. **Integration Testing**: Verify all systems before field deployment
 
-*See `wiring.md` for detailed component layout and connection diagrams.*
+*See [wiring.md](wiring.md) for detailed component layout and connection diagrams.*
 
 ## 🖥️ Software Setup
 
