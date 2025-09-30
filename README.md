@@ -285,7 +285,7 @@ RPi5 Ethernet ← host networking → OpenWRT Container
 4. Confirm DHCP assignment and client connectivity (10.20.30.0/24 range)
 5. Test service accessibility through landing page
 
-**If OpenWRT image fails on Pi:** Create `docker-compose.override.yml` with ARM64-specific image tag.
+**If OpenWRT image fails on Pi:** Use `docker-compose.pi.yml` for ARM64-specific image.
 
 **Run Verification:** Use `./verify-ap.sh` to validate configuration before field deployment.
 
