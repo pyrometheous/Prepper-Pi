@@ -11,7 +11,7 @@ if [ ! -f "$FLAG" ]; then
     echo "📦 First boot: updating package lists..."
     opkg update
     echo "📡 Installing wireless and captive portal packages..."
-    opkg install opennds iw wpad-basic-mbedtls dnsmasq-full
+    opkg install opennds iw wpad-basic-mbedtls dnsmasq-full luci luci-compat uhttpd-mod-ubus
     touch "$FLAG"
 else
     echo "📦 Packages already installed, skipping update..."
@@ -25,6 +25,7 @@ rs() { [ -x "/etc/init.d/$1" ] && /etc/init.d/$1 restart; }
 en network
 en dnsmasq
 en opennds
+en uhttpd
 
 echo "📶 Configuring wireless..."
 # Set regulatory domain first
