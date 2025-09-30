@@ -113,15 +113,18 @@ RPi5 Ethernet ← macvlan bridge → Docker Services
            Client devices (10.20.30.100-199)
 ```
 
-### 🔗 Port Mappings
-| Service | Internal Port | External Access |
-|---------|---------------|-----------------|
-| OpenWRT Web UI | 80 | 10.20.30.1:8080 |
-| Landing Page | 80 | 10.20.30.40 |
-| Jellyfin | 8096 | 10.20.30.40:8096 |
-| Portainer | 9000 | 10.20.30.40:9000 |
-| Tvheadend | 9981 | 10.20.30.40:9981 |
-| Samba/CIFS | 445 | \\10.20.30.40 |
+### 🔗 Service Access
+| Service | Local Domain | IP Address | Port |
+|---------|--------------|------------|------|
+| Landing Page | prepper-pi.local | 10.20.30.40 | 80 |
+| OpenWRT Web UI | openwrt.local | 10.20.30.1 | 80 |
+| Jellyfin Media Server | jellyfin.local | 10.20.30.40 | 8096 |
+| Portainer Management | portainer.local | 10.20.30.40 | 9000 |
+| Traefik Dashboard | - | 10.20.30.40 | 8080 |
+| Tvheadend | - | 10.20.30.40 | 9981 |
+| Samba/CIFS | - | \\10.20.30.40 | 445 |
+
+*Note: Local domains work when connected to the Prepper Pi WiFi network. Traefik provides reverse proxy functionality for clean URLs.*
 
 ## 📋 Hardware Requirements
 
