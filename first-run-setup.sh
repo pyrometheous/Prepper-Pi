@@ -152,9 +152,10 @@ EOF
 
 chmod +x setup-host-bridge.sh
 
-# Create startup script for network setup
-print_status "Creating network startup script..."
-cat > /etc/systemd/system/prepper-pi-network.service << EOF
+# Create startup script for network setup (only if macvlan enabled)
+if [ "${ENABLE_MACVLAN:-0}" = "1" ]; then
+    print_status "Creating network startup script..."
+    cat > /etc/systemd/system/prepper-pi-network.service << 'EOF'
 [Unit]
 Description=Prepper Pi Network Setup
 After=network.target docker.service
@@ -170,7 +171,8 @@ StandardOutput=journal
 WantedBy=multi-user.target
 EOF
 
-systemctl enable prepper-pi-network.service
+    systemctl enable prepper-pi-network.service
+fi
 
 # Create WiFi USB adapter configuration script
 print_status "Creating WiFi adapter setup script..."
