@@ -67,7 +67,7 @@ git clone https://github.com/pyrometheous/Prepper-Pi.git && cd Prepper-Pi && sud
 |---------|--------|-------|
 | **Phase 1: Core Infrastructure** | | |
 | Docker Service Stack | ✅ **Implemented** | OpenWRT, Portainer, Homepage, Jellyfin, Samba |
-| WiFi Access Point | ⚠️ **Experimental** | Configured but requires hardware validation |
+| WiFi Access Point | ⚠️ **Experimental** | Bootstrap generates config on first boot, then applies WPA2 |
 | Captive Portal | ⚠️ **Experimental** | OpenNDS configured, needs end-to-end testing |
 | Landing Page | ✅ **Implemented** | Homepage dashboard with service links |
 | **Phase 4: TV & Radio** | | |
@@ -280,10 +280,12 @@ RPi5 Ethernet ← host networking → OpenWRT Container
 
 **Hardware Testing Required:**
 1. Validate USB WiFi adapter compatibility with Pi 5 and container access
-2. Test OpenWRT wireless driver initialization and AP mode activation
+2. Test OpenWRT wireless driver initialization and AP mode activation  
 3. Verify captive portal redirect functionality end-to-end
 4. Confirm DHCP assignment and client connectivity (10.20.30.0/24 range)
 5. Test service accessibility through landing page
+
+**If OpenWRT image fails on Pi:** Create `docker-compose.override.yml` with ARM64-specific image tag.
 
 **Run Verification:** Use `./verify-ap.sh` to validate configuration before field deployment.
 

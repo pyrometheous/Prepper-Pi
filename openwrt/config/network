@@ -21,4 +21,4 @@ config interface 'wan'
 config device
 	option name 'br-lan'
 	option type 'bridge'
-	list ports 'eth1'
+	# No host NIC enslaved by default in container mode; WLAN ifaces will attach automatically.

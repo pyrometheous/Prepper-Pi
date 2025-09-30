@@ -30,15 +30,15 @@ docker exec -it openwrt sh -c '
   echo ""
   
   echo "=== Current wireless configuration ==="
-  uci show wireless 2>/dev/null | head -n 20 || echo "No wireless configuration found"
+  uci show wireless 2>/dev/null | sed -n "1,160p" || echo "No wireless configuration found"
   echo ""
   
-  echo "=== Attempting wifi reload ==="
-  wifi reload 2>/dev/null || echo "WiFi reload failed - may indicate missing drivers/firmware"
-  sleep 2
+  echo "=== WiFi status ==="
+  wifi status 2>/dev/null || echo "WiFi status unavailable"
+  echo ""
   
-  echo "=== Post-reload radio status ==="
-  iw dev 2>/dev/null || echo "Still no wireless devices after reload"
+  echo "=== DHCP/DNS logs (last 100 lines) ==="
+  logread 2>/dev/null | tail -n 100 | grep -Ei "dnsmasq|DHCP" || echo "No DHCP logs found"
 '
 
 echo ""

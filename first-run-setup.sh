@@ -37,6 +37,10 @@ if [[ $EUID -ne 0 ]]; then
    exit 1
 fi
 
+# Configuration flags
+ENABLE_HOST_AP=${ENABLE_HOST_AP:-0}  # Set to 1 to enable host AP as fallback
+ENABLE_MACVLAN=${ENABLE_MACVLAN:-0}  # Set to 1 to enable macvlan network setup
+
 # Detect network interface
 print_status "Detecting network interface..."
 INTERFACE=$(ip route | grep default | head -1 | awk '{print $5}')
