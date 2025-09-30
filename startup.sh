@@ -30,6 +30,9 @@ print_error() {
     echo -e "${RED}[ERROR]${NC} $1"
 }
 
+# Configuration flags
+ENABLE_MACVLAN=${ENABLE_MACVLAN:-0}
+
 # Check if Docker is running
 print_status "Checking Docker service..."
 if ! systemctl is-active --quiet docker; then
@@ -47,8 +50,8 @@ if [ -z "$INTERFACE" ]; then
 fi
 print_status "Using network interface: $INTERFACE"
 
-# Set up host bridge if it doesn't exist
-if ! ip link show macvlan-host > /dev/null 2>&1; then
+# Set up host bridge if enabled and doesn't exist
+if [ "$ENABLE_MACVLAN" = "1" ] && ! ip link show macvlan-host > /dev/null 2>&1; then
     print_status "Setting up host bridge interface..."
     sudo ip link add macvlan-host link $INTERFACE type macvlan mode bridge
     sudo ip addr add 10.20.30.254/24 dev macvlan-host
@@ -56,8 +59,8 @@ if ! ip link show macvlan-host > /dev/null 2>&1; then
     sudo ip route add 10.20.30.0/24 dev macvlan-host 2>/dev/null || true
 fi
 
-# Check if macvlan network exists
-if ! docker network ls | grep -q openwrt_net; then
+# Check if macvlan network exists (only if enabled)
+if [ "$ENABLE_MACVLAN" = "1" ] && ! docker network ls | grep -q openwrt_net; then
     print_status "Creating macvlan network..."
     docker network create -d macvlan \
         --subnet=10.20.30.0/24 \
@@ -121,11 +124,11 @@ echo ""
 print_success "Prepper Pi startup completed!"
 echo ""
 echo "🌟 Access URLs:"
-echo "   - Landing Page: http://prepper-pi.local:3000 or http://10.20.30.40:3000"
+echo "   - Landing Page: http://10.20.30.40:3000 or http://prepper-pi.local:3000"
 echo "   - OpenWRT: http://10.20.30.1"
-echo "   - Portainer: http://localhost:9000"
-echo "   - Jellyfin: http://localhost:8096"
-echo "   - Traefik Dashboard: http://localhost:8080"
+echo "   - Portainer: http://10.20.30.40:9000"
+echo "   - Jellyfin: http://10.20.30.40:8096"
+echo "   - Traefik Dashboard: http://10.20.30.40:8080"
 echo ""
 echo "📱 WiFi Hotspot: Connect to 'Prepper Pi' (WPA2, password: PrepperPi2024!)"
 echo "🔧 System Status: ./status.sh"

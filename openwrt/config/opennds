@@ -22,6 +22,7 @@ config opennds
 	list users_to_router 'allow udp port 53'
 	list users_to_router 'allow udp port 67'
 	list users_to_router 'allow tcp port 80'
+	list users_to_router 'allow tcp port 3000'
 	list authenticated_users 'allow all'
 	list preauthenticated_users 'allow tcp port 53'
 	list preauthenticated_users 'allow udp port 53'

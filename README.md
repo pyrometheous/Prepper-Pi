@@ -53,7 +53,7 @@ Prepper Pi is a complete field-deployable system combining solar power, over-the
 sudo apt update && sudo apt install -y git && git clone https://github.com/pyrometheous/Prepper-Pi.git && cd Prepper-Pi && sudo bash first-run-setup.sh
 ```
 
-**On Raspberry Pi:** Copy `docker-compose.pi.yml` to `docker-compose.override.yml` before `docker compose up -d`.
+**On Raspberry Pi:** `cp docker-compose.pi.yml docker-compose.override.yml` before `docker compose up -d`.
 
 ### 🗑️ System Removal
 

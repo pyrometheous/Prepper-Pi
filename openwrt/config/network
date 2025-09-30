@@ -16,7 +16,7 @@ config interface 'lan'
 
 config interface 'wan'
 	option device 'eth0'
-	option proto 'dhcp'
+	option proto 'none'
 
 config device
 	option name 'br-lan'

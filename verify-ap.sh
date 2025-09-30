@@ -43,6 +43,12 @@ docker exec -it openwrt sh -c '
   
   echo "=== Kernel wireless drivers and radio logs ==="
   dmesg 2>/dev/null | egrep -i "cfg80211|mac80211|wlan|mt76|ath|brcm" | tail -n 20 || echo "No wireless driver logs found"
+  echo ""
+  
+  echo "=== Network interfaces and bridge status ==="
+  ip a 2>/dev/null || echo "ip command not available"
+  echo "--- Bridge status ---"
+  brctl show 2>/dev/null || bridge link 2>/dev/null || echo "No bridge information available"
 '
 
 echo ""

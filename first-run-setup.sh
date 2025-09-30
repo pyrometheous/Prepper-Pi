@@ -269,7 +269,7 @@ cat > restart.sh << EOF
 #!/bin/bash
 echo "🔄 Restarting Prepper Pi services..."
 docker-compose down
-./setup-host-bridge.sh
+[ "\${ENABLE_MACVLAN:-0}" = "1" ] && ./setup-host-bridge.sh
 docker-compose up -d
 echo "✅ Services restarted"
 EOF
@@ -361,8 +361,8 @@ EOF
 # Final setup steps
 print_status "Running final setup steps..."
 
-# Set up host bridge
-./setup-host-bridge.sh
+# Set up host bridge (only if macvlan enabled)
+[ "${ENABLE_MACVLAN:-0}" = "1" ] && ./setup-host-bridge.sh
 
 # Start services
 print_status "Starting Prepper Pi services..."
