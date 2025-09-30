@@ -57,6 +57,21 @@ echo "Expected: wlan interface present, AP in supported modes, SSID up"
 echo "If missing: Check USB WiFi device connection and host kernel drivers"
 echo ""
 
+# Additional network configuration check
+echo "🔧 Test A2: Network Configuration Check"
+echo "======================================="
+
+docker exec -it openwrt sh -c '
+  echo "=== LAN configuration ==="
+  uci show network.lan 2>/dev/null || echo "No LAN config found"
+  echo ""
+  
+  echo "=== Wireless summary ==="
+  uci show wireless 2>/dev/null | egrep "ssid|encryption|key" || echo "No wireless config found"
+'
+
+echo ""
+
 # B) Captive portal actually intercepts DNS/HTTP
 echo "🌐 Test B: Captive Portal & DNS Interception"
 echo "============================================="
