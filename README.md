@@ -289,6 +289,33 @@ RPi5 Ethernet ← host networking → OpenWRT Container
 
 These improvements address the audit findings. Phase 1 is now properly configured for hardware testing.
 
+### ✅ Quick Setup Checklist
+
+**Before Hardware Testing:**
+- [ ] Raspberry Pi 5 with adequate cooling
+- [ ] USB WiFi adapter compatible with hostapd/nl80211
+- [ ] NVMe SSD mounted and accessible
+- [ ] Docker and Docker Compose installed
+
+**Configuration Validation:**
+- [ ] `docker compose up -d` starts all services without errors
+- [ ] `./verify-ap.sh` shows ARM64 OpenWRT image loads successfully
+- [ ] `iw list` inside container shows WiFi device with AP mode support
+- [ ] OpenNDS service starts and configures captive portal
+- [ ] DHCP assigns addresses in 10.20.30.0/24 range
+
+**Client Testing:**
+- [ ] "Prepper Pi" SSID broadcasts and accepts WPA2 connections
+- [ ] Captive portal redirects to http://10.20.30.40/ landing page
+- [ ] All services accessible through landing page links
+- [ ] `nslookup example.com 10.20.30.1` returns DNS response
+- [ ] `curl -I http://neverssl.com/` returns HTTP 302/303 redirect
+
+**Future Hardware Ready:**
+- [ ] Tvheadend service template ready (uncomment when TV tuner added)
+- [ ] RTL-SDR radio streaming templates ready (uncomment when dongles added)  
+- [ ] Meshtastic service template ready (uncomment when LoRa hardware added)
+
 ## 🙏 Acknowledgments
 
 - **[OpenWRT Project](https://openwrt.org/)** - Router firmware and network management

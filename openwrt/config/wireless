@@ -1,7 +1,7 @@
 config wifi-device 'radio0'
 	option type 'mac80211'
 	option hwmode '11g'
-	option path 'platform/soc/your_device_path'
+	option path 'auto-detect'  # Will be updated by wifi config on first boot
 	option htmode 'HT20'
 	option channel '6'
 	option country 'US'
@@ -10,7 +10,7 @@ config wifi-device 'radio0'
 config wifi-device 'radio1'
 	option type 'mac80211'
 	option hwmode '11a'
-	option path 'platform/soc/your_device_path_5g'
+	option path 'auto-detect'  # Will be updated by wifi config on first boot
 	option htmode 'VHT80'
 	option channel '36'
 	option country 'US'

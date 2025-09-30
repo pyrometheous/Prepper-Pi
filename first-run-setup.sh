@@ -178,6 +178,28 @@ print_status() {
     echo -e "\033[0;34m[INFO]\033[0m \$1"
 }
 
+# Configuration flags
+ENABLE_HOST_AP=${ENABLE_HOST_AP:-0}  # Set to 1 to enable host AP as fallback
+
+# Create WiFi adapter setup script (for fallback use only)
+print_status "Creating WiFi adapter fallback script..."
+cat > setup-wifi-adapter-fallback.sh << 'EOF'
+#!/bin/bash
+
+# Fallback WiFi AP Setup (Host-based)
+# Only use this if OpenWRT container AP doesn't work
+
+echo "⚠️  Setting up fallback host-based WiFi AP..."
+echo "⚠️  This conflicts with OpenWRT container AP mode!"
+echo "⚠️  Only run this if container AP fails."
+
+read -p "Continue with host AP setup? (y/N): " -n 1 -r
+echo
+if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+    echo "Cancelled."
+    exit 1
+fi
+
 print_status "Setting up WiFi adapter for AP mode..."
 
 # Install required packages for WiFi AP
@@ -212,7 +234,8 @@ interface=wlan1
 dhcp-range=192.168.4.2,192.168.4.20,255.255.255.0,24h
 EOL
 
-print_status "WiFi adapter configuration created. Run this script only when ready to configure external WiFi adapter."
+print_status "Host WiFi AP configured. This may conflict with OpenWRT container."
+print_warning "Recommended: Use OpenWRT container AP instead."
 EOF
 
 chmod +x setup-wifi-adapter.sh

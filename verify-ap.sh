@@ -62,13 +62,20 @@ docker exec -it openwrt sh -c '
   
   echo "=== HTTP service status ==="
   netstat -lntp 2>/dev/null | grep :80 || echo "No HTTP service listening on port 80"
+  echo ""
+  
+  echo "=== OpenNDS status ==="
+  /etc/init.d/opennds status 2>/dev/null || echo "OpenNDS service not running"
 '
 
 echo ""
 echo "📋 Test B Results:"
 echo "Expected: DNS answers from OpenWrt (10.20.30.1), HTTP redirects to landing page"
-echo "To test from client: nslookup example.com 10.20.30.1"
-echo "                     curl -I http://neverssl.com/ | head -n 5"
+echo ""
+echo "🧪 Manual client tests (run from connected device):"
+echo "   nslookup example.com 10.20.30.1"
+echo "   curl -I http://neverssl.com/ | head -n 5"
+echo "   Expected: HTTP 302/303 redirect to http://10.20.30.40/"
 echo ""
 
 # C) Future hardware device mapping checks

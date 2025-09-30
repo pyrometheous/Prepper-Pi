@@ -3,7 +3,7 @@ version: '3.8'
 services:
   # OpenWRT Router in Docker with host networking for WiFi AP
   openwrt:
-    image: openwrt/rootfs:x86-64-23.05.2
+    image: openwrt/rootfs:23.05.2        # Multi-arch tag for ARM64 Pi support
     container_name: openwrt
     restart: unless-stopped
     network_mode: "host"
@@ -17,10 +17,11 @@ services:
     volumes:
       - ./openwrt/config:/etc/config
       - ./openwrt/data:/root
+      - ./openwrt/bootstrap.sh:/root/bootstrap.sh:ro
       - /lib/firmware:/lib/firmware:ro
-      - /sys/class/ieee80211:/sys/class/ieee80211:ro
-      - /run/udev:/run/udev:ro
-    command: ["/sbin/init"]
+      - /sys/class/ieee80211:/sys/class/ieee80211:ro   # Radio discovery
+      - /run/udev:/run/udev:ro                         # Udev events
+    command: ["/bin/sh", "-c", "/root/bootstrap.sh && /sbin/init"]
 
   # Reverse proxy and load balancer
   traefik:
