@@ -131,3 +131,133 @@
 ---
 
 *Last updated:* 2025-09-30
+
+
+---
+
+## Fuse & Wire Gauge Table (12 V DC side)
+
+> These values are conservative and assume short runs (≤1–2 m inside the box).  
+> Size fuses to **protect the wire** (not the device). Place fuses **close to the source**.
+
+| Branch / Load                               | Nominal V | Est. Max A | Suggested Wire | Fuse (ATO/ATC) | Notes |
+|---|---:|---:|---|---:|---|
+| **Battery → Master bus**                    | 12–14 V   | 20–30 A    | **AWG 10**     | **30 A**       | Main feed to DC dist. Keep as short as practical. |
+| **PV panel (+) → MPPT PV+**                 | 18–22 V   | 6–8 A      | **AWG 14**     | **10 A** (inline MC4) | One fuse per series string. |
+| **MPPT → Battery (+)**                      | 12–14 V   | ≤15 A      | **AWG 12**     | **20 A**       | Fuse at battery end. |
+| **Bus → 12→5 V Buck (Pi 5)**                | 12–14 V   | 3–4 A      | **AWG 16**     | **5 A**        | Buck input fuse; keep 5 V leads short/thick. |
+| **Bus → 13.2 V Reg (TV distro amp)**        | 12–14 V   | 0.6–1.0 A  | **AWG 18**     | **2 A**        | Some amps accept 12 V directly; if so, skip the reg. |
+| **Bus → Preamp power inserter**             | 12–15 V   | 0.2–0.5 A  | **AWG 20**     | **1 A**        | Inserter feeds DC up the RG‑6 to the mast LNA. |
+| **Bus → Case fans / aux**                   | 12 V      | 0.3–0.6 A  | **AWG 20**     | **1 A**        | Grouped on a small fan header board is fine. |
+| **Ground bond (case/partition/arrestor)**   | —         | —          | **AWG 8 strap**| —              | Single-point bond; tie to ground rod when practical. |
+
+> **USB Loads:** Tuners/SDRs draw from the Pi’s 5 V rail; ensure your 5 V/5 A buck is high‑quality and the Pi’s USB supply setting is configured to allow high‑power devices.
+
+---
+
+## Docker Compose (template)
+
+> This focuses on the services we know work broadly.  
+> Icecast/rtl_fm are provided as an **optional pattern** (pick your preferred images).  
+> Replace `/path/...` with real host paths. Keep Meshtastic ports LAN‑only.
+
+```yaml
+version: "3.9"
+services:
+  meshtasticd:
+    image: meshtastic/meshtasticd:latest
+    container_name: meshtasticd
+    restart: unless-stopped
+    # Choose ONE of the following device blocks:
+    # USB LoRa (change bus/device to match `ls -l /dev/serial/by-id` or /dev/bus/usb):
+    devices:
+      - /dev/bus/usb/001/006:/dev/bus/usb/001/006
+    # For an SPI HAT instead, use:
+    # devices:
+    #   - /dev/spidev0.0:/dev/spidev0.0
+    ports:
+      - "2443:2443"  # Meshtastic Web UI (HTTPS)
+      - "4403:4403"  # TCP device API
+    volumes:
+      - /path/meshtastic/config.yaml:/etc/meshtasticd/config.yaml:ro
+
+  mosquitto:
+    image: eclipse-mosquitto:2
+    container_name: mosquitto
+    restart: unless-stopped
+    ports:
+      - "1883:1883"
+    volumes:
+      - /path/mosquitto:/mosquitto
+
+  tvheadend:
+    image: lscr.io/linuxserver/tvheadend:latest
+    container_name: tvheadend
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Los_Angeles
+    # If your kernel exposes /dev/dvb, this gives Tvheadend the tuner:
+    devices:
+      - /dev/dvb:/dev/dvb
+    ports:
+      - "9981:9981"  # web UI
+      - "9982:9982"  # HTSP
+    volumes:
+      - /path/tvheadend/config:/config
+      - /path/tvheadend/recordings:/recordings
+
+  # --- Optional: Icecast + radio streams (choose images you prefer) ---
+  # Example images you can try: 'infiniteproject/icecast', 'pdonorio/icecast2', etc.
+  # icecast:
+  #   image: YOUR_ICECAST_IMAGE_HERE
+  #   container_name: icecast
+  #   restart: unless-stopped
+  #   ports:
+  #     - "8000:8000"
+  #   environment:
+  #     - ICECAST_SOURCE_PASSWORD=sourcepass
+  #     - ICECAST_ADMIN_PASSWORD=adminpass
+  #     - ICECAST_RELAY_PASSWORD=relaypass
+  #     - ICECAST_PASSWORD=listeners
+  #   volumes:
+  #     - /path/icecast:/config
+
+  # FM stream (rtl_fm -> Icecast) pattern using a minimal SDR image or your own build.
+  # rtl_fm_fm:
+  #   image: ghcr.io/YOUR_SDR_IMAGE   # or build: ./containers/rtl-fm
+  #   container_name: rtl_fm_fm
+  #   restart: unless-stopped
+  #   devices:
+  #     - /dev/bus/usb:/dev/bus/usb
+  #   depends_on: [icecast]
+  #   command: >
+  #     bash -lc "rtl_fm -M wbfm -f 99.5M -s 200k -l 0 -g 20 |
+  #               sox -t raw -r 200k -e s -b 16 -c 1 - -t mp3 -C 128 - |
+  #               curl -H 'Content-Type: audio/mpeg' -u source:sourcepass
+  #               --data-binary @- http://icecast:8000/fm.mp3"
+
+  # NOAA stream:
+  # rtl_fm_noaa:
+  #   image: ghcr.io/YOUR_SDR_IMAGE
+  #   container_name: rtl_fm_noaa
+  #   restart: unless-stopped
+  #   devices:
+  #     - /dev/bus/usb:/dev/bus/usb
+  #   depends_on: [icecast]
+  #   command: >
+  #     bash -lc "rtl_fm -M fm -f 162.550M -s 24k -g 20 -l 0 |
+  #               sox -t raw -r 24k -e s -b 16 -c 1 - -t mp3 -C 64 - |
+  #               curl -H 'Content-Type: audio/mpeg' -u source:sourcepass
+  #               --data-binary @- http://icecast:8000/noaa.mp3"
+```
+
+### Compose Notes
+- Map **/dev/dvb** for the ATSC dual tuner; for RTL‑SDR, map **/dev/bus/usb** to the SDR containers.  
+- Keep Meshtastic ports LAN‑only (do not expose to WAN). Add a DNS entry like `mesh.prepper-pi.local`.  
+- For Icecast, choose a maintained image and secure the passwords; the command lines above show the **pattern** to publish FM/NOAA streams.
+
+---
+
+*Appendix updated:* 2025-09-30
