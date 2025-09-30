@@ -10,6 +10,9 @@ Complete bill of materials with specifications, part numbers, and development ph
 ### ⚡ [Wiring & Assembly Guide](wiring.md)
 Detailed electrical specifications, system diagrams, safety guidelines, and assembly instructions. Includes power calculations, fuse tables, and component interconnections.
 
+### 📡 [WiFi AP Testing Guide](wifi-testing.md)
+Hardware validation protocol for WiFi access point functionality. Documents configuration issues and testing procedures for OpenWRT-in-Docker setup.
+
 ---
 
 ## 🏗️ Project Structure

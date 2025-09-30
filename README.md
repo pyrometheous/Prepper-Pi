@@ -43,6 +43,7 @@ Prepper Pi is a complete field-deployable system combining solar power, over-the
 - **[📝 Documentation Index](docs/README.md)** - Overview of all technical documentation
 - **[🔧 Components & BOM](docs/components.md)** - Complete parts list with specifications and phases  
 - **[⚡ Wiring & Assembly](docs/wiring.md)** - Electrical specifications, diagrams, and safety guidelines
+- **[📡 WiFi Testing Protocol](docs/wifi-testing.md)** - Hardware validation guide for AP functionality
 
 ## �🖥️ Software Setup
 
@@ -173,9 +174,11 @@ RPi5 Ethernet ← macvlan bridge → Docker Services
 ### Phase 1: Basic WiFi Infrastructure
 - [⭐] Raspberry Pi 5 setup with adequate cooling and NVMe storage
 - [⭐] Docker Compose service stack (OpenWRT, Portainer, Homepage)
-- [⭐] Basic WiFi hotspot using external USB WiFi adapter
+- [🔄] **WiFi hotspot configuration** - *Docker setup exists but requires hardware testing*
 - [⭐] Landing page with captive portal and service links
-- [📋] Initial testing with indoor WiFi coverage and basic connectivity
+- [�] **Hardware integration testing** - *Network configuration needs validation on real Pi*
+
+**Current Limitation:** WiFi AP functionality exists in configuration but has not been tested on actual Raspberry Pi hardware. Docker OpenWRT setup may require additional device mounts and host networking mode for reliable AP operation.
 
 ### Phase 2: Emergency Resources & AI
 - [📋] Offline emergency resource database (first aid, survival guides)
@@ -220,12 +223,31 @@ RPi5 Ethernet ← macvlan bridge → Docker Services
 - [📋] Documentation of lessons learned and system improvements
 
 ### 🔬 Current Testing Priorities (Phase 1)
-1. **WiFi Hotspot Performance** - Measure coverage area and connection stability
-2. **Landing Page Functionality** - Test captive portal and service accessibility
-3. **Docker Service Stack** - Verify OpenWRT, Portainer, and Homepage stability
-4. **Raspberry Pi 5 Performance** - Monitor cooling and NVMe performance under load
-5. **Network Configuration** - Validate OpenWRT routing and basic connectivity
+1. **WiFi AP Hardware Validation** - Test OpenWRT container AP mode on actual Pi 5 hardware
+2. **Device Mount Configuration** - Verify USB WiFi device passthrough to container  
+3. **Network Mode Testing** - Compare macvlan vs host networking for AP reliability
+4. **Landing Page Functionality** - Test captive portal and service accessibility
+5. **Docker Service Stack** - Verify OpenWRT, Portainer, and Homepage stability
 6. **Power Consumption Baseline** - Measure current usage before adding hardware
+
+**⚠️ Important:** WiFi AP functionality is configured but not yet hardware-tested. Real-world deployment requires validation on Raspberry Pi with USB WiFi adapter.
+
+## ⚠️ Known Configuration Issues
+
+**Current WiFi AP Setup Needs Validation:**
+- Docker OpenWRT configuration may require `host` networking mode instead of `macvlan`
+- USB WiFi device passthrough needs testing with proper device mounts
+- Firmware and driver availability in container requires verification
+- Captive portal functionality needs end-to-end testing
+
+**Recommended Testing Sequence:**
+1. Validate host kernel WiFi drivers and firmware 
+2. Test container device access with proper mounts
+3. Compare networking modes (macvlan vs host) for AP reliability
+4. Verify captive portal redirect functionality
+5. Document working configuration for deployment
+
+These issues will be addressed during Phase 1 hardware testing.
 
 ## 🙏 Acknowledgments
 
