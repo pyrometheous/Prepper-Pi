@@ -342,12 +342,12 @@ These improvements address the audit findings. Phase 1 is now properly configure
 
 **Networking & Router**
 
+* **[OpenWrt Project](https://openwrt.org/)** – Router firmware and network management
 * **[dnsmasq](https://thekelleys.org.uk/dnsmasq/doc.html)** – Lightweight DNS/DHCP server
 * **[firewall4 / nftables](https://openwrt.org/docs/guide-user/firewall/firewall_configuration)** – OpenWrt firewall and packet filtering stack
 * **[LuCI](https://github.com/openwrt/luci)** – Web UI for OpenWrt configuration
 * **[OpenNDS](https://opennds.org/)** – Captive portal powering splash and status pages
-* **[OpenWrt Project](https://openwrt.org/)** – Router firmware and network management
-* **[uHTTPd](https://openwrt.org/docs/guide-user/services/webserver/uhttpd)** – Embedded web server for portal and status pages
+* **[uhttpd](https://openwrt.org/docs/guide-user/services/webserver/uhttpd)** – Embedded web server for portal and status pages
 
 **Dashboards & Ops**
 
@@ -373,7 +373,7 @@ These improvements address the audit findings. Phase 1 is now properly configure
 
 * **[Docker](https://www.docker.com/)** – Container runtime platform
 * **[Raspberry Pi Foundation](https://www.raspberrypi.org/)** – Single-board computer platform
-* **Raspberry Pi OS / Debian** – Base OS and packaging ecosystem
+* **[Raspberry Pi OS](https://www.raspberrypi.com/software/)** / **[Debian](https://www.debian.org/)** – Base OS and packaging ecosystem
 * **[Victron Energy](https://www.victronenergy.com/)** – Solar charge controller and monitoring
 
 **Community Contributions**
