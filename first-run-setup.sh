@@ -344,7 +344,8 @@ Your Prepper Pi is now configured. Here's what's been set up:
 
 ### 📱 Mobile Access:
 Once the WiFi hotspot is active, connect to "Prepper Pi" and visit:
-- \`http://10.20.30.40:3000\` - Landing page
+- \`http://10.20.30.1\` - Captive portal landing page
+- \`http://10.20.30.40:3000\` - Homepage dashboard  
 - \`http://10.20.30.1\` - Router admin
 
 ### 🚨 Troubleshooting:

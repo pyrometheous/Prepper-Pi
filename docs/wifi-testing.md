@@ -22,28 +22,22 @@ The OpenWRT container now uses:
 
 ```yaml
 openwrt:
-  image: openwrt/rootfs:23.05.2  # Multi-arch image
+  image: openwrt/rootfs:23.05.2
   network_mode: "host"
   privileged: true
-  devices:
-    - /dev/net/tun:/dev/net/tun
-    - /dev/bus/usb:/dev/bus/usb  # USB WiFi adapters
-  volumes:
-    - /lib/firmware:/lib/firmware:ro  # Wireless firmware
-    - /sys/class/ieee80211:/sys/class/ieee80211:ro  # Radio discovery
-    - /run/udev:/run/udev:ro  # Device events
-```
+  cap_add:
+    - NET_ADMIN
     - SYS_ADMIN
   devices:
     - /dev/net/tun:/dev/net/tun
-    - /dev/bus/usb:/dev/bus/usb  # USB WiFi adapter access
+    - /dev/bus/usb:/dev/bus/usb
   volumes:
     - ./openwrt/config:/etc/config
     - ./openwrt/data:/root
-    - /lib/firmware:/lib/firmware:ro  # Host firmware access
-    - /sys/class/ieee80211:/sys/class/ieee80211:ro  # Radio detection
-    - /run/udev:/run/udev:ro  # Device management
-  command: ["/sbin/init"]
+    - /lib/firmware:/lib/firmware:ro
+    - /sys/class/ieee80211:/sys/class/ieee80211:ro
+    - /run/udev:/run/udev:ro
+  command: ["/bin/sh", "-c", "/root/bootstrap.sh && /sbin/init"]
 ```
 
 ### **Option B: Host-based hostapd (Fallback)**

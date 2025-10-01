@@ -26,6 +26,7 @@ en network
 en dnsmasq
 en opennds
 en uhttpd
+en rpcd
 
 echo "📶 Configuring wireless..."
 # Set regulatory domain first
@@ -68,6 +69,7 @@ rs network
 rs dnsmasq
 rs opennds
 rs uhttpd
+rs rpcd
 wifi reload
 
 echo "✅ Bootstrap complete, starting init..."

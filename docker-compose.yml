@@ -23,26 +23,6 @@ services:
       - /run/udev:/run/udev:ro                         # Udev events
     command: ["/bin/sh", "-c", "/root/bootstrap.sh && /sbin/init"]
 
-  # Reverse proxy and load balancer
-  traefik:
-    image: traefik:v2.11
-    container_name: traefik
-    restart: unless-stopped
-    command:
-      - --api.insecure=true
-      - --providers.docker=true
-      - --providers.docker.exposedbydefault=false
-      - --entrypoints.web.address=:80
-      - --entrypoints.websecure.address=:443
-    ports:
-      - "80:80"
-      - "443:443"
-      - "8080:8080"  # Traefik dashboard
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-    networks:
-      - default
-
   # Container management
   portainer:
     image: portainer/portainer-ce:latest
@@ -53,11 +33,6 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - portainer_data:/data
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.portainer1.rule=Host(`portainer.local`)"
-      - "traefik.http.routers.portainer2.rule=Host(`prepper-pi.local`) && PathPrefix(`/portainer`)"
-      - "traefik.http.services.portainer.loadbalancer.server.port=9000"
 
   # Media server
   jellyfin:
@@ -72,10 +47,6 @@ services:
       - ./media:/media:ro
     environment:
       - JELLYFIN_PublishedServerUrl=http://jellyfin.local
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.jellyfin.rule=Host(`jellyfin.local`)"
-      - "traefik.http.services.jellyfin.loadbalancer.server.port=8096"
 
   # Landing page / dashboard
   homepage:
@@ -87,10 +58,6 @@ services:
     volumes:
       - ./homepage:/app/config
       - /var/run/docker.sock:/var/run/docker.sock:ro
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.homepage.rule=Host(`prepper-pi.local`)"
-      - "traefik.http.services.homepage.loadbalancer.server.port=3000"
 
   # File sharing
   samba:

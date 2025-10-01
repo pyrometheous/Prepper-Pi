@@ -89,6 +89,14 @@ docker exec -it openwrt sh -c '
   netstat -lntp 2>/dev/null | grep :80 || echo "No HTTP service listening on port 80"
   echo ""
   
+  echo "=== uhttpd listening ==="
+  netstat -lntp 2>/dev/null | grep ":80 " || echo "uhttpd not listening on :80"
+  echo ""
+  
+  echo "=== test portal page ==="
+  wget -qO- http://127.0.0.1/ | head -n 3 || echo "router / not reachable"
+  echo ""
+  
   echo "=== OpenNDS status ==="
   /etc/init.d/opennds status 2>/dev/null || echo "OpenNDS service not running"
   echo ""
