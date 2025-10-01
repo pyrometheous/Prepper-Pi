@@ -74,6 +74,14 @@ git clone https://github.com/pyrometheous/Prepper-Pi.git && cd Prepper-Pi && sud
 | WiFi Access Point | ⚠️ **Experimental** | Bootstrap generates config on first boot, then applies WPA2 |
 | Captive Portal | ⚠️ **Experimental** | OpenNDS configured, needs end-to-end testing |
 | Landing Page | ⚠️ **Experimental** | Homepage dashboard configured, needs hardware validation |
+| **Phase 2: Emergency Resources & AI** | | |
+| Offline Resource Database | 📋 **Planned** | First aid, survival guides, emergency protocols |
+| Local LLM Deployment | 📋 **Planned** | Emergency consultation and guidance system |
+| Offline Wikipedia | 📋 **Planned** | Kiwix platform for essential reference materials |
+| **Phase 3: Media Server & Storage** | | |
+| Jellyfin Optimization | 📋 **Planned** | Media server configuration and library organization |
+| File Sharing (Samba) | 📋 **Planned** | Local network access and mobile interfaces |
+| Performance Testing | 📋 **Planned** | Multiple concurrent stream validation |
 | **Phase 4: TV & Radio** | | |
 | TV Reception (ATSC) | 📋 **Planned** | Tvheadend service template ready |
 | FM Radio Streaming | 📋 **Planned** | RTL-SDR + Icecast template ready |
