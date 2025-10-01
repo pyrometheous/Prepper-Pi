@@ -340,14 +340,40 @@ These improvements address the audit findings. Phase 1 is now properly configure
 
 ## 🙏 Acknowledgments
 
-- **[OpenWRT Project](https://openwrt.org/)** - Router firmware and network management
-- **[Paul MacKinnon](https://github.com/paulmackinnon)** - For the original [Docker macvlan guide](https://paul-mackinnon.medium.com/openwrt-raspberry-pi-docker-vlan-project-9cb1db10684c)
-- **[Tvheadend Team](https://tvheadend.org/)** - Professional TV backend software
-- **[Meshtastic Project](https://meshtastic.org/)** - LoRa mesh networking protocol
-- **[RTL-SDR Community](https://www.rtl-sdr.com/)** - Software-defined radio ecosystem
-- **[Jellyfin Team](https://jellyfin.org/)** - Open-source media server platform
-- **[Victron Energy](https://www.victronenergy.com/)** - Solar charge controller and monitoring
-- **[Raspberry Pi Foundation](https://www.raspberrypi.org/)** - Single-board computer platform
+**Networking & Router**
+
+* **[OpenWrt Project](https://openwrt.org/)** – Router firmware and network management
+* **[LuCI](https://github.com/openwrt/luci)** – Web UI for OpenWrt configuration
+* **[OpenNDS](https://opennds.org/)** – Captive portal powering splash and status pages
+
+**Dashboards & Ops**
+
+* **[Homepage](https://gethomepage.dev/)** – Lightweight dashboard for the service landing page
+* **[Portainer](https://www.portainer.io/)** – Docker container management
+
+**Media & Streaming**
+
+* **[Jellyfin](https://jellyfin.org/)** – Open-source media server
+* **[Tvheadend](https://tvheadend.org/)** – TV backend software
+* **[Icecast](https://icecast.org/) + [SoX](https://sourceforge.net/projects/sox/)** – Streaming server and audio toolchain for planned FM/NOAA feeds
+* **[LinuxServer.io](https://www.linuxserver.io/)** – High-quality container images for media services
+
+**Radio, Mesh & Offline Resources**
+
+* **[RTL-SDR Community](https://www.rtl-sdr.com/)** – Software-defined radio ecosystem
+* **[Meshtastic](https://meshtastic.org/)** – LoRa mesh networking protocol
+* **[MeshCore](https://meshcore.co.uk/)** – Off-grid, LoRa-based mesh communications platform focused on secure, reliable text messaging
+* **[Kiwix](https://www.kiwix.org/)** – Offline Wikipedia and documentation platform (Phase 2 resources)
+* **[OpenStreetMap](https://www.openstreetmap.org/)** – Community-driven mapping data for offline navigation
+
+**Hardware & Power**
+
+* **[Victron Energy](https://www.victronenergy.com/)** – Solar charge controller and monitoring
+* **[Raspberry Pi Foundation](https://www.raspberrypi.org/)** – Single-board computer platform
+
+**Community Contributions**
+
+* **[Paul MacKinnon](https://github.com/paulmackinnon)** – Original [Docker macvlan guide](https://paul-mackinnon.medium.com/openwrt-raspberry-pi-docker-vlan-project-9cb1db10684c)
 
 ---
 
