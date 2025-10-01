@@ -305,7 +305,7 @@ Your Prepper Pi is now configured. Here's what's been set up:
 - **Homepage**: Landing page at \`http://prepper-pi.local:3000\`
 - **Portainer**: Container management at \`http://localhost:9000\`
 - **Jellyfin**: Media server at \`http://localhost:8096\`
-- **Samba**: File sharing (\\\\10.20.30.40)
+- **Samba**: File sharing (\\\\10.20.30.1)
 
 ### 📁 Directory Structure:
 - \`media/\`: Place your media files here for Jellyfin
@@ -328,7 +328,7 @@ Your Prepper Pi is now configured. Here's what's been set up:
 
 2. **Access the Landing Page**:
    - Connect to your network
-   - Visit \`http://prepper-pi.local:3000\` or \`http://10.20.30.40:3000\`
+   - Visit \`http://prepper-pi.local:3000\` or \`http://10.20.30.1:3000\`
 
 3. **Configure OpenWRT**:
    - Visit \`http://10.20.30.1\`
@@ -345,7 +345,7 @@ Your Prepper Pi is now configured. Here's what's been set up:
 ### 📱 Mobile Access:
 Once the WiFi hotspot is active, connect to "Prepper Pi" and visit:
 - \`http://10.20.30.1\` - Captive portal landing page
-- \`http://10.20.30.40:3000\` - Homepage dashboard  
+- \`http://10.20.30.1:3000\` - Homepage dashboard  
 - \`http://10.20.30.1\` - Router admin
 
 ### 🚨 Troubleshooting:

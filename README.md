@@ -103,9 +103,9 @@ Password: (blank)
 http://10.20.30.1
 
 # Individual service access
-Jellyfin: http://10.20.30.40:8096
-Portainer: http://10.20.30.40:9000
-Samba: \\10.20.30.40
+Jellyfin: http://10.20.30.1:8096
+Portainer: http://10.20.30.1:9000
+Samba: \\10.20.30.1
 ```
 
 ### 3. 📺 TV Configuration
@@ -122,7 +122,7 @@ http://10.20.30.40:9981
 ### 4. 📻 Radio Configuration
 ```bash
 # RTL-SDR configuration via SSH
-ssh pi@10.20.30.40
+ssh pi@10.20.30.1
 
 # Test radio reception
 rtl_fm -f 101.1M -M wbfm -s 200000 -r 48000 | aplay -r 48k -f S16_LE
@@ -151,11 +151,11 @@ RPi5 Ethernet ← host networking → OpenWRT Container
 |---------|--------------|------------|------|
 | Captive Portal Landing | - | 10.20.30.1 | 80 |
 | OpenWRT Web UI | openwrt.local | 10.20.30.1 | 80 |
-| Homepage Dashboard | prepper-pi.local | 10.20.30.40 | 3000 |
-| Jellyfin Media Server | jellyfin.local | 10.20.30.40 | 8096 |
-| Portainer Management | portainer.local | 10.20.30.40 | 9000 |
-| Tvheadend | - | 10.20.30.40 | 9981 |
-| Samba/CIFS | - | \\10.20.30.40 | 445 |
+| Homepage Dashboard | prepper-pi.local | 10.20.30.1 | 3000 |
+| Jellyfin Media Server | jellyfin.local | 10.20.30.1 | 8096 |
+| Portainer Management | portainer.local | 10.20.30.1 | 9000 |
+| Tvheadend | - | 10.20.30.1 | 9981 |
+| Samba/CIFS | - | \\10.20.30.1 | 445 |
 
 *Note: Captive portal redirects to OpenWRT router. Services accessible after portal acceptance or direct IP access.*
 
@@ -264,10 +264,10 @@ RPi5 Ethernet ← host networking → OpenWRT Container
 2. Get DHCP address from OpenWRT container (10.20.30.x range)
 3. Be redirected to landing page (http://10.20.30.1) via captive portal
 4. Access OpenWRT admin interface at http://10.20.30.1/cgi-bin/luci
-5. Open Jellyfin media server at http://10.20.30.40:8096
-6. Access Portainer management at http://10.20.30.40:9000
-7. Future: Tvheadend TV backend at http://10.20.30.40:9981 (Phase 4)
-8. Future: Meshtastic Web UI at http://10.20.30.40:2443 (Phase 5)
+5. Open Jellyfin media server at http://10.20.30.1:8096
+6. Access Portainer management at http://10.20.30.1:9000
+7. Future: Tvheadend TV backend at http://10.20.30.1:9981 (Phase 4)
+8. Future: Meshtastic Web UI at http://10.20.30.1:2443 (Phase 5)
 
 **Validation Script:** Run `./verify-ap.sh` to check AP configuration and device mapping.
 

@@ -1,8 +1,14 @@
 ---
 # System Management
-- System:
-    - Portainer:
-        href: http://10.20.30.40:9000
+- Sy    - Jellyfin:
+        href: http://10.20.30.1:8096
+        icon: jellyfin.png
+        description: Media Streaming Server
+        widget:
+          type: jellyfin
+          url: http://jellyfin:8096
+          key: your_jellyfin_api_key_here   - Portainer:
+        href: http://10.20.30.1:9000
         icon: portainer.png
         description: Container Management
         widget:
@@ -22,14 +28,14 @@
     #     description: Reverse Proxy Dashboard
 
     - System Monitor:
-        href: http://10.20.30.40:3000/system
+        href: http://10.20.30.1:3000/system
         icon: system-monitor.png
         description: Pi Resource Monitoring
 
 # Media Services
 - Media:
     - Jellyfin:
-        href: http://10.20.30.40:8096
+        href: http://10.20.30.1:8096
         icon: jellyfin.png
         description: Media Streaming Server
         widget:
@@ -38,12 +44,12 @@
           key: your_jellyfin_api_key_here
 
     - File Shares:
-        href: \\10.20.30.40
+        href: \\10.20.30.1
         icon: folder.png
         description: SMB/CIFS Network Shares
 
     - Downloads:
-        href: http://10.20.30.40/downloads
+        href: http://10.20.30.1/downloads
         icon: download.png
         description: Download Manager (Future)
 

@@ -110,8 +110,8 @@ curl http://10.20.30.1/  # Should show splash page (if not redirected)
 6. **Service Access Test:**
 ```bash
 # Verify service reachability
-curl http://10.20.30.40/  # Homepage
-curl http://10.20.30.40:9000/  # Portainer
+curl http://10.20.30.1/  # Homepage
+curl http://10.20.30.1:9000/  # Portainer
 ```
 
 ## 📋 Expected Results
