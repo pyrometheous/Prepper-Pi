@@ -2,7 +2,7 @@
 # System Management
 - System:
     - Portainer:
-        href: http://portainer.local:9000
+        href: http://10.20.30.40:9000
         icon: portainer.png
         description: Container Management
         widget:
@@ -16,20 +16,20 @@
         icon: openwrt.png
         description: Router & Network Control
         
-    - Traefik:
-        href: http://localhost:8080
-        icon: traefik.png
-        description: Reverse Proxy Dashboard
+    # - Traefik:
+    #     href: http://10.20.30.40:8080
+    #     icon: traefik.png
+    #     description: Reverse Proxy Dashboard
 
     - System Monitor:
-        href: http://prepper-pi.local:3000/system
+        href: http://10.20.30.40:3000/system
         icon: system-monitor.png
         description: Pi Resource Monitoring
 
 # Media Services
 - Media:
     - Jellyfin:
-        href: http://jellyfin.local:8096
+        href: http://10.20.30.40:8096
         icon: jellyfin.png
         description: Media Streaming Server
         widget:
@@ -43,21 +43,21 @@
         description: SMB/CIFS Network Shares
 
     - Downloads:
-        href: http://prepper-pi.local/downloads
+        href: http://10.20.30.40/downloads
         icon: download.png
-        description: Download Manager
+        description: Download Manager (Future)
 
-    - TV Tuner:
-        href: http://prepper-pi.local/tv
-        icon: tv.png
-        description: OTA TV Tuning (Future)
+    # - TV Tuner:
+    #     href: http://10.20.30.40/tv
+    #     icon: tv.png
+    #     description: OTA TV Tuning (Future)
 
 # Network Tools
 - Network:
-    - Network Scanner:
-        href: http://prepper-pi.local/network
-        icon: network.png
-        description: LAN Device Discovery
+    # - Network Scanner:
+    #     href: http://10.20.30.40/network
+    #     icon: network.png
+    #     description: LAN Device Discovery
 
     - Wi-Fi Settings:
         href: http://10.20.30.1/cgi-bin/luci/admin/network/wireless
@@ -69,29 +69,29 @@
         icon: dhcp.png
         description: Connected Devices
 
-    - Internet Test:
-        href: http://prepper-pi.local/internet-test
-        icon: speedtest.png
-        description: Connectivity Check
+    # - Internet Test:
+    #     href: http://10.20.30.40/internet-test
+    #     icon: speedtest.png
+    #     description: Connectivity Check
 
 # Tools & Utilities
 - Tools:
-    - Radio (SDR):
-        href: http://prepper-pi.local/radio
-        icon: radio.png
-        description: Software Defined Radio (Future)
+    # - Radio (SDR):
+    #     href: http://10.20.30.40/radio
+    #     icon: radio.png
+    #     description: Software Defined Radio (Future)
 
-    - Wikipedia Offline:
-        href: http://prepper-pi.local/wikipedia
-        icon: wikipedia.png
-        description: Offline Wikipedia (Future)
+    # - Wikipedia Offline:
+    #     href: http://10.20.30.40/wikipedia
+    #     icon: wikipedia.png
+    #     description: Offline Wikipedia (Future)
 
-    - Maps Offline:
-        href: http://prepper-pi.local/maps
-        icon: map.png
-        description: Offline Maps (Future)
+    # - Maps Offline:
+    #     href: http://10.20.30.40/maps
+    #     icon: map.png
+    #     description: Offline Maps (Future)
 
-    - E-Books:
-        href: http://prepper-pi.local/books
-        icon: book.png
-        description: Digital Library (Future)
+    # - E-Books:
+    #     href: http://10.20.30.40/books
+    #     icon: book.png
+    #     description: Digital Library (Future)

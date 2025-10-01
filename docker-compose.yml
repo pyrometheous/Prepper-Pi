@@ -17,6 +17,7 @@ services:
     volumes:
       - ./openwrt/config:/etc/config
       - ./openwrt/data:/root
+      - ./openwrt/www:/www
       - ./openwrt/bootstrap.sh:/root/bootstrap.sh:ro
       - /lib/firmware:/lib/firmware:ro
       - /sys/class/ieee80211:/sys/class/ieee80211:ro   # Radio discovery

@@ -11,7 +11,7 @@ if [ ! -f "$FLAG" ]; then
     echo "📦 First boot: updating package lists..."
     opkg update
     echo "📡 Installing wireless and captive portal packages..."
-    opkg install opennds iw wpad-basic-mbedtls dnsmasq-full luci luci-compat uhttpd-mod-ubus
+    opkg install opennds iw wpad-basic-mbedtls dnsmasq-full uhttpd uhttpd-mod-ubus luci luci-compat
     touch "$FLAG"
 else
     echo "📦 Packages already installed, skipping update..."

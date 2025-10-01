@@ -31,7 +31,8 @@ print_error() {
 }
 
 # Configuration flags
-ENABLE_MACVLAN=${ENABLE_MACVLAN:-0}
+ENABLE_MACVLAN=${ENABLE_MACVLAN:-1}
+HOST_LAN_IP=${HOST_LAN_IP:-10.20.30.40}
 
 # Check if Docker is running
 print_status "Checking Docker service..."
@@ -54,7 +55,7 @@ print_status "Using network interface: $INTERFACE"
 if [ "$ENABLE_MACVLAN" = "1" ] && ! ip link show macvlan-host > /dev/null 2>&1; then
     print_status "Setting up host bridge interface..."
     sudo ip link add macvlan-host link $INTERFACE type macvlan mode bridge
-    sudo ip addr add 10.20.30.254/24 dev macvlan-host
+    sudo ip addr add ${HOST_LAN_IP:-10.20.30.40}/24 dev macvlan-host
     sudo ip link set macvlan-host up
     sudo ip route add 10.20.30.0/24 dev macvlan-host 2>/dev/null || true
 fi
