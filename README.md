@@ -342,9 +342,12 @@ These improvements address the audit findings. Phase 1 is now properly configure
 
 **Networking & Router**
 
-* **[OpenWrt Project](https://openwrt.org/)** – Router firmware and network management
+* **[dnsmasq](https://thekelleys.org.uk/dnsmasq/doc.html)** – Lightweight DNS/DHCP server
+* **[firewall4 / nftables](https://openwrt.org/docs/guide-user/firewall/firewall_configuration)** – OpenWrt firewall and packet filtering stack
 * **[LuCI](https://github.com/openwrt/luci)** – Web UI for OpenWrt configuration
 * **[OpenNDS](https://opennds.org/)** – Captive portal powering splash and status pages
+* **[OpenWrt Project](https://openwrt.org/)** – Router firmware and network management
+* **[uHTTPd](https://openwrt.org/docs/guide-user/services/webserver/uhttpd)** – Embedded web server for portal and status pages
 
 **Dashboards & Ops**
 
@@ -353,23 +356,25 @@ These improvements address the audit findings. Phase 1 is now properly configure
 
 **Media & Streaming**
 
-* **[Jellyfin](https://jellyfin.org/)** – Open-source media server
-* **[Tvheadend](https://tvheadend.org/)** – TV backend software
 * **[Icecast](https://icecast.org/) + [SoX](https://sourceforge.net/projects/sox/)** – Streaming server and audio toolchain for planned FM/NOAA feeds
+* **[Jellyfin](https://jellyfin.org/)** – Open-source media server
 * **[LinuxServer.io](https://www.linuxserver.io/)** – High-quality container images for media services
+* **[Tvheadend](https://tvheadend.org/)** – TV backend software
 
 **Radio, Mesh & Offline Resources**
 
-* **[RTL-SDR Community](https://www.rtl-sdr.com/)** – Software-defined radio ecosystem
-* **[Meshtastic](https://meshtastic.org/)** – LoRa mesh networking protocol
-* **[MeshCore](https://meshcore.co.uk/)** – Off-grid, LoRa-based mesh communications platform focused on secure, reliable text messaging
 * **[Kiwix](https://www.kiwix.org/)** – Offline Wikipedia and documentation platform (Phase 2 resources)
+* **[MeshCore](https://meshcore.co.uk/)** – Off-grid, LoRa-based mesh communications platform focused on secure, reliable text messaging
+* **[Meshtastic](https://meshtastic.org/)** – LoRa mesh networking protocol
 * **[OpenStreetMap](https://www.openstreetmap.org/)** – Community-driven mapping data for offline navigation
+* **[RTL-SDR Community](https://www.rtl-sdr.com/)** – Software-defined radio ecosystem
 
-**Hardware & Power**
+**Hardware, Platform & Power**
 
-* **[Victron Energy](https://www.victronenergy.com/)** – Solar charge controller and monitoring
+* **[Docker](https://www.docker.com/)** – Container runtime platform
 * **[Raspberry Pi Foundation](https://www.raspberrypi.org/)** – Single-board computer platform
+* **Raspberry Pi OS / Debian** – Base OS and packaging ecosystem
+* **[Victron Energy](https://www.victronenergy.com/)** – Solar charge controller and monitoring
 
 **Community Contributions**
 
