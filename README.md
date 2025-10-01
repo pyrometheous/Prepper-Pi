@@ -263,7 +263,7 @@ RPi5 Ethernet ← host networking → OpenWRT Container
 1. Connect to "Prepper Pi" SSID with password `PrepperPi2024!`
 2. Get DHCP address from OpenWRT container (10.20.30.x range)
 3. Be redirected to landing page (http://10.20.30.1) via captive portal
-4. Access OpenWRT admin interface at http://10.20.30.1
+4. Access OpenWRT admin interface at http://10.20.30.1/cgi-bin/luci
 5. Open Jellyfin media server at http://10.20.30.40:8096
 6. Access Portainer management at http://10.20.30.40:9000
 7. Future: Tvheadend TV backend at http://10.20.30.40:9981 (Phase 4)

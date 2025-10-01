@@ -305,7 +305,6 @@ Your Prepper Pi is now configured. Here's what's been set up:
 - **Homepage**: Landing page at \`http://prepper-pi.local:3000\`
 - **Portainer**: Container management at \`http://localhost:9000\`
 - **Jellyfin**: Media server at \`http://localhost:8096\`
-- **Traefik**: Reverse proxy dashboard at \`http://localhost:8080\`
 - **Samba**: File sharing (\\\\10.20.30.40)
 
 ### 📁 Directory Structure:
