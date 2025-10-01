@@ -2,6 +2,20 @@
 
 > **⚠️ DISCLAIMER: This is a personal project in early development. No support is provided, and functionality is not guaranteed. Use at your own risk.**
 
+## 📄 License & Commercial Use
+
+**License:** Code is under the **Prepper Pi Noncommercial License (PP-NC-1.0)**.  
+**Docs/Media:** **CC BY-NC 4.0**.  
+**Commercial hardware sales** (preconfigured devices or services using Prepper Pi) **require a commercial license** and a revenue-share agreement. See `COMMERCIAL-LICENSE.md` and contact **pyrometheous**.
+
+**🆓 FREE for Personal/DIY Use:** This project is completely free for personal, educational, and DIY implementation. Build your own Prepper Pi system without restriction.
+
+**🏢 Commercial Hardware Sales:** Only the original author may sell preconfigured Prepper Pi hardware systems. If you wish to sell preconfigured hardware based on this project, you must contact the author for a commercial licensing agreement and profit-sharing arrangement.
+
+**📧 Commercial Licensing:** Contact **pyrometheous** for commercial hardware sales licensing.
+
+---
+
 **A comprehensive off-grid communication and media platform with solar power, LoRa mesh, TV/radio reception, and WiFi hotspot capabilities.**
 
 Prepper Pi is a complete field-deployable system combining solar power, over-the-air TV/radio reception, LoRa mesh networking, WiFi hotspot, and media services in a weatherproof enclosure - designed for emergency preparedness, off-grid living, and remote communication scenarios.

@@ -1,0 +1,86 @@
+Prepper Pi Noncommercial License, Version 1.0 (PP-NC-1.0)
+==================================================================
+Copyright (c) 2025 pyrometheous and contributors.
+
+Summary (not a substitute for the license):
+  - You may use, modify, and share this software for personal, educational,
+    research, and other NONCOMMERCIAL purposes, free of charge.
+  - Commercial use (including selling preconfigured hardware, paid services,
+    or products that include or depend on this software) is NOT permitted
+    without a separate commercial license from the author.
+  - The “Prepper Pi” name and logo are trademarks and are NOT licensed
+    under this agreement.
+
+1. Definitions
+   (a) “Software” means the source code, object code, and any related
+       files in this repository that are not otherwise covered by a third-
+       party license notice.
+   (b) “Noncommercial” means use that is NOT intended for or directed
+       toward commercial advantage or monetary compensation, including but
+       not limited to: selling hardware, offering paid services, or
+       bundling the Software in a product for sale.
+   (c) “You” means the individual or legal entity exercising permissions
+       granted by this License.
+   (d) “Trademark(s)” means the “Prepper Pi” name, logo, and related
+       branding.
+
+2. Grant of Rights (Noncommercial Only)
+   Subject to the terms and conditions of this License, the Licensor grants
+   You a worldwide, royalty-free, nonexclusive, nontransferable license to:
+     (i) use, reproduce, modify, and create derivative works of the Software,
+    (ii) distribute the Software and Your derivative works,
+   in each case solely for Noncommercial purposes.
+
+3. Commercial Use Requires a License
+   Any Commercial use of the Software requires a separate written
+   agreement with the Licensor. To obtain a commercial license,
+   contact: pyrometheous (GitHub) for terms, including required
+   revenue sharing for hardware sales.
+
+4. Trademarks
+   This License does not grant any rights to use the Trademarks.
+   You must not use the Trademarks or confusingly similar marks in
+   product names, domain names, advertising, or marketing, or imply
+   endorsement or affiliation without prior written permission.
+   Nominative fair use is permitted when truthful and not misleading.
+
+5. Redistribution
+   When You distribute the Software or derivative works in Noncommercial
+   contexts, You must:
+     (a) include a copy of this License and the copyright notice;
+     (b) state all changes You made;
+     (c) not remove or alter any license notices;
+     (d) comply with all third-party licenses included in the repository.
+
+6. No Warranty
+   THE SOFTWARE IS PROVIDED “AS IS” AND “AS AVAILABLE”, WITHOUT WARRANTY
+   OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+   WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND
+   NON-INFRINGEMENT. THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE
+   OF THE SOFTWARE IS WITH YOU.
+
+7. Limitation of Liability
+   IN NO EVENT WILL THE LICENSOR OR CONTRIBUTORS BE LIABLE FOR ANY
+   INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+   (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+   SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+   HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+   STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+   IN ANY WAY OUT OF THE USE OF THE SOFTWARE, EVEN IF ADVISED OF THE
+   POSSIBILITY OF SUCH DAMAGE.
+
+8. Termination
+   This License terminates automatically if You breach it.
+   Upon termination, You must cease use of the Software and, if requested,
+   destroy copies in Your possession. Sections 4–9 survive termination.
+
+9. Miscellaneous
+   (a) This License is governed by no specific jurisdiction and does not
+       waive any applicable consumer rights that cannot be waived by
+       contract.
+   (b) If any provision is unenforceable, the remainder remains in effect.
+   (c) This License does not grant any patent rights except as necessary
+       for Your Noncommercial use of the unmodified Software.
+   (d) This is not legal advice; consult an attorney for specific uses.
+------------------------------------------------------------------
+For commercial licensing, contact: pyrometheous
