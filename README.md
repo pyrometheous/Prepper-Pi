@@ -198,12 +198,12 @@ RPi5 Ethernet ← host networking → OpenWRT Container
 
 ### Phase 1: Basic WiFi Infrastructure
 - [✅] Raspberry Pi 5 setup with adequate cooling and NVMe storage
-- [✅] Docker Compose service stack (OpenWRT, Portainer, Homepage)
+- [⭐] **Docker Compose service stack** - *Configuration complete, awaiting hardware testing*
 - [⭐] **WiFi hotspot configuration** - *Complete with host networking, DNAT redirects, and captive portal*
-- [✅] Landing page with captive portal and service links
-- [🔄] **Hardware integration testing** - *Ready for validation on actual Pi hardware*
+- [⭐] **Landing page with captive portal** - *Service templates ready, needs hardware validation*
+- [�] **Hardware integration testing** - *Ready for validation on actual Pi hardware*
 
-**Current Status:** All WiFi AP functionality is now properly configured with host networking mode, firewall4/nftables DNAT redirects, and unified service URLs. The system uses router IP (10.20.30.1) for all services with proper port forwarding to host containers. Configuration is architecturally sound and ready for hardware testing.
+**Current Status:** All WiFi AP functionality is properly configured with host networking mode, firewall4/nftables DNAT redirects, and unified service URLs. The system uses router IP (10.20.30.1) for all services with proper port forwarding to host containers. Configuration is complete but requires hardware testing to validate Docker stack, WiFi AP functionality, and service accessibility.
 
 ### Phase 2: Emergency Resources & AI
 - [📋] Offline emergency resource database (first aid, survival guides)
