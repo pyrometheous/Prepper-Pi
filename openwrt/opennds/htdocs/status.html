@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prepper Pi - Connection Status</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 600px;
+            width: 100%;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        .status {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .info {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: left;
+        }
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin: 10px;
+        }
+        .btn:hover {
+            background: #5a6fd8;
+            transform: translateY(-2px);
+        }
+        .btn.logout {
+            background: #dc3545;
+        }
+        .btn.logout:hover {
+            background: #c82333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🥧 Prepper Pi</h1>
+        
+        <div class="status">
+            <h2>✅ Connected Successfully</h2>
+            <p>You are now connected to the Prepper Pi network.</p>
+        </div>
+
+        <div class="info">
+            <h3>📊 Connection Details</h3>
+            <p><strong>Client IP:</strong> $clientip</p>
+            <p><strong>Gateway:</strong> $gatewayname</p>
+            <p><strong>Session Time:</strong> $session_start</p>
+            <p><strong>Data Uploaded:</strong> $upload_kb KB</p>
+            <p><strong>Data Downloaded:</strong> $download_kb KB</p>
+        </div>
+
+        <div style="margin-top: 30px;">
+            <a href="http://10.20.30.40:3000" class="btn">📊 Dashboard</a>
+            <a href="http://10.20.30.40:8096" class="btn">🎬 Media Server</a>
+            <a href="http://10.20.30.40:9000" class="btn">🐳 Management</a>
+            <a href="$authaction?tok=$tok" class="btn logout">🔒 Logout</a>
+        </div>
+    </div>
+</body>
+</html>

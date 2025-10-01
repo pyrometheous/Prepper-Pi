@@ -15,6 +15,7 @@ The OpenWRT container now uses:
 2. **Bootstrap Generation**: No static wireless config - generates correct device paths on first boot
 3. **ARM64 Support**: Multi-arch image with override option for Pi-specific builds
 4. **Package Installation**: Bootstrap installs OpenNDS, wireless tools automatically
+5. **Captive Portal Assets**: Custom splash/status pages and access control lists included
 
 ## 🔧 Configuration Details
 
@@ -34,6 +35,8 @@ openwrt:
   volumes:
     - ./openwrt/config:/etc/config
     - ./openwrt/data:/root
+    - ./openwrt/www:/www
+    - ./openwrt/opennds:/etc/opennds
     - /lib/firmware:/lib/firmware:ro
     - /sys/class/ieee80211:/sys/class/ieee80211:ro
     - /run/udev:/run/udev:ro
@@ -97,7 +100,14 @@ logread | grep -E "wlan|wireless"
 docker exec openwrt logread | grep DHCP
 ```
 
-5. **Service Access Test:**
+5. **Captive Portal Test:**
+```bash
+# Test OpenNDS portal pages
+docker exec openwrt ls -la /etc/opennds/htdocs/
+curl http://10.20.30.1/  # Should show splash page (if not redirected)
+```
+
+6. **Service Access Test:**
 ```bash
 # Verify service reachability
 curl http://10.20.30.40/  # Homepage
@@ -150,6 +160,15 @@ docker exec openwrt logread | grep -E "wlan|hostapd"
 docker exec openwrt ps | grep dnsmasq
 docker exec openwrt netstat -ln | grep :67
 docker exec openwrt cat /tmp/dhcp.leases
+```
+
+### **Captive Portal Issues:**
+```bash
+# Check OpenNDS status and configuration
+docker exec openwrt /etc/init.d/opennds status
+docker exec openwrt ps | grep opennds
+docker exec openwrt ls -la /etc/opennds/
+docker exec openwrt cat /etc/config/opennds
 ```
 
 ## 🔄 Configuration Updates

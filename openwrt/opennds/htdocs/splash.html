@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prepper Pi - WiFi Access</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            background: #28a745;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 1.2em;
+            border: none;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background: #218838;
+            transform: translateY(-2px);
+        }
+        .info {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 30px;
+            color: #666;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🥧 Prepper Pi</h1>
+        <p class="subtitle">Welcome to the Off-Grid Network</p>
+        
+        <p>Click below to accept the terms and gain access to the network:</p>
+        
+        <form method="get" action="$authaction">
+            <input type="hidden" name="tok" value="$tok">
+            <input type="hidden" name="redir" value="$redir">
+            <button type="submit" class="btn">🔓 Accept & Continue</button>
+        </form>
+
+        <div class="info">
+            <strong>📡 Network Access</strong><br>
+            This network provides offline services including media streaming, file sharing, and emergency resources.
+        </div>
+    </div>
+</body>
+</html>
