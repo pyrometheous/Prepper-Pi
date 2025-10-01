@@ -3,6 +3,9 @@ config defaults
 	option input 'ACCEPT'
 	option output 'ACCEPT'
 	option forward 'REJECT'
+	option flow_offloading '1'
+	option flow_offloading_hw '0'
+	option log_limit '100/second'
 
 config zone
 	option name 'lan'
@@ -112,6 +115,9 @@ config redirect
 	option target 'DNAT'
 	option dest_ip '127.0.0.1'
 	option dest_port '3000'
+	option dest 'lan'
+	option family 'ipv4'
+	option reflection '0'
 
 # Jellyfin :8096 -> 127.0.0.1:8096
 config redirect
@@ -122,6 +128,9 @@ config redirect
 	option target 'DNAT'
 	option dest_ip '127.0.0.1'
 	option dest_port '8096'
+	option dest 'lan'
+	option family 'ipv4'
+	option reflection '0'
 
 # Portainer :9000 -> 127.0.0.1:9000
 config redirect
@@ -132,6 +141,9 @@ config redirect
 	option target 'DNAT'
 	option dest_ip '127.0.0.1'
 	option dest_port '9000'
+	option dest 'lan'
+	option family 'ipv4'
+	option reflection '0'
 
 # (Future) Tvheadend :9981 -> 127.0.0.1:9981
 config redirect
@@ -142,3 +154,6 @@ config redirect
 	option target 'DNAT'
 	option dest_ip '127.0.0.1'
 	option dest_port '9981'
+	option dest 'lan'
+	option family 'ipv4'
+	option reflection '0'

@@ -20,7 +20,7 @@ echo ""
 echo "📡 Test A: OpenWRT Radio Detection & AP Capability"
 echo "=================================================="
 
-docker exec -it openwrt sh -c '
+docker exec openwrt sh -c '
   echo "=== Available radios ==="
   iw dev 2>/dev/null || echo "No wireless devices found"
   echo ""
@@ -61,7 +61,7 @@ echo ""
 echo "🔧 Test A2: Network Configuration Check"
 echo "======================================="
 
-docker exec -it openwrt sh -c '
+docker exec openwrt sh -c '
   echo "=== LAN configuration ==="
   uci show network.lan 2>/dev/null || echo "No LAN config found"
   echo ""
@@ -76,7 +76,7 @@ echo ""
 echo "🌐 Test B: Captive Portal & DNS Interception"
 echo "============================================="
 
-docker exec -it openwrt sh -c '
+docker exec openwrt sh -c '
   echo "=== OpenWRT logs (captive portal related) ==="
   logread 2>/dev/null | tail -n 50 | egrep -i "nodogsplash|opennds|dnsmasq|http|captive" || echo "No captive portal logs found"
   echo ""
