@@ -344,7 +344,7 @@ These improvements address the audit findings. Phase 1 is now properly configure
 
 * **[OpenWrt Project](https://openwrt.org/)** – Router firmware and network management
 * **[dnsmasq](https://thekelleys.org.uk/dnsmasq/doc.html)** – Lightweight DNS/DHCP server
-* **[firewall4 / nftables](https://openwrt.org/docs/guide-user/firewall/firewall_configuration)** – OpenWrt firewall and packet filtering stack
+* **[firewall4 / nftables](https://openwrt.org/docs/guide-user/firewall/firewall_configuration)** – OpenWrt firewall (firewall4/nftables) and packet filtering stack
 * **[LuCI](https://github.com/openwrt/luci)** – Web UI for OpenWrt configuration
 * **[OpenNDS](https://opennds.org/)** – Captive portal powering splash and status pages
 * **[uhttpd](https://openwrt.org/docs/guide-user/services/webserver/uhttpd)** – Embedded web server for portal and status pages
