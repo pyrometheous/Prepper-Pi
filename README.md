@@ -90,7 +90,7 @@ git clone https://github.com/pyrometheous/Prepper-Pi.git && cd Prepper-Pi && sud
 ### 1. 🌐 Network Configuration
 ```bash
 # Access OpenWRT admin interface
-http://10.20.30.1:8080
+http://10.20.30.1
 
 # Default credentials
 Username: root

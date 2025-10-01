@@ -39,7 +39,7 @@ fi
 
 # Configuration flags
 ENABLE_HOST_AP=${ENABLE_HOST_AP:-0}  # Set to 1 to enable host AP as fallback
-ENABLE_MACVLAN=${ENABLE_MACVLAN:-1}  # Set to 1 to enable macvlan network setup
+ENABLE_MACVLAN=${ENABLE_MACVLAN:-0}  # Set to 1 to enable macvlan network setup
 HOST_LAN_IP=${HOST_LAN_IP:-10.20.30.40}
 
 # Detect network interface

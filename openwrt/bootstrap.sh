@@ -64,6 +64,13 @@ uci commit wireless
 uci set system.@system[0].hostname='prepper-pi'
 uci commit system
 
+# Configure DNS upstreams for offline operation
+echo "🌐 Configuring DNS upstreams..."
+uci set dhcp.@dnsmasq[0].noresolv='1'
+uci add_list dhcp.@dnsmasq[0].server='1.1.1.1'
+uci add_list dhcp.@dnsmasq[0].server='9.9.9.9'
+uci commit dhcp
+
 echo "🚦 Restarting network and captive portal..."
 rs network
 rs dnsmasq

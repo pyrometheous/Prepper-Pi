@@ -31,7 +31,7 @@ print_error() {
 }
 
 # Configuration flags
-ENABLE_MACVLAN=${ENABLE_MACVLAN:-1}
+ENABLE_MACVLAN=${ENABLE_MACVLAN:-0}
 HOST_LAN_IP=${HOST_LAN_IP:-10.20.30.40}
 
 # Check if Docker is running
@@ -129,7 +129,6 @@ echo "   - Landing Page: http://10.20.30.40:3000 or http://prepper-pi.local:3000
 echo "   - OpenWRT: http://10.20.30.1"
 echo "   - Portainer: http://10.20.30.40:9000"
 echo "   - Jellyfin: http://10.20.30.40:8096"
-echo "   - Traefik Dashboard: http://10.20.30.40:8080"
 echo ""
 echo "📱 WiFi Hotspot: Connect to 'Prepper Pi' (WPA2, password: PrepperPi2024!)"
 echo "🔧 System Status: ./status.sh"
