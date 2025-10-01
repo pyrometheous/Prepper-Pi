@@ -8,6 +8,8 @@ Prepper Pi is a complete field-deployable system combining solar power, over-the
 
 ## ✨ Core Features
 
+> **📋 Note:** The following features represent the planned capabilities of Prepper Pi. Phase 1 (WiFi infrastructure) is configured but requires hardware testing. Later phases require additional hardware acquisition.
+
 ### 📺 Concurrent Operations
 - **Two TV channels** streaming simultaneously via dual ATSC tuner
 - **Two radio stations** (FM + NOAA) streaming via dual RTL-SDR setup
@@ -89,7 +91,7 @@ git clone https://github.com/pyrometheous/Prepper-Pi.git && cd Prepper-Pi && sud
 
 ### 1. 🌐 Network Configuration
 ```bash
-# Access OpenWRT admin interface
+# Access OpenWrt admin interface (after hardware testing)
 http://10.20.30.1
 
 # Default credentials
@@ -99,10 +101,10 @@ Password: (blank)
 
 ### 2. 📊 Services Dashboard
 ```bash
-# Landing page with all service links
+# Landing page with all service links (after hardware validation)
 http://10.20.30.1
 
-# Individual service access
+# Individual service access (requires hardware testing)
 Jellyfin: http://10.20.30.1:8096
 Portainer: http://10.20.30.1:9000
 Samba: \\10.20.30.1
@@ -110,10 +112,10 @@ Samba: \\10.20.30.1
 
 ### 3. 📺 TV Configuration
 ```bash
-# Tvheadend web interface
+# Tvheadend web interface (Phase 4 - requires TV tuner hardware)
 http://10.20.30.1:9981
 
-# Initial setup
+# Initial setup (when hardware is available)
 1. Configure tuners and scan for channels
 2. Set up recording profiles
 3. Create user accounts for streaming access
@@ -121,10 +123,10 @@ http://10.20.30.1:9981
 
 ### 4. 📻 Radio Configuration
 ```bash
-# RTL-SDR configuration via SSH
+# RTL-SDR configuration via SSH (Phase 4 - requires RTL-SDR dongles)
 ssh pi@10.20.30.1
 
-# Test radio reception
+# Test radio reception (when hardware is available)
 rtl_fm -f 101.1M -M wbfm -s 200000 -r 48000 | aplay -r 48k -f S16_LE
 ```
 
@@ -136,7 +138,7 @@ Internet/Cellular Modem (optional)
      |
    Router (host network)
      |
-RPi5 Ethernet ← host networking → OpenWRT Container
+RPi5 Ethernet ← host networking → OpenWrt Container
                       |                     |
                Docker Bridge         WiFi Access Point
               (172.20.0.0/16)        "Prepper Pi" SSID
@@ -150,14 +152,14 @@ RPi5 Ethernet ← host networking → OpenWRT Container
 | Service | Local Domain | IP Address | Port |
 |---------|--------------|------------|------|
 | Captive Portal Landing | - | 10.20.30.1 | 80 |
-| OpenWRT Web UI | openwrt.local | 10.20.30.1 | 80 |
+| OpenWrt Web UI | openwrt.local | 10.20.30.1 | 80 |
 | Homepage Dashboard | prepper-pi.local | 10.20.30.1 | 3000 |
 | Jellyfin Media Server | jellyfin.local | 10.20.30.1 | 8096 |
 | Portainer Management | portainer.local | 10.20.30.1 | 9000 |
 | Tvheadend | - | 10.20.30.1 | 9981 |
 | Samba/CIFS | - | \\10.20.30.1 | 445 |
 
-*Note: Captive portal redirects to OpenWRT router. Services accessible after portal acceptance or direct IP access.*
+*Note: All services require hardware testing to validate accessibility. Captive portal redirects to OpenWrt router after hardware validation.*
 
 ## 📋 Hardware Requirements
 
@@ -248,7 +250,7 @@ RPi5 Ethernet ← host networking → OpenWRT Container
 - [📋] Documentation of lessons learned and system improvements
 
 ### 🔬 Current Testing Priorities (Phase 1)
-1. **WiFi AP Hardware Validation** - Test OpenWRT container AP mode on actual Pi 5 hardware
+1. **WiFi AP Hardware Validation** - Test OpenWrt container AP mode on actual Pi 5 hardware
 2. **Service Connectivity Verification** - Confirm DNAT redirects work for all services (3000/8096/9000)  
 3. **Captive Portal End-to-End** - Validate complete portal flow from connection to service access
 4. **USB WiFi Device Compatibility** - Test specific adapter models with container passthrough
@@ -261,9 +263,9 @@ RPi5 Ethernet ← host networking → OpenWRT Container
 
 **You should be able to:**
 1. Connect to "Prepper Pi" SSID with password `PrepperPi2024!`
-2. Get DHCP address from OpenWRT container (10.20.30.x range)
+2. Get DHCP address from OpenWrt container (10.20.30.x range)
 3. Be redirected to landing page (http://10.20.30.1) via captive portal
-4. Access OpenWRT admin interface at http://10.20.30.1/cgi-bin/luci
+4. Access OpenWrt admin interface at http://10.20.30.1/cgi-bin/luci
 5. Open Jellyfin media server at http://10.20.30.1:8096
 6. Access Portainer management at http://10.20.30.1:9000
 7. Future: Tvheadend TV backend at http://10.20.30.1:9981 (Phase 4)
@@ -290,7 +292,7 @@ curl -I http://neverssl.com/ | head -n 5
 ## ⚠️ Configuration Status & Testing Needed
 
 **Phase 1 WiFi AP Configuration:**
-- ✅ **Fixed:** Docker OpenWRT now uses `host` networking mode for proper radio access
+- ✅ **Fixed:** Docker OpenWrt now uses `host` networking mode for proper radio access
 - ✅ **Fixed:** USB WiFi device passthrough configured with `/dev/bus/usb` mount
 - ✅ **Fixed:** Firmware and driver access via `/lib/firmware` and `/sys/class/ieee80211` mounts  
 - ✅ **Fixed:** OpenNDS captive portal configured to redirect to landing page
@@ -298,12 +300,12 @@ curl -I http://neverssl.com/ | head -n 5
 
 **Hardware Testing Required:**
 1. Validate USB WiFi adapter compatibility with Pi 5 and container access
-2. Test OpenWRT wireless driver initialization and AP mode activation  
+2. Test OpenWrt wireless driver initialization and AP mode activation  
 3. Verify captive portal redirect functionality end-to-end
 4. Confirm DHCP assignment and client connectivity (10.20.30.0/24 range)
 5. Test service accessibility through landing page
 
-**If OpenWRT image fails on Pi:** Use `docker-compose.pi.yml` for ARM64-specific image.
+**If OpenWrt image fails on Pi:** Use `docker-compose.pi.yml` for ARM64-specific image.
 
 **Run Verification:** Use `./verify-ap.sh` to validate configuration before field deployment.
 
@@ -319,7 +321,7 @@ These improvements address the audit findings. Phase 1 is now properly configure
 
 **Configuration Validation:**
 - [ ] `docker compose up -d` starts all services without errors
-- [ ] `./verify-ap.sh` shows ARM64 OpenWRT image loads successfully
+- [ ] `./verify-ap.sh` shows ARM64 OpenWrt image loads successfully
 - [ ] `iw list` inside container shows WiFi device with AP mode support
 - [ ] `iw dev` lists wlan* interfaces and `wifi status` shows SSIDs
 - [ ] OpenNDS service starts and configures captive portal
