@@ -97,6 +97,7 @@
 - Raspberry Pi 5 (8 GB) + Official 27 W USB‑C PSU (or 5 V/5 A buck when solar is added)  
 - Pi 5 Active Cooler  
 - NVMe storage (M.2 via Pi M.2 HAT+, 512 GB) - *may upgrade to 1TB for media storage*
+- **WiFi Adapter:** ALFA Network AWUS036ACM Long-Range Wide-Coverage Dual-Band AC1200 USB Wireless w/High-Sensitivity External Antenna
 
 ### RF — TV (75 Ω path) (Phase 4 - Hardware to be Acquired)
 - **Antenna:** Antennas Direct ClearStream 2MAX (VHF‑Hi/UHF) or similar compact OTA  

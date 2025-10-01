@@ -12,6 +12,7 @@
 | Compute & Core | 1 | Raspberry Pi Foundation | Pi 5 Active Cooler | Heatsink + fan |
 | Compute & Core | 1 | Raspberry Pi Foundation | M.2 HAT+ (Compact) | NVMe carrier for Pi 5 |
 | Compute & Core | 1 | TeamGroup / WD / Crucial (example) | NVMe SSD 512GB (PCIe 3.0, 2280) | Storage |
+| Compute & Core | 1 | ALFA Network | AWUS036ACM | Long-Range Dual-Band AC1200 USB WiFi Adapter w/External Antenna |
 | **TV (75Ω path)** | | | | |
 | TV (75Ω path) | 1 | Antennas Direct | ClearStream 2MAX | VHF-Hi/UHF OTA antenna |
 | TV (75Ω path) | 1 | Channel Master | CM-7777HD | Mast preamp + power inserter; FM-trap/LTE filtering |
@@ -49,7 +50,8 @@
 
 ### Phase 1: Currently Owned ✅
 - Raspberry Pi 5 (8GB) and related compute components
-- NVMe storage and cooling solutions
+- NVMe storage and cooling solutions  
+- ALFA Network AWUS036ACM WiFi adapter for hotspot functionality
 
 ### Phase 4: TV & Radio Reception (Hardware to be Acquired) ❌
 - Dual TV tuner and OTA antenna system

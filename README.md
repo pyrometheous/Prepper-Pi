@@ -166,7 +166,7 @@ RPi5 Ethernet ← host networking → OpenWRT Container
 ### 🖥️ Base Requirements (Currently Owned)
 - **Raspberry Pi 5** (8GB) with adequate cooling solution
 - **NVMe SSD** (1TB+) for media storage and OS performance
-- **USB WiFi Adapter** for external antenna capability
+- **ALFA Network AWUS036ACM** - Long-range dual-band AC1200 USB WiFi adapter with external antenna
 - **MicroSD Card** (32GB+) for initial boot and backup
 
 ### 📡 RF Communications (Future Hardware)
