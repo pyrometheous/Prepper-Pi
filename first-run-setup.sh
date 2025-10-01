@@ -303,8 +303,8 @@ Your Prepper Pi is now configured. Here's what's been set up:
 ### 🔧 Services Running:
 - **OpenWRT**: Router/firewall at \`10.20.30.1\`
 - **Homepage**: Landing page at \`http://prepper-pi.local:3000\`
-- **Portainer**: Container management at \`http://localhost:9000\`
-- **Jellyfin**: Media server at \`http://localhost:8096\`
+- **Portainer**: Container management at \`http://10.20.30.1:9000\`
+- **Jellyfin**: Media server at \`http://10.20.30.1:8096\`
 - **Samba**: File sharing (\\\\10.20.30.1)
 
 ### 📁 Directory Structure:
@@ -382,8 +382,8 @@ echo ""
 echo "🌟 Quick Access URLs:"
 echo "   - Landing Page: http://prepper-pi.local:3000"
 echo "   - OpenWRT Admin: http://10.20.30.1"
-echo "   - Portainer: http://localhost:9000"
-echo "   - Jellyfin: http://localhost:8096"
+echo "   - Portainer: http://10.20.30.1:9000"
+echo "   - Jellyfin: http://10.20.30.1:8096"
 echo ""
 echo "📖 For detailed instructions, see: POST-SETUP.md"
 echo "🔧 Check status anytime with: ./status.sh"

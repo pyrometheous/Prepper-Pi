@@ -1,13 +1,7 @@
----
+﻿---
 # System Management
-- Sy    - Jellyfin:
-        href: http://10.20.30.1:8096
-        icon: jellyfin.png
-        description: Media Streaming Server
-        widget:
-          type: jellyfin
-          url: http://jellyfin:8096
-          key: your_jellyfin_api_key_here   - Portainer:
+- System:
+    - Portainer:
         href: http://10.20.30.1:9000
         icon: portainer.png
         description: Container Management
@@ -18,14 +12,9 @@
           key: ptr_your_api_key_here
 
     - OpenWRT:
-        href: http://10.20.30.1
+        href: http://10.20.30.1/cgi-bin/luci
         icon: openwrt.png
         description: Router & Network Control
-        
-    # - Traefik:
-    #     href: http://10.20.30.40:8080
-    #     icon: traefik.png
-    #     description: Reverse Proxy Dashboard
 
     - System Monitor:
         href: http://10.20.30.1:3000/system
@@ -44,7 +33,7 @@
           key: your_jellyfin_api_key_here
 
     - File Shares:
-        href: \\10.20.30.1
+        href: smb://10.20.30.1
         icon: folder.png
         description: SMB/CIFS Network Shares
 
@@ -53,18 +42,8 @@
         icon: download.png
         description: Download Manager (Future)
 
-    # - TV Tuner:
-    #     href: http://10.20.30.40/tv
-    #     icon: tv.png
-    #     description: OTA TV Tuning (Future)
-
 # Network Tools
 - Network:
-    # - Network Scanner:
-    #     href: http://10.20.30.40/network
-    #     icon: network.png
-    #     description: LAN Device Discovery
-
     - Wi-Fi Settings:
         href: http://10.20.30.1/cgi-bin/luci/admin/network/wireless
         icon: wifi.png
@@ -75,29 +54,22 @@
         icon: dhcp.png
         description: Connected Devices
 
-    # - Internet Test:
-    #     href: http://10.20.30.40/internet-test
-    #     icon: speedtest.png
-    #     description: Connectivity Check
-
 # Tools & Utilities
 - Tools:
+    # Leave these commented until implemented
     # - Radio (SDR):
-    #     href: http://10.20.30.40/radio
+    #     href: http://10.20.30.1/radio
     #     icon: radio.png
     #     description: Software Defined Radio (Future)
-
     # - Wikipedia Offline:
-    #     href: http://10.20.30.40/wikipedia
+    #     href: http://10.20.30.1/wikipedia
     #     icon: wikipedia.png
     #     description: Offline Wikipedia (Future)
-
     # - Maps Offline:
-    #     href: http://10.20.30.40/maps
+    #     href: http://10.20.30.1/maps
     #     icon: map.png
     #     description: Offline Maps (Future)
-
     # - E-Books:
-    #     href: http://10.20.30.40/books
+    #     href: http://10.20.30.1/books
     #     icon: book.png
     #     description: Digital Library (Future)

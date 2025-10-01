@@ -99,3 +99,46 @@ config rule
 	option dest_port '500'
 	option proto 'udp'
 	option target 'ACCEPT'
+
+# Service redirects for Docker containers
+# Routes traffic from 10.20.30.1:port to host loopback where Docker services bind
+
+# Homepage :3000 -> 127.0.0.1:3000
+config redirect
+	option name 'svc-homepage'
+	option src 'lan'
+	option src_dport '3000'
+	option proto 'tcp'
+	option target 'DNAT'
+	option dest_ip '127.0.0.1'
+	option dest_port '3000'
+
+# Jellyfin :8096 -> 127.0.0.1:8096
+config redirect
+	option name 'svc-jellyfin'
+	option src 'lan'
+	option src_dport '8096'
+	option proto 'tcp'
+	option target 'DNAT'
+	option dest_ip '127.0.0.1'
+	option dest_port '8096'
+
+# Portainer :9000 -> 127.0.0.1:9000
+config redirect
+	option name 'svc-portainer'
+	option src 'lan'
+	option src_dport '9000'
+	option proto 'tcp'
+	option target 'DNAT'
+	option dest_ip '127.0.0.1'
+	option dest_port '9000'
+
+# (Future) Tvheadend :9981 -> 127.0.0.1:9981
+config redirect
+	option name 'svc-tvheadend'
+	option src 'lan'
+	option src_dport '9981'
+	option proto 'tcp'
+	option target 'DNAT'
+	option dest_ip '127.0.0.1'
+	option dest_port '9981'

@@ -111,7 +111,7 @@ Samba: \\10.20.30.1
 ### 3. 📺 TV Configuration
 ```bash
 # Tvheadend web interface
-http://10.20.30.40:9981
+http://10.20.30.1:9981
 
 # Initial setup
 1. Configure tuners and scan for channels
