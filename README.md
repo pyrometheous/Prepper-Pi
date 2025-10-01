@@ -68,10 +68,10 @@ git clone https://github.com/pyrometheous/Prepper-Pi.git && cd Prepper-Pi && sud
 | Feature | Status | Notes |
 |---------|--------|-------|
 | **Phase 1: Core Infrastructure** | | |
-| Docker Service Stack | ✅ **Implemented** | OpenWRT, Portainer, Homepage, Jellyfin, Samba |
+| Docker Service Stack | ⚠️ **Experimental** | Configuration complete, needs hardware testing |
 | WiFi Access Point | ⚠️ **Experimental** | Bootstrap generates config on first boot, then applies WPA2 |
 | Captive Portal | ⚠️ **Experimental** | OpenNDS configured, needs end-to-end testing |
-| Landing Page | ✅ **Implemented** | Homepage dashboard with service links |
+| Landing Page | ⚠️ **Experimental** | Homepage dashboard configured, needs hardware validation |
 | **Phase 4: TV & Radio** | | |
 | TV Reception (ATSC) | 📋 **Planned** | Tvheadend service template ready |
 | FM Radio Streaming | 📋 **Planned** | RTL-SDR + Icecast template ready |
