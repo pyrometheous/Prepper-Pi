@@ -50,8 +50,9 @@ Note: This is a hobby project with no guaranteed turnaround for issues or securi
 - Dual LoRa meshes (Meshtastic + MeshCore)
 - Captive-portal Wi-Fi hotspot
 - Jellyfin media streaming
-- Kavita ebook server
+- Kavita ebook server (OPDS feeds for KOReader/Kindle)
 - Samba file sharing
+- Local LLM (offline Q&A) with Pi‑friendly models (via Ollama/llama.cpp; optional Open WebUI)
 - Solar monitoring (Victron SmartSolar)
 - Real-time NOAA/EAS alerts
 
@@ -127,6 +128,51 @@ git clone https://github.com/pyrometheous/Prepper-Pi.git && cd Prepper-Pi && sud
 - ✅ **Implemented** - Tested and working
 - ⚠️ **Experimental** - Configured but needs hardware validation  
 - 📋 **Planned** - Service templates ready, hardware needed
+
+## 🧠 Local LLM on Raspberry Pi (Pi‑friendly options)
+
+> Goal: run small, useful, fully offline models on a Raspberry Pi 5 for emergency Q&A, checklists, and basic text tasks.
+
+What works well on a Pi 5 (8 GB) today:
+- Prefer 1–2B parameter models (quantized GGUF) for responsiveness.
+- 3–4B can run with tight memory; keep context short and use 4‑bit quantization.
+- 7B usually requires more RAM than is comfortably available for the OS + services.
+
+Recommended approaches
+- Ollama (simple runner + registry)
+  - Install on ARM64 Linux (Pi OS 64‑bit): https://ollama.com/download/linux
+  - Pull tiny models first (examples):
+    - Qwen2‑1.5B‑Instruct (good general small chat; Apache‑2.0)
+    - Gemma 3 1B (very small; basic tasks)
+  - Pair with a web UI: Open WebUI supports Ollama out‑of‑the‑box (Docker or pip). See docs: https://docs.openwebui.com/
+- llama.cpp (lowest overhead, flexible server)
+  - Runs GGUF models with a lightweight CLI and an OpenAI‑compatible HTTP server (`llama-server`).
+  - Project: https://github.com/ggerganov/llama.cpp
+  - Use 4‑bit (Q4_K_M) quantized models and modest context windows for speed.
+- Whisper.cpp (optional speech‑to‑text)
+  - For offline transcription of short voice notes or radio clips (tiny/base models recommended).
+  - Project: https://github.com/ggml-org/whisper.cpp
+
+Model pointers (GGUF)
+- Qwen/Qwen2‑1.5B‑Instruct‑GGUF (Apache‑2.0): https://huggingface.co/Qwen/Qwen2-1.5B-Instruct-GGUF
+- TheBloke/phi‑2‑GGUF (MSR research license – noncommercial): https://huggingface.co/TheBloke/phi-2-GGUF
+
+Practical tips on a Pi 5
+- Cooling matters: avoid thermal throttling with a fan or active cooler.
+- Keep context short (e.g., 512–1024 tokens) to reduce RAM/CPU use.
+- Prefer 4‑bit quantization (Q4_K_M) for a good quality/speed tradeoff.
+- Check model licenses—many are noncommercial/research‑only; this project’s noncommercial code license does not change third‑party model terms.
+
+Web UIs
+- Open WebUI (works offline; integrates with Ollama; has RAG tools):
+  - Project: https://github.com/open-webui/open-webui
+  - “Bundled with Ollama” images and usage: https://docs.openwebui.com/
+
+References
+- Ollama quickstart, models, and CLI: https://github.com/ollama/ollama
+- llama.cpp quickstart and server: https://github.com/ggerganov/llama.cpp
+- Open WebUI installation and troubleshooting: https://docs.openwebui.com/
+- Whisper.cpp quickstart and memory guidance: https://github.com/ggml-org/whisper.cpp
 
 ## 🌐 Network Architecture
 
@@ -333,6 +379,17 @@ curl -I http://neverssl.com/ | head -n 5
 **Community Contributions**
 
 * **[Paul MacKinnon](https://github.com/paulmackinnon)** – Original [Docker macvlan guide](https://paul-mackinnon.medium.com/openwrt-raspberry-pi-docker-vlan-project-9cb1db10684c)
+
+
+**AI & Local LLMs**
+
+* **[Ollama](https://github.com/ollama/ollama)** – Local model runner and registry; ARM64 Linux install: https://ollama.com/download/linux
+* **[llama.cpp](https://github.com/ggerganov/llama.cpp)** – Lightweight GGUF inference and OpenAI‑compatible server
+* **[Open WebUI](https://github.com/open-webui/open-webui)** — Self‑hosted AI UI; docs with “bundled with Ollama” option: https://docs.openwebui.com/
+* **[whisper.cpp](https://github.com/ggml-org/whisper.cpp)** — Offline speech‑to‑text (tiny/base models fit best on Pi)
+* Models (GGUF examples):
+  - **Qwen/Qwen2‑1.5B‑Instruct‑GGUF** (Apache‑2.0): https://huggingface.co/Qwen/Qwen2-1.5B-Instruct-GGUF
+  - **TheBloke/phi‑2‑GGUF** (Microsoft Research license): https://huggingface.co/TheBloke/phi-2-GGUF
 
 ---
 
