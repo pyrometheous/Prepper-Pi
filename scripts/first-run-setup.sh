@@ -57,7 +57,7 @@ apt update
 
 # Install required packages
 print_status "Installing required packages..."
-apt install -y docker.io docker-compose git curl wget iproute2 iptables net-tools
+apt install -y docker.io docker-compose-plugin git curl wget iproute2 iptables net-tools
 
 # Add current user to docker group (if not root)
 if [ "$SUDO_USER" ]; then
@@ -106,7 +106,7 @@ mkdir -p media/documentaries media/podcasts media/radio-recordings
 
 # Download Docker images
 print_status "Pulling Docker images..."
-docker-compose pull
+docker compose pull
 
 # Create macvlan network helper script
 print_status "Creating network helper script..."
@@ -267,9 +267,9 @@ chmod +x status.sh
 cat > restart.sh << EOF
 #!/bin/bash
 echo "🔄 Restarting Prepper Pi services..."
-docker-compose down
+docker compose down
 [ "${ENABLE_MACVLAN:-0}" = "1" ] && ./setup-host-bridge.sh
-docker-compose up -d
+docker compose up -d
 echo "✅ Services restarted"
 EOF
 
@@ -279,10 +279,10 @@ chmod +x restart.sh
 cat > logs.sh << EOF
 #!/bin/bash
 if [ "$1" ]; then
-    docker-compose logs -f "$1"
+    docker compose logs -f "$1"
 else
     echo "Available services:"
-    docker-compose ps --services
+    docker compose ps --services
     echo ""
     echo "Usage: ./logs.sh [service-name]"
     echo "Example: ./logs.sh openwrt"
@@ -316,8 +316,8 @@ Your Prepper Pi is now configured. Here's what's been set up:
 - `./status.sh`: Check system status
 - `./restart.sh`: Restart all services
 - `./logs.sh [service]`: View service logs
-- `docker-compose up -d`: Start services
-- `docker-compose down`: Stop services
+- `docker compose up -d`: Start services
+- `docker compose down`: Stop services
 
 ### 🌐 Next Steps:
 
@@ -365,7 +365,7 @@ print_status "Running final setup steps..."
 
 # Start services
 print_status "Starting Prepper Pi services..."
-docker-compose up -d
+docker compose up -d
 
 # Wait for services to start
 print_status "Waiting for services to initialize..."
@@ -373,7 +373,7 @@ sleep 30
 
 # Check status
 print_status "Checking service status..."
-docker-compose ps
+docker compose ps
 
 print_success "Prepper Pi setup completed successfully!"
 print_success "Please read POST-SETUP.md for next steps"

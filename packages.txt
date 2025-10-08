@@ -1,7 +1,7 @@
 # Prepper Pi Required Packages
 # Container and Orchestration
 docker.io
-docker-compose
+docker-compose-plugin
 
 # Network utilities
 iproute2
