@@ -175,9 +175,10 @@ RPi5 Ethernet ← host networking → OpenWrt Container
 
 ### Phase 3: Media Server & Storage
 - [📋] Jellyfin media server configuration and optimization
+- [📋] Kavita ebook server for digital library management
 - [📋] Media library organization on NVMe SSD storage
 - [📋] File sharing with Samba for local network access
-- [📋] Mobile-optimized interfaces for media streaming
+- [📋] Mobile-optimized interfaces for media streaming and reading
 - [📋] Performance testing with multiple concurrent streams
 
 ### Phase 4: TV & Radio Reception (Acquire Hardware)
@@ -264,7 +265,9 @@ curl -I http://neverssl.com/ | head -n 5
 
 * **[Icecast](https://icecast.org/) + [SoX](https://sourceforge.net/projects/sox/)** – Streaming server and audio toolchain for planned FM/NOAA feeds
 * **[Jellyfin](https://jellyfin.org/)** – Open-source media server
+* **[Kavita](https://www.kavitareader.com/)** – Self-hosted digital library for ebooks, manga, and comics
 * **[LinuxServer.io](https://www.linuxserver.io/)** – High-quality container images for media services
+* **[Standard Ebooks](https://standardebooks.org/)** – High-quality public domain literature collection for offline reading
 * **[Tvheadend](https://tvheadend.org/)** – TV backend software
 
 **Radio, Mesh & Offline Resources**
