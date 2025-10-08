@@ -14,7 +14,7 @@ Detailed electrical specifications, system diagrams, safety guidelines, and asse
 Hardware validation protocol for WiFi access point functionality. Documents configuration issues and testing procedures for OpenWRT-in-Docker setup.
 
 ### 🔍 [AP Verification Script](../scripts/verify-ap.sh)
-Automated validation script to check OpenWRT container configuration, WiFi device access, and future hardware readiness. Run with `./verify-ap.sh` after deployment.
+Automated validation script to check OpenWRT container configuration, WiFi device access, and future hardware readiness. Run with `./scripts/verify-ap.sh` after deployment.
 
 ### 🧾 [Compliance Summary](compliance/COMPLIANCE_SUMMARY.md)
 High-level summary of licensing, commercial posture, and compliance infrastructure added to the project.
