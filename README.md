@@ -30,6 +30,7 @@ Prepper Pi is a complete field-deployable system combining solar power, over-the
 - **LoRa mesh messaging** with text and GPS location sharing
 - **WiFi hotspot** serving multiple devices with WPA2 security and captive portal
 - **Media streaming** from local Jellyfin library
+- **Ebook library** serving digital books via Kavita reader
 - **File sharing** via Samba network shares
 - **Solar power monitoring** via Victron SmartSolar Bluetooth interface
 - **Real-time emergency broadcasts** (NOAA weather alerts, EAS)
