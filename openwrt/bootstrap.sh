@@ -6,6 +6,13 @@ set -e
 
 echo "🚀 Bootstrapping OpenWRT container..."
 
+# WiFi configuration (overridable via container env)
+WIFI_COUNTRY=${WIFI_COUNTRY:-US}
+WIFI_SSID_24=${WIFI_SSID_24:-Prepper Pi}
+WIFI_SSID_5G=${WIFI_SSID_5G:-Prepper Pi 5G}
+WIFI_PASS=${WIFI_PASS:-ChangeMeNow!}
+WIFI_ENC=${WIFI_ENC:-psk2}
+
 # Update package lists and install packages (only on first boot)
 FLAG=/root/.prepper_pi_bootstrap_done
 if [ ! -f "$FLAG" ]; then
@@ -37,31 +44,31 @@ echo "📶 Configuring wireless..."
 # Only proceed if at least one 802.11 radio is present
 if [ -d /sys/class/ieee80211 ] && [ "$(ls -A /sys/class/ieee80211 2>/dev/null)" ]; then
   # Set regulatory domain first
-  iw reg set US
+  iw reg set "$WIFI_COUNTRY"
   # Generate fresh config to learn the correct paths, then apply my settings.
   rm -f /etc/config/wireless
   wifi config
 
   # 2.4 GHz (index 0) — if present
   if uci -q get wireless.@wifi-iface[0] >/dev/null; then
-    uci set wireless.@wifi-device[0].country='US'
+    uci set wireless.@wifi-device[0].country="$WIFI_COUNTRY"
     uci set wireless.@wifi-device[0].disabled='0'
     uci set wireless.@wifi-iface[0].mode='ap'
     uci set wireless.@wifi-iface[0].network='lan'
-    uci set wireless.@wifi-iface[0].ssid='Prepper Pi'
-    uci set wireless.@wifi-iface[0].encryption='psk2'
-    uci set wireless.@wifi-iface[0].key='PrepperPi2025!'
+    uci set wireless.@wifi-iface[0].ssid="$WIFI_SSID_24"
+    uci set wireless.@wifi-iface[0].encryption="$WIFI_ENC"
+    uci set wireless.@wifi-iface[0].key="$WIFI_PASS"
   fi
 
   # 5 GHz (index 1) — if present
   if uci -q get wireless.@wifi-iface[1] >/dev/null; then
-    uci set wireless.@wifi-device[1].country='US'
+    uci set wireless.@wifi-device[1].country="$WIFI_COUNTRY"
     uci set wireless.@wifi-device[1].disabled='0'
     uci set wireless.@wifi-iface[1].mode='ap'
     uci set wireless.@wifi-iface[1].network='lan'
-    uci set wireless.@wifi-iface[1].ssid='Prepper Pi 5G'
-    uci set wireless.@wifi-iface[1].encryption='psk2'
-    uci set wireless.@wifi-iface[1].key='PrepperPi2025!'
+    uci set wireless.@wifi-iface[1].ssid="$WIFI_SSID_5G"
+    uci set wireless.@wifi-iface[1].encryption="$WIFI_ENC"
+    uci set wireless.@wifi-iface[1].key="$WIFI_PASS"
   fi
 
   uci commit wireless

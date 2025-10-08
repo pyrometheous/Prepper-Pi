@@ -97,6 +97,12 @@ Requirements for WiFi AP:
 - Pass through USB WiFi radios and firmware (`/dev/bus/usb`, `/lib/firmware`)
 - Allow access to radio discovery (`/sys/class/ieee80211`, `/run/udev`)
 
+Optional environment overrides for Wi‑Fi (set on the `openwrt` service):
+- WIFI_COUNTRY (default: US)
+- WIFI_SSID_24 (default: "Prepper Pi")
+- WIFI_SSID_5G (default: "Prepper Pi 5G")
+- WIFI_PASS (default: "ChangeMeNow!")
+
 ### 🗑️ System Removal
 
 ```bash
@@ -115,7 +121,7 @@ git clone https://github.com/pyrometheous/Prepper-Pi.git && cd Prepper-Pi && sud
 ### 🌐 Network Access
 - **Default Gateway (example):** `10.20.30.1` (OpenWrt admin interface)
 - **Initial Credentials (example):** username: `root`, password: *(set on first boot)*
-- **Wi-Fi Network (example):** SSID "Prepper Pi", password `ChangeMeNow!`  ← update during setup
+- **Wi‑Fi Network (default):** SSID "Prepper Pi", password `ChangeMeNow!`  ← change in production
 - **DHCP Range:** 10.20.30.100-199 for client devices
 
 ### 📊 Service URLs
