@@ -254,7 +254,7 @@ curl -I http://neverssl.com/ | head -n 5
 * **[dnsmasq](https://thekelleys.org.uk/dnsmasq/doc.html)** – Lightweight DNS/DHCP server
 * **[firewall4 / nftables](https://openwrt.org/docs/guide-user/firewall/firewall_configuration)** – OpenWrt firewall (firewall4/nftables) and packet filtering stack
 * **[LuCI](https://github.com/openwrt/luci)** – Web UI for OpenWrt configuration
-* **[OpenNDS](https://opennds.org/)** – Captive portal powering splash and status pages
+* **[OpenNDS (GitHub)](https://github.com/openNDS/openNDS) — [OpenNDS](https://opennds.readthedocs.io/en/stable/)** – Captive portal powering splash and status pages
 * **[uhttpd](https://openwrt.org/docs/guide-user/services/webserver/uhttpd)** – Embedded web server for portal and status pages
 
 **Dashboards & Ops**
