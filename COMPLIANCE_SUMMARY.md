@@ -6,8 +6,9 @@ This document summarizes the licensing and commercial compliance updates impleme
 
 ### Compliance Infrastructure
 - **`licenses/THIRD_PARTY_NOTICES.md`** - Comprehensive list of all third-party components with their licenses and sources
-- **`licenses/SOURCE-OFFER.md`** - GPL compliance source code offer with 3-year commitment  
-- **`scripts/build-manifest.sh`** - Automated script to generate version tracking and compliance manifests
+- **`licenses/SOURCE-OFFER.md`** - GPL compliance via concurrent source distribution (avoids personal contact info)
+- **`scripts/build-manifest.sh`** - Automated script to generate version tracking and compliance manifests with checksums
+- **`scripts/verify-ap.sh`** - Access point verification script for testing WiFi functionality
 
 ## 📝 Updated Files
 
@@ -18,6 +19,8 @@ This document summarizes the licensing and commercial compliance updates impleme
   - Added disclaimers for codecs/patents and third-party media
   - Fixed encoding issues and improved formatting
   - Clarified trademark responsibilities for third-party marks
+  - Added security hardening checklist
+  - Marked default credentials as examples requiring changes
 
 ### Legal Documents  
 - **`TRADEMARKS.md`**
@@ -30,6 +33,7 @@ This document summarizes the licensing and commercial compliance updates impleme
   - Included patent and codec licensing responsibilities
   - Enhanced branding and third-party mark usage clauses
   - Added RF/regulatory compliance requirements
+  - Clarified "any third party" scope for GPL written offers
 
 - **`LICENSE`** (Optional replacement)
   - Simplified and more readable PP-NC-1.0 license text
@@ -41,10 +45,11 @@ This document summarizes the licensing and commercial compliance updates impleme
 ## ✅ Compliance Achievements
 
 ### FOSS Compliance
-- ✅ Third-party license tracking and attribution
-- ✅ GPL source offer with durable 3-year commitment
+- ✅ Third-party license tracking and attribution (expanded to include FFmpeg, BusyBox, nftables)
+- ✅ GPL concurrent source distribution model (avoids personal contact information exposure)
 - ✅ Installation information provisions for GPLv3
-- ✅ Automated manifest generation for version tracking
+- ✅ Automated manifest generation for version tracking with checksums
+- ✅ "Any third party" scope clarification for GPL compliance
 
 ### Commercial Protection
 - ✅ Clear commercial licensing requirements
@@ -57,6 +62,7 @@ This document summarizes the licensing and commercial compliance updates impleme
 - ✅ No copyrighted media included disclaimers  
 - ✅ RF/regulatory compliance requirements
 - ✅ Quality and support responsibility clarifications
+- ✅ Security hardening guidance with credential change requirements
 
 ## 🎯 Commercial Readiness Status
 
@@ -86,8 +92,8 @@ With these updates, the Prepper Pi project is now **ready for commercial hardwar
 ## 📧 Next Steps
 
 The project maintainer should:
-1. Update the source offer URL in `licenses/SOURCE-OFFER.md` with actual hosting location
-2. Set up hosting infrastructure for GPL source bundles  
+1. Ensure source bundles are published in GitHub Releases concurrent with any binary/image releases
+2. Maintain the 3-year retention policy for tagged releases and source archives
 3. Create branding guidelines document for commercial licensees
 4. Test the build manifest script in the actual deployment environment
 

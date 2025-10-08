@@ -7,7 +7,9 @@
 **Project code:** **Prepper Pi Noncommercial License (PP-NC-1.0)** (see `LICENSE`).  
 **Docs & media:** **CC BY-NC 4.0** (see `LICENSE-DOCS`).  
 **Third-party software:** Licensed under their own FOSS licenses. See `licenses/THIRD_PARTY_NOTICES.md`.  
-**Source code offer (GPL'd components):** See `licenses/SOURCE-OFFER.md`.
+**GPL/LGPL source:** We publish the Corresponding Source **in the matching GitHub Release** for any image/binary we ship. See `licenses/SOURCE-OFFER.md`.
+**Project code license:** see `LICENSE` (PP-NC-1.0).  
+**Documentation/media license:** see `LICENSE-DOCS` (CC BY-NC 4.0).
 
 **Commercial hardware sales (preconfigured devices):** Allowed **only** under a separate commercial license with revenue share. See `COMMERCIAL-LICENSE.md` and contact **pyrometheous**.
 
@@ -78,11 +80,19 @@ sudo apt update && sudo apt install -y git && git clone https://github.com/pyrom
 git clone https://github.com/pyrometheous/Prepper-Pi.git && cd Prepper-Pi && sudo bash cleanup.sh && cd .. && rm -rf Prepper-Pi
 ```
 
+## 🔒 Security Hardening (do this before field use)
+1. **Change all defaults** (OpenWrt root password, Wi-Fi SSID/passphrase, disable passwordless logins).
+2. **Enable HTTPS** on admin interfaces; restrict management to wired or trusted VLAN.
+3. **Rotate API keys/secrets** for any services you enable (Jellyfin, Portainer CE).
+4. **Update & lock** package versions; rebuild images with `scripts/build-manifest.sh` to record digests.
+5. **Back up** `/etc/prepper-pi/VERSION` and the full `MANIFEST.txt` with each release.
+
 ## ⚙️ Service Access & Configuration
 
 ### 🌐 Network Access
-- **Default Gateway:** `10.20.30.1` (OpenWrt admin interface, username: `root`, no password)
-- **WiFi Network:** "Prepper Pi" SSID with password `PrepperPi2025!`
+- **Default Gateway (example):** `10.20.30.1` (OpenWrt admin interface)
+- **Initial Credentials (example):** username: `root`, password: *(set on first boot)*
+- **Wi-Fi Network (example):** SSID "Prepper Pi", password `ChangeMeNow!`  ← update during setup
 - **DHCP Range:** 10.20.30.100-199 for client devices
 
 ### 📊 Service URLs
@@ -90,7 +100,7 @@ git clone https://github.com/pyrometheous/Prepper-Pi.git && cd Prepper-Pi && sud
 |---------|-----|--------|-------|
 | Landing Page | http://10.20.30.1 | ⚠️ **Experimental** | Captive portal redirect |
 | Jellyfin | http://10.20.30.1:8096 | ⚠️ **Experimental** | Media server |
-| Portainer | http://10.20.30.1:9000 | ⚠️ **Experimental** | Container management |
+| Portainer | http://10.20.30.1:9000 | ⚠️ **Experimental** | Container management *(Community Edition)* |
 | Tvheadend | http://10.20.30.1:9981 | 📋 **Planned** | TV backend (Phase 4) |
 | Meshtastic | http://10.20.30.1:2443 | 📋 **Planned** | LoRa mesh A (Phase 5) |
 | MeshCore | http://10.20.30.1:2444 | 📋 **Planned** | LoRa mesh B (Phase 5) |

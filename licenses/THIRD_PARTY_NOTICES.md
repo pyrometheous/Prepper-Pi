@@ -4,21 +4,27 @@ This device/software distribution includes (or may fetch at install time) third-
 
 | Project / Component | License | Home / Source |
 |---|---|---|
-| OpenWrt (selected packages incl. dnsmasq, firewall4/nftables, uhttpd, LuCI) | GPL-2.0 and others | https://openwrt.org / https://github.com/openwrt/openwrt |
+| OpenWrt (incl. dnsmasq, firewall4/nftables, uhttpd, LuCI) | GPL-2.0 and others | https://openwrt.org / https://github.com/openwrt/openwrt |
+| **BusyBox** (via OpenWrt base) | GPL-2.0 | https://busybox.net / https://git.busybox.net/busybox/ |
+| nftables / libnftnl (OpenWrt firewall stack) | GPL-2.0+ / LGPL | https://netfilter.org/projects/nftables/ |
+| iproute2 | GPL-2.0 | https://wiki.linuxfoundation.org/networking/iproute2 |
 | openNDS (captive portal) | GPL-2.0 | https://github.com/openNDS/openNDS |
 | Homepage (dashboard) | MIT | https://gethomepage.dev / https://github.com/gethomepage/homepage |
-| Portainer CE | zlib | https://www.portainer.io / https://github.com/portainer/portainer |
+| Portainer **Community Edition** | zlib | https://www.portainer.io / https://github.com/portainer/portainer |
 | Icecast | GPL-2.0 | https://icecast.org / https://gitlab.xiph.org/xiph/icecast-server |
 | SoX | GPL-2.0+ | https://sourceforge.net/projects/sox/ |
 | Jellyfin | GPL-2.0 | https://jellyfin.org / https://github.com/jellyfin/jellyfin |
+| **FFmpeg** (used by Jellyfin) | LGPL-2.1+ and GPL (configuration-dependent) | https://ffmpeg.org / https://github.com/FFmpeg/FFmpeg |
 | Tvheadend | GPL-3.0 | https://tvheadend.org / https://github.com/tvheadend/tvheadend |
 | Kavita | GPL-3.0 | https://www.kavitareader.com / https://github.com/Kareadita/Kavita |
-| Meshtastic (protocol/firmware/tools) | GPL-3.0 (trademark policy applies) | https://meshtastic.org / https://github.com/meshtastic/ |
-| MeshCore | MIT | https://meshcore.co.uk / https://github.com/meshcore |
-| Kiwix | GPL-3.0 | https://www.kiwix.org / https://github.com/kiwix/kiwix-desktop |
-| LinuxServer.io images (where used) | Varies by upstream; image metadata includes license | https://www.linuxserver.io |
+| Meshtastic (protocol/firmware/tools)\* | GPL-3.0 (trademark policy applies) | https://meshtastic.org / https://github.com/meshtastic/ |
+| MeshCore\* | MIT | https://meshcore.co.uk / https://github.com/meshcore |
+| Kiwix | GPL-3.0 | https://www.kiwix.org / https://github.com/kiwix/ |
+| LinuxServer.io images (where used) | Varies by upstream | https://www.linuxserver.io |
 | Docker Engine / CLI | Apache-2.0 | https://www.docker.com / https://github.com/moby/moby |
 | Raspberry Pi OS / Debian packages | Various | https://www.raspberrypi.com/software / https://www.debian.org |
+
+\* *Listed as "planned" in the README. If/when distributed in images, they remain governed by their own licenses and trademark policies.*
 
 **Data Licenses**
 - OpenStreetMap data: **ODbL 1.0** — https://www.openstreetmap.org/copyright

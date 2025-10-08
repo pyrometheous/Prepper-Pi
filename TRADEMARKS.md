@@ -14,7 +14,7 @@ You may **not** without written permission:
 - Imply endorsement, affiliation, or sponsorship by Prepper Pi.
 
 ## Third-Party Trademarks
-All third-party names and logos (e.g., **Meshtastic**, **OpenWrt**, **Raspberry Pi**, **Jellyfin**, **Portainer**) are the property of their respective owners. Nothing in this project grants rights to use third-party marks. Follow each owner's branding/trademark policy.
+All third-party names and logos (e.g., **Meshtastic**, **OpenWrt**, **Raspberry Pi**, **Jellyfin**, **Portainer**) are the property of their respective owners. Nothing in this project grants rights to use third-party marks. Follow each owner's branding/trademark policy (e.g., Meshtastic permits specific "Powered by" phrasing/logos with prior approval).
 
 ## Requests
 To request commercial use of Prepper Pi Marks (e.g., branded hardware), contact **pyrometheous** with product details and usage examples. Approvals may include brand guidelines and quality requirements.

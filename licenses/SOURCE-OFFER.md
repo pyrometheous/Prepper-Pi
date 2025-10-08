@@ -1,28 +1,27 @@
-# Corresponding Source Offer (GPL/LGPL Components)
+# Corresponding Source Availability (GPL/LGPL Components)
 
-We distribute devices and/or images that include GPL/LGPL-licensed software (e.g., Jellyfin, Tvheadend, OpenWrt packages). In accordance with those licenses, we provide the **Corresponding Source** as follows:
+We may publish device images, container images, or other binaries that include GPL/LGPL-licensed software (e.g., OpenWrt packages, Jellyfin, Tvheadend). To comply with those licenses, we follow the **concurrent source distribution** model:
 
-1. **Public Download (Preferred)**
-   - Source bundles and build scripts corresponding to each release will be hosted for **at least 3 years** from the last device shipment date at:
-   - **URL:** https://github.com/pyrometheous/Prepper-Pi/releases
-   - Each release folder contains:
-     - Exact upstream source (or upstream commit references),
-     - Our patch sets (if any),
-     - Build/config scripts (e.g., Dockerfiles, compose files),
-     - A `MANIFEST.txt` enumerating versions/commits.
+## How to get the Corresponding Source
+- For **every image/binary release**, we publish a matching **GitHub Release** that includes a `source/` archive with:
+  - Exact upstream source (or upstream commit references),
+  - Any local patches and build/config scripts (Dockerfiles, compose files),
+  - A `MANIFEST.txt` enumerating components and versions/commits, plus SHA-256 checksums of binaries and sources.
 
-2. **Written Offer (Mail)**
-   - You may request physical media containing the Corresponding Source for a nominal charge to cover distribution costs. Send your device serial number and firmware/image version to:
-   - **Email:** pyrometheous@github.com
-   - **Mailing Address:** Available upon written request to above email
+➡️ **Releases:** https://github.com/pyrometheous/Prepper-Pi/releases
 
-3. **How We Track Versions**
-   - The running image contains a `/etc/prepper-pi/VERSION` file with:
-     - Git commit of this repo,
-     - Tagged versions of each included container image,
-     - A link back to the matching source bundle.
+### Version mapping on the device/image
+Each image includes `/etc/prepper-pi/VERSION` with:
+- Git commit of this repo,
+- Tags/digests for included container images,
+- The URL of the matching GitHub Release.
 
-4. **Installation Information (if applicable)**
-   - If any component falls under **GPLv3** and the device becomes locked-down, we will additionally provide any required **Installation Information** so recipients can install modified software on the same device.
+## Retention period
+We will keep the corresponding source available **for at least 3 years** after the relevant image/binary release date by retaining the tagged GitHub Release and its `source/` archive.
 
-> This offer is valid for **no less than 3 years** from the later of the last device distribution or the last public posting of the relevant image.
+## Notes on alternative compliance
+We are intentionally **not** using the "written offer" method at this time because concurrent source distribution (GPLv2 §3(a); GPLv3 §6) avoids the need for separate postal/email contact details. If at some future point we cannot host the source concurrently, we will update this document to include a written offer valid for 3 years.
+
+---
+
+*This document describes how recipients obtain Corresponding Source; it does not alter any third-party licenses.*

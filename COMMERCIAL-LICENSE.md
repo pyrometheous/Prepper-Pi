@@ -28,7 +28,7 @@ Licensee is solely responsible for hardware quality, warranties, customer suppor
 ## 6. FOSS Compliance (Condition of License)
 When distributing devices with Prepper Pi:
 - **Retain third-party notices** and include `licenses/THIRD_PARTY_NOTICES.md`.
-- **Provide Corresponding Source** (or a **durable written offer** for at least 3 years) for all GPL/LGPL components, including any patches. Include `licenses/SOURCE-OFFER.md` with a working URL.
+- **Provide Corresponding Source** via **concurrent source distribution** in the matching public release **or**, at Licensee's option, furnish a **written offer** valid for at least 3 years, for all GPL/LGPL components (including any patches). Include `licenses/SOURCE-OFFER.md` with a working URL. The written offer must be valid to **any third party** in possession of the object code.
 - If the device employs any installation lock-down, provide any **Installation Information** required by GPLv3. (Typical Raspberry Pi setups are user-modifiable.)
 - Where feasible, prefer downstream-supplied FFmpeg/codecs; do not enable non-free encoders unless you hold appropriate rights.
 
