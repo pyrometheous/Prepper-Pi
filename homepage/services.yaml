@@ -5,11 +5,11 @@
         href: http://10.20.30.1:9000
         icon: portainer.png
         description: Container Management
-        widget:
-          type: portainer
-          url: http://portainer:9000
-          env: 2
-          key: ptr_your_api_key_here
+                widget:
+                    type: portainer
+                    url: http://portainer:9000
+                    env: 2
+                    key: REPLACE_ME
 
     - OpenWRT:
         href: http://10.20.30.1/cgi-bin/luci
@@ -27,10 +27,10 @@
         href: http://10.20.30.1:8096
         icon: jellyfin.png
         description: Media Streaming Server
-        widget:
-          type: jellyfin
-          url: http://jellyfin:8096
-          key: your_jellyfin_api_key_here
+                widget:
+                    type: jellyfin
+                    url: http://jellyfin:8096
+                    key: REPLACE_ME
 
     - File Shares:
         href: smb://10.20.30.1

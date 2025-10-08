@@ -104,9 +104,9 @@ config rule
 	option target 'ACCEPT'
 
 # Service redirects for Docker containers
-# Routes traffic from 10.20.30.1:port to host loopback where Docker services bind
+# Route traffic destined to router IP:port to host loopback where Docker services bind
 
-# Homepage :3000 -> 127.0.0.1:3000
+# Homepage :3000 -> 127.0.0.1:3000 (no reflection)
 config redirect
 	option name 'svc-homepage'
 	option src 'lan'
@@ -119,7 +119,7 @@ config redirect
 	option family 'ipv4'
 	option reflection '0'
 
-# Jellyfin :8096 -> 127.0.0.1:8096
+# Jellyfin :8096 -> 127.0.0.1:8096 (no reflection)
 config redirect
 	option name 'svc-jellyfin'
 	option src 'lan'
@@ -132,7 +132,7 @@ config redirect
 	option family 'ipv4'
 	option reflection '0'
 
-# Portainer :9000 -> 127.0.0.1:9000
+# Portainer :9000 -> 127.0.0.1:9000 (no reflection)
 config redirect
 	option name 'svc-portainer'
 	option src 'lan'

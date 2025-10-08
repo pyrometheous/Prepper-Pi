@@ -1,6 +1,6 @@
 # Wireless Configuration Notes
 
-This directory does NOT contain a wireless config file by design.
+This directory does NOT contain a wireless config file by design (container must discover radios at runtime).
 
 **Why no wireless config file?**
 - OpenWRT needs actual hardware device paths (not placeholders like 'auto-detect')

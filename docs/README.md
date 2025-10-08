@@ -47,7 +47,7 @@ Prepper-Pi/
 - **Getting Started:** See [../README.md](../README.md) for project overview and installation
 - **Hardware Planning:** See [components.md](components.md) for complete parts list
 - **Assembly Guide:** See [wiring.md](wiring.md) for technical specifications
-- **Development Status:** See [../README.md#system-development](../README.md#-system-development) for current progress
+- **Development Status:** See [../README.md#-development-roadmap](../README.md#-development-roadmap) for current progress
 
 ---
 

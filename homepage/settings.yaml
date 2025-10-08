@@ -4,7 +4,8 @@
 
 title: Prepper Pi Dashboard
 subtitle: Offline-First Raspberry Pi Server
-favicon: https://github.com/pyrometheous/Prepper-Pi/raw/main/assets/favicon.ico
+# Use a local favicon if placed under homepage/icons/favicon.ico; otherwise comment this out
+favicon: /app/config/icons/favicon.ico
 
 layout:
   System:

@@ -12,8 +12,6 @@ SPDX-License-Identifier: CC-BY-NC-4.0
 **Docs & media:** **CC BY-NC 4.0** (see `LICENSE-DOCS`).  
 **Third-party software:** Licensed under their own FOSS licenses. See `licenses/THIRD_PARTY_NOTICES.md`.  
 **GPL/LGPL source:** I publish the Corresponding Source **in the matching GitHub Release** for any image/binary I ship. See `licenses/SOURCE-OFFER.md`.
-**Project code license:** see `LICENSE` (PP-NC-1.0).  
-**Documentation/media license:** see `LICENSE-DOCS` (CC BY-NC 4.0).
 
 **DIY/personal use:** Free for personal, educational, and internal DIY builds.  
 **Commercial sales:** Selling preconfigured hardware or services that ship/market the Prepper‑Pi stack requires a separate commercial license with revenue share. See `docs/legal/COMMERCIAL-LICENSE.md`.
@@ -42,7 +40,7 @@ Note: This is a hobby project with no guaranteed turnaround for issues or securi
 
 ## ✨ Core Features
 
-> **📋 Note:** The following features represent the planned capabilities of Prepper Pi. Phase 1 (WiFi infrastructure) is configured but requires hardware testing. Later phases require additional hardware acquisition.
+> **📋 Note:** The following features represent the planned capabilities of Prepper Pi. Phase 1 (WiFi infrastructure) is configured and intended for a drop‑in OpenWrt‑in‑Docker setup, but still requires on‑device hardware validation.
 
 ### 📺 Concurrent Operations
 - Two ATSC TV channels via dual tuner
@@ -93,6 +91,11 @@ sudo apt update && sudo apt install -y git && git clone https://github.com/pyrom
 **On Raspberry Pi:** `cp compose/docker-compose.pi.yml docker-compose.override.yml` before `docker compose up -d`.
 Alternatively use explicit files:
 `docker compose -f docker-compose.yml -f compose/docker-compose.pi.yml up -d`.
+
+Requirements for WiFi AP:
+- Run Docker with host networking for the `openwrt` service
+- Pass through USB WiFi radios and firmware (`/dev/bus/usb`, `/lib/firmware`)
+- Allow access to radio discovery (`/sys/class/ieee80211`, `/run/udev`)
 
 ### 🗑️ System Removal
 
@@ -241,7 +244,7 @@ RPi5 Ethernet ← host networking → OpenWrt Container
 - [⭐] **Landing page with captive portal** - *Service templates ready, needs hardware validation*
 - [🔄] **Hardware integration testing** - *Ready for validation on actual Pi hardware*
 
-**Current Status:** All WiFi AP functionality is properly configured with host networking mode, firewall4/nftables DNAT redirects, and unified service URLs. The system uses router IP (10.20.30.1) for all services with proper port forwarding to host containers. Configuration is complete but requires hardware testing to validate Docker stack, WiFi AP functionality, and service accessibility.
+**Current Status:** WiFi AP is configured with host networking, firewall4/nftables DNAT redirects to host services, and captive portal pages. It should operate as a drop‑in OpenWrt container on a Pi with a supported USB WiFi adapter. Final verification still requires on‑device testing.
 
 ### Phase 2: Emergency Resources & AI
 - [📋] Offline emergency resource database (first aid, survival guides)

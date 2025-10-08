@@ -2,8 +2,23 @@ version: '3.8'
 
 services:
   openwrt:
-    # Use explicit ARM64 OpenWRT image if multi-arch tag fails on Pi
+    # Use explicit ARM64 OpenWrt image if multi-arch tag fails on Pi
     image: openwrt/rootfs:23.05.2-aarch64_generic
-    # Alternative ARM64 tags to try if needed:
-    # image: openwrt/rootfs:aarch64-23.05.2
-    # image: openwrt/rootfs:latest-aarch64
+    network_mode: "host"
+    privileged: true
+    cap_add:
+      - NET_ADMIN
+      - SYS_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
+      - /dev/bus/usb:/dev/bus/usb
+    volumes:
+      - ./openwrt/config:/etc/config
+      - ./openwrt/data:/root
+      - ./openwrt/www:/www
+      - ./openwrt/opennds:/etc/opennds
+      - ./openwrt/bootstrap.sh:/root/bootstrap.sh:ro
+      - /lib/firmware:/lib/firmware:ro
+      - /sys/class/ieee80211:/sys/class/ieee80211:ro
+      - /run/udev:/run/udev:ro
+    command: ["/bin/sh", "-c", "/root/bootstrap.sh && /sbin/init"]

@@ -13,10 +13,10 @@ echo "[*] DNS sanity (via $GATEWAY)..."
 nslookup example.com "$GATEWAY" >/dev/null 2>&1 && echo "[OK] DNS resolves" || echo "[FAIL] DNS failed"
 
 echo "[*] Captive portal HTTP redirect..."
-CODE="$(curl -s -o /dev/null -w '%{http_code}' http://neverssl.com/ --interface wlan0 || true)"
+CODE="$(curl -s -o /dev/null -w '%{http_code}' http://neverssl.com/ --connect-timeout 3 || true)"
 [[ "$CODE" =~ ^30[12378]$ ]] && echo "[OK] Redirect observed ($CODE)" || echo "[WARN] No redirect ($CODE)"
 
-echo "[*] Service ports..."
+echo "[*] Service ports via $GATEWAY..."
 for port in 3000 8096 9000; do
-  nc -z "$GATEWAY" "$port" && echo "[OK] Port $port open" || echo "[WARN] Port $port closed"
+  nc -z -w 2 "$GATEWAY" "$port" && echo "[OK] Port $port open" || echo "[WARN] Port $port closed"
 done

@@ -1,5 +1,5 @@
 config system
-	option hostname 'PreppePi'
+	option hostname 'prepper-pi'
 	option timezone 'UTC'
 	option ttylogin '0'
 	option log_size '64'

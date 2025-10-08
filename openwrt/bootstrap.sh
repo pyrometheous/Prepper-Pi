@@ -1,9 +1,8 @@
 #!/bin/sh
+set -e
 
-# OpenWRT Bootstrap Script
-# Installs required pa    uci set wireless.@wifi-iface[1].ssid='Prepper Pi'
-    uci set wireless.@wifi-iface[1].encryption='psk2'
-    uci set wireless.@wifi-iface[1].key='PrepperPi2025!'ges for WiFi AP and captive portal functionality
+# OpenWrt Bootstrap Script
+# Installs required packages for WiFi AP and captive portal functionality
 
 echo "🚀 Bootstrapping OpenWRT container..."
 
@@ -12,11 +11,11 @@ FLAG=/root/.prepper_pi_bootstrap_done
 if [ ! -f "$FLAG" ]; then
     echo "📦 First boot: updating package lists..."
     opkg update
-    echo "📡 Installing wireless, firewall and captive portal packages..."
-    # Core wireless + portal
-    opkg install opennds iw wpad-basic-mbedtls dnsmasq-full uhttpd uhttpd-mod-ubus luci luci-compat
-    # Firewall (fw4 / nftables) so DNAT redirects work
-    opkg install firewall4 nftables ip-full kmod-nft-core kmod-nft-nat kmod-nft-bridge
+  echo "📡 Installing wireless, firewall and captive portal packages..."
+  # Core wireless + portal
+  opkg install opennds iw wpad-basic-mbedtls dnsmasq-full uhttpd uhttpd-mod-ubus luci luci-compat || true
+  # Firewall (fw4 / nftables) so DNAT redirects work (kernel modules may already be present on host)
+  opkg install firewall4 nftables ip-full || true
     touch "$FLAG"
 else
     echo "📦 Packages already installed, skipping update..."
@@ -71,13 +70,15 @@ else
   echo "⚠️  No radios detected; skipping wireless config"
 fi
 
-# Set hostname
+# Set hostname (safe even if overridden by mounted config)
 uci set system.@system[0].hostname='prepper-pi'
 uci commit system
 
 # Configure DNS upstreams for offline operation
 echo "🌐 Configuring DNS upstreams..."
 uci set dhcp.@dnsmasq[0].noresolv='1'
+uci -q del_list dhcp.@dnsmasq[0].server='1.1.1.1' 2>/dev/null || true
+uci -q del_list dhcp.@dnsmasq[0].server='9.9.9.9' 2>/dev/null || true
 uci add_list dhcp.@dnsmasq[0].server='1.1.1.1'
 uci add_list dhcp.@dnsmasq[0].server='9.9.9.9'
 uci commit dhcp

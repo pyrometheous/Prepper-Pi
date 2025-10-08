@@ -171,26 +171,22 @@ EOF
     systemctl enable prepper-pi-network.service
 fi
 
-# Create WiFi USB adapter configuration script
-print_status "Creating WiFi adapter setup script..."
-cat > setup-wifi-adapter.sh << EOF
-#!/bin/bash
-# Setup script for ALFA AWUS036ACM (MT7612U) WiFi adapter
+# Create WiFi USB adapter configuration script and a fallback host AP script
+print_status "Creating WiFi adapter setup scripts..."
 
-print_status() {
-    echo -e "\033[0;34m[INFO]\033[0m $1"
-}
+# Main adapter info/helper (placeholder for future expansion)
+cat > setup-wifi-adapter.sh << 'EOF_SETUP_WIFI'
+#!/usr/bin/env bash
+set -euo pipefail
 
-# Configuration flags
-ENABLE_HOST_AP=${ENABLE_HOST_AP:-0}  # Set to 1 to enable host AP as fallback
+echo "This script is a placeholder for adapter-specific tweaks."
+echo "For emergency host-based AP (fallback), run: ./setup-wifi-adapter-fallback.sh"
+EOF_SETUP_WIFI
 
-# Create WiFi adapter setup script (for fallback use only)
-print_status "Creating WiFi adapter fallback script..."
-cat > setup-wifi-adapter-fallback.sh << 'EOF'
-#!/bin/bash
-
-# Fallback WiFi AP Setup (Host-based)
-# Only use this if OpenWRT container AP doesn't work
+# Fallback host-based AP (only if container AP fails)
+cat > setup-wifi-adapter-fallback.sh << 'EOF_FALLBACK'
+#!/usr/bin/env bash
+set -euo pipefail
 
 echo "⚠️  Setting up fallback host-based WiFi AP..."
 echo "⚠️  This conflicts with OpenWRT container AP mode!"
@@ -203,22 +199,22 @@ if [[ ! $REPLY =~ ^[Yy]$ ]]; then
     exit 1
 fi
 
-print_status "Setting up WiFi adapter for AP mode..."
+echo "[INFO] Setting up WiFi adapter for AP mode..."
 
 # Install required packages for WiFi AP
 apt update
 apt install -y hostapd dnsmasq
 
 # Stop services
-systemctl stop hostapd
-systemctl stop dnsmasq
+systemctl stop hostapd || true
+systemctl stop dnsmasq || true
 
 # Backup original configurations
 cp /etc/hostapd/hostapd.conf /etc/hostapd/hostapd.conf.backup 2>/dev/null || true
 cp /etc/dnsmasq.conf /etc/dnsmasq.conf.backup 2>/dev/null || true
 
 # Create hostapd configuration for external WiFi adapter
-cat > /etc/hostapd/hostapd.conf << EOL
+cat > /etc/hostapd/hostapd.conf << 'EOL'
 interface=wlan1
 driver=nl80211
 ssid=Prepper Pi Setup
@@ -232,16 +228,16 @@ wpa=0
 EOL
 
 # Configure dnsmasq for setup mode
-cat > /etc/dnsmasq.conf << EOL
+cat > /etc/dnsmasq.conf << 'EOL'
 interface=wlan1
 dhcp-range=192.168.4.2,192.168.4.20,255.255.255.0,24h
 EOL
 
-print_status "Host WiFi AP configured. This may conflict with OpenWRT container."
-print_warning "Recommended: Use OpenWRT container AP instead."
-EOF
+echo "[INFO] Host WiFi AP configured. This may conflict with OpenWRT container."
+echo "[WARN] Recommended: Use OpenWRT container AP instead."
+EOF_FALLBACK
 
-chmod +x setup-wifi-adapter.sh
+chmod +x setup-wifi-adapter.sh setup-wifi-adapter-fallback.sh
 
 # Create convenience scripts
 print_status "Creating convenience scripts..."

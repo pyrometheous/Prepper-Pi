@@ -1,14 +1,10 @@
 config uhttpd 'main'
 	option listen_http '0.0.0.0:80'
-	# Use HTTPS later if desired:
-	# option listen_https '0.0.0.0:443'
+	# option listen_https '0.0.0.0:443'  # enable later with real certs
 	option home '/www'
 	option rfc1918_filter '0'
 	option max_requests '3'
 	option max_connections '100'
-	option cert '/etc/uhttpd.crt'
-	option key '/etc/uhttpd.key'
 	option cgi_prefix '/cgi-bin'
-	list interpreter '.php=/usr/bin/php-cgi'
 	option ubus_prefix '/ubus'
 	option redirect_https '0'

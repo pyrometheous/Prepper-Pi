@@ -18,6 +18,9 @@ config interface 'wan'
 	option device 'eth0'
 	option proto 'none'
 
+# NOTE: In container mode we do not enslave any host NICs to br-lan.
+# WLAN interfaces created by hostapd will attach to br-lan dynamically.
+
 config device
 	option name 'br-lan'
 	option type 'bridge'
