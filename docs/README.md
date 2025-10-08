@@ -13,7 +13,7 @@ Detailed electrical specifications, system diagrams, safety guidelines, and asse
 ### 📡 [WiFi AP Testing Guide](wifi-testing.md)
 Hardware validation protocol for WiFi access point functionality. Documents configuration issues and testing procedures for OpenWRT-in-Docker setup.
 
-### 🔍 [AP Verification Script](../verify-ap.sh)
+### 🔍 [AP Verification Script](../scripts/verify-ap.sh)
 Automated validation script to check OpenWRT container configuration, WiFi device access, and future hardware readiness. Run with `./verify-ap.sh` after deployment.
 
 ---
@@ -27,8 +27,15 @@ Prepper-Pi/
 │   ├── components.md      # Complete components list and BOM
 │   └── wiring.md         # Technical specifications and assembly guide
 ├── README.md             # Main project overview and setup instructions
-├── docker-compose.yml    # Service stack configuration
-├── first-run-setup.sh   # Automated installation script
+├── docker-compose.yml    # Base service stack (override files in compose/)
+├── compose/
+│   ├── docker-compose.pi.yml           # Pi-specific overrides
+│   └── override.example.yml            # Example override template
+├── scripts/
+│   ├── first-run-setup.sh              # Automated installation script
+│   ├── startup.sh                      # Start services and health checks
+│   ├── cleanup.sh                      # Uninstall and cleanup
+│   └── verify-ap.sh                    # AP verification tests
 └── ...                  # Additional project files
 ```
 

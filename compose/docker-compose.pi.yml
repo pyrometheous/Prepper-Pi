@@ -1,0 +1,9 @@
+version: '3.8'
+
+services:
+  openwrt:
+    # Use explicit ARM64 OpenWRT image if multi-arch tag fails on Pi
+    image: openwrt/rootfs:23.05.2-aarch64_generic
+    # Alternative ARM64 tags to try if needed:
+    # image: openwrt/rootfs:aarch64-23.05.2
+    # image: openwrt/rootfs:latest-aarch64

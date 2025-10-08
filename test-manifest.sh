@@ -17,11 +17,11 @@ readarray -t IMAGES < <(
     match($0, /^[[:space:]]*image:[[:space:]]*([^[:space:]]+)/, m) {    # image: repo[:tag|@sha]
       print m[1]
     }
-  ' docker-compose*.yml 2>/dev/null | sort -u
+  ' docker-compose*.yml compose/*.yml 2>/dev/null | sort -u
 )
 
 if [[ ${#IMAGES[@]} -eq 0 ]]; then
-  echo "ERROR: No active images discovered in docker-compose*.yml" >&2
+  echo "ERROR: No active images discovered in docker-compose*.yml or compose/*.yml" >&2
   exit 1
 fi
 
@@ -64,7 +64,7 @@ done
 # Hash key configs for traceability
 echo ""                                         | tee -a "$MANIFEST"
 echo "[checksums]"                              | tee -a "$MANIFEST"
-for f in docker-compose*.yml *.env; do
+for f in docker-compose*.yml compose/*.yml *.env; do
   [[ -f "$f" ]] && sha256sum "$f" | tee -a "$MANIFEST"
 done
 
