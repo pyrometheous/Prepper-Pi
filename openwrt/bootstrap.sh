@@ -1,7 +1,9 @@
 #!/bin/sh
 
 # OpenWRT Bootstrap Script
-# Installs required packages for WiFi AP and captive portal functionality
+# Installs required pa    uci set wireless.@wifi-iface[1].ssid='Prepper Pi'
+    uci set wireless.@wifi-iface[1].encryption='psk2'
+    uci set wireless.@wifi-iface[1].key='PrepperPi2025!'ges for WiFi AP and captive portal functionality
 
 echo "🚀 Bootstrapping OpenWRT container..."
 
@@ -49,7 +51,7 @@ if [ -d /sys/class/ieee80211 ] && [ "$(ls -A /sys/class/ieee80211 2>/dev/null)" 
     uci set wireless.@wifi-iface[0].network='lan'
     uci set wireless.@wifi-iface[0].ssid='Prepper Pi'
     uci set wireless.@wifi-iface[0].encryption='psk2'
-    uci set wireless.@wifi-iface[0].key='PrepperPi2024!'
+    uci set wireless.@wifi-iface[0].key='PrepperPi2025!'
   fi
 
   # 5 GHz (index 1) — if present
@@ -60,7 +62,7 @@ if [ -d /sys/class/ieee80211 ] && [ "$(ls -A /sys/class/ieee80211 2>/dev/null)" 
     uci set wireless.@wifi-iface[1].network='lan'
     uci set wireless.@wifi-iface[1].ssid='Prepper Pi 5G'
     uci set wireless.@wifi-iface[1].encryption='psk2'
-    uci set wireless.@wifi-iface[1].key='PrepperPi2024!'
+    uci set wireless.@wifi-iface[1].key='PrepperPi2025!'
   fi
 
   uci commit wireless

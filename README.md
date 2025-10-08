@@ -77,80 +77,27 @@ sudo apt update && sudo apt install -y git && git clone https://github.com/pyrom
 git clone https://github.com/pyrometheous/Prepper-Pi.git && cd Prepper-Pi && sudo bash cleanup.sh && cd .. && rm -rf Prepper-Pi
 ```
 
-## ⚙️ Configuration Steps
+## ⚙️ Service Access & Configuration
 
-### 🚦 Feature Implementation Status
+### 🌐 Network Access
+- **Default Gateway:** `10.20.30.1` (OpenWrt admin interface, username: `root`, no password)
+- **WiFi Network:** "Prepper Pi" SSID with password `PrepperPi2025!`
+- **DHCP Range:** 10.20.30.100-199 for client devices
 
-| Feature | Status | Notes |
-|---------|--------|-------|
-| **Phase 1: Core Infrastructure** | | |
-| Docker Service Stack | ⚠️ **Experimental** | Configuration complete, needs hardware testing |
-| WiFi Access Point | ⚠️ **Experimental** | Bootstrap generates config on first boot, then applies WPA2 |
-| Captive Portal | ⚠️ **Experimental** | OpenNDS configured, needs end-to-end testing |
-| Landing Page | ⚠️ **Experimental** | Homepage dashboard configured, needs hardware validation |
-| **Phase 2: Emergency Resources & AI** | | |
-| Offline Resource Database | 📋 **Planned** | First aid, survival guides, emergency protocols |
-| Local LLM Deployment | 📋 **Planned** | Emergency consultation and guidance system |
-| Offline Wikipedia | 📋 **Planned** | Kiwix platform for essential reference materials |
-| **Phase 3: Media Server & Storage** | | |
-| Jellyfin Optimization | 📋 **Planned** | Media server configuration and library organization |
-| File Sharing (Samba) | 📋 **Planned** | Local network access and mobile interfaces |
-| Performance Testing | 📋 **Planned** | Multiple concurrent stream validation |
-| **Phase 4: TV & Radio** | | |
-| TV Reception (ATSC) | 📋 **Planned** | Tvheadend service template ready |
-| FM Radio Streaming | 📋 **Planned** | RTL-SDR + Icecast template ready |
-| NOAA Weather Radio | 📋 **Planned** | RTL-SDR + Icecast template ready |
-| **Phase 5: LoRa Mesh** | | |
-| Mesh Networking | 📋 **Planned** | Meshtastic service template ready |
-| **Phase 6: Solar Power** | | |
-| Solar Charging | 📋 **Planned** | Hardware design phase |
-| Power Monitoring | 📋 **Planned** | Victron integration planned |
+### 📊 Service URLs
+| Service | URL | Status | Notes |
+|---------|-----|--------|-------|
+| Landing Page | http://10.20.30.1 | ⚠️ **Experimental** | Captive portal redirect |
+| Jellyfin | http://10.20.30.1:8096 | ⚠️ **Experimental** | Media server |
+| Portainer | http://10.20.30.1:9000 | ⚠️ **Experimental** | Container management |
+| Tvheadend | http://10.20.30.1:9981 | 📋 **Planned** | TV backend (Phase 4) |
+| Meshtastic | http://10.20.30.1:2443 | 📋 **Planned** | LoRa mesh (Phase 5) |
+| Samba | \\\\10.20.30.1 | 📋 **Planned** | File sharing (Phase 3) |
 
 **Status Legend:**
 - ✅ **Implemented** - Tested and working
 - ⚠️ **Experimental** - Configured but needs hardware validation  
 - 📋 **Planned** - Service templates ready, hardware needed
-
-### 1. 🌐 Network Configuration
-```bash
-# Access OpenWrt admin interface (after hardware testing)
-http://10.20.30.1
-
-# Default credentials
-Username: root
-Password: (blank)
-```
-
-### 2. 📊 Services Dashboard
-```bash
-# Landing page with all service links (after hardware validation)
-http://10.20.30.1
-
-# Individual service access (requires hardware testing)
-Jellyfin: http://10.20.30.1:8096
-Portainer: http://10.20.30.1:9000
-Samba: \\10.20.30.1
-```
-
-### 3. 📺 TV Configuration
-```bash
-# Tvheadend web interface (Phase 4 - requires TV tuner hardware)
-http://10.20.30.1:9981
-
-# Initial setup (when hardware is available)
-1. Configure tuners and scan for channels
-2. Set up recording profiles
-3. Create user accounts for streaming access
-```
-
-### 4. 📻 Radio Configuration
-```bash
-# RTL-SDR configuration via SSH (Phase 4 - requires RTL-SDR dongles)
-ssh pi@10.20.30.1
-
-# Test radio reception (when hardware is available)
-rtl_fm -f 101.1M -M wbfm -s 200000 -r 48000 | aplay -r 48k -f S16_LE
-```
 
 ## 🌐 Network Architecture
 
@@ -170,18 +117,8 @@ RPi5 Ethernet ← host networking → OpenWrt Container
                                     (10.20.30.100-199)
 ```
 
-### 🔗 Service Access
-| Service | Local Domain | IP Address | Port |
-|---------|--------------|------------|------|
-| Captive Portal Landing | - | 10.20.30.1 | 80 |
-| OpenWrt Web UI | openwrt.local | 10.20.30.1 | 80 |
-| Homepage Dashboard | prepper-pi.local | 10.20.30.1 | 3000 |
-| Jellyfin Media Server | jellyfin.local | 10.20.30.1 | 8096 |
-| Portainer Management | portainer.local | 10.20.30.1 | 9000 |
-| Tvheadend | - | 10.20.30.1 | 9981 |
-| Samba/CIFS | - | \\10.20.30.1 | 445 |
-
-*Note: All services require hardware testing to validate accessibility. Captive portal redirects to OpenWrt router after hardware validation.*
+### 🔗 Service Access Table
+*All services accessible via the unified 10.20.30.1 IP address with port-specific access as listed above. Captive portal redirects new connections to the landing page.*
 
 ## 📋 Hardware Requirements
 
@@ -211,7 +148,7 @@ RPi5 Ethernet ← host networking → OpenWrt Container
 - **RF Filters** and isolation for clean signal paths
 - **Thermal Management** for extended operation in heat
 
-## 🛣️ System Development
+## 🛣️ Development Roadmap
 
 **Status Legend:**
 - ✅ **Tested & Working** - Deployed and verified in field conditions
@@ -271,7 +208,9 @@ RPi5 Ethernet ← host networking → OpenWrt Container
 - [📋] Long-term reliability testing and performance optimization
 - [📋] Documentation of lessons learned and system improvements
 
-### 🔬 Current Testing Priorities (Phase 1)
+## ✅ Testing & Validation
+
+### 🔬 Phase 1 Testing Priorities
 1. **WiFi AP Hardware Validation** - Test OpenWrt container AP mode on actual Pi 5 hardware
 2. **Service Connectivity Verification** - Confirm DNAT redirects work for all services (3000/8096/9000)  
 3. **Captive Portal End-to-End** - Validate complete portal flow from connection to service access
@@ -279,88 +218,31 @@ RPi5 Ethernet ← host networking → OpenWrt Container
 5. **Docker Service Stack Stability** - Verify all services start reliably and remain accessible
 6. **Power Consumption Baseline** - Measure current usage before adding additional hardware
 
-**✅ Configuration Complete:** WiFi AP functionality is fully configured with host networking, firewall4/nftables, and proper DNAT redirects. Ready for hardware validation on Raspberry Pi with USB WiFi adapter.
+### 🧪 Validation Tests
 
-### 🧪 Smoke Test Validation
-
-**You should be able to:**
-1. Connect to "Prepper Pi" SSID with password `PrepperPi2024!`
+**Expected Client Experience:**
+1. Connect to "Prepper Pi" SSID with password `PrepperPi2025!`
 2. Get DHCP address from OpenWrt container (10.20.30.x range)
 3. Be redirected to landing page (http://10.20.30.1) via captive portal
-4. Access OpenWrt admin interface at http://10.20.30.1/cgi-bin/luci
-5. Open Jellyfin media server at http://10.20.30.1:8096
-6. Access Portainer management at http://10.20.30.1:9000
-7. Future: Tvheadend TV backend at http://10.20.30.1:9981 (Phase 4)
-8. Future: Meshtastic Web UI at http://10.20.30.1:2443 (Phase 5)
+4. Access all services through the landing page
 
-**Validation Script:** Run `./verify-ap.sh` to check AP configuration and device mapping.
-
-**Manual Client Tests:**
+**Manual Verification Commands:**
 ```bash
-# Test DNS resolution (should work from connected client)
+# Test DNS resolution from connected client
 nslookup example.com 10.20.30.1
 
-# Test captive portal redirect (should return 302/303 redirect)
+# Test captive portal redirect (should return 302/303)
 curl -I http://neverssl.com/ | head -n 5
+
+# Run configuration verification script
+./verify-ap.sh
 ```
 
 **Success Indicators:**
-- `iw list` shows AP in "Supported interface modes"
-- `iw dev` lists wlan* interfaces; `wifi status` shows SSIDs
-- `logread` shows dnsmasq DHCPACK lines when clients connect
-- DNS queries to 10.20.30.1 return responses
-- HTTP requests redirect to http://10.20.30.1/ until portal accepted
-
-## ⚠️ Configuration Status & Testing Needed
-
-**Phase 1 WiFi AP Configuration:**
-- ✅ **Fixed:** Docker OpenWrt now uses `host` networking mode for proper radio access
-- ✅ **Fixed:** USB WiFi device passthrough configured with `/dev/bus/usb` mount
-- ✅ **Fixed:** Firmware and driver access via `/lib/firmware` and `/sys/class/ieee80211` mounts  
-- ✅ **Fixed:** OpenNDS captive portal configured to redirect to landing page
-- ✅ **Fixed:** Default WiFi security upgraded to WPA2 (open mode available for emergencies)
-
-**Hardware Testing Required:**
-1. Validate USB WiFi adapter compatibility with Pi 5 and container access
-2. Test OpenWrt wireless driver initialization and AP mode activation  
-3. Verify captive portal redirect functionality end-to-end
-4. Confirm DHCP assignment and client connectivity (10.20.30.0/24 range)
-5. Test service accessibility through landing page
-
-**If OpenWrt image fails on Pi:** Use `docker-compose.pi.yml` for ARM64-specific image.
-
-**Run Verification:** Use `./verify-ap.sh` to validate configuration before field deployment.
-
-These improvements address the audit findings. Phase 1 is now properly configured for hardware testing.
-
-### ✅ Quick Setup Checklist
-
-**Before Hardware Testing:**
-- [ ] Raspberry Pi 5 with adequate cooling
-- [ ] USB WiFi adapter compatible with hostapd/nl80211
-- [ ] NVMe SSD mounted and accessible
-- [ ] Docker and Docker Compose installed
-
-**Configuration Validation:**
-- [ ] `docker compose up -d` starts all services without errors
-- [ ] `./verify-ap.sh` shows ARM64 OpenWrt image loads successfully
-- [ ] `iw list` inside container shows WiFi device with AP mode support
-- [ ] `iw dev` lists wlan* interfaces and `wifi status` shows SSIDs
-- [ ] OpenNDS service starts and configures captive portal
-- [ ] DHCP assigns addresses in 10.20.30.0/24 range
-
-**Client Testing:**
-- [ ] "Prepper Pi" SSID broadcasts and accepts WPA2 connections
-- [ ] Captive portal redirects to http://10.20.30.1/ landing page
-- [ ] All services accessible through landing page links
-- [ ] `nslookup example.com 10.20.30.1` returns DNS response
-- [ ] `curl -I http://neverssl.com/` returns HTTP 302/303 redirect
-- [ ] `logread` shows dnsmasq DHCPACK entries for connected clients
-
-**Future Hardware Ready:**
-- [ ] Tvheadend service template ready (uncomment when TV tuner added)
-- [ ] RTL-SDR radio streaming templates ready (uncomment when dongles added)  
-- [ ] Meshtastic service template ready (uncomment when LoRa hardware added)
+- `iw list` shows AP mode support
+- `iw dev` lists wireless interfaces
+- `logread` shows DHCP assignments
+- All services accessible via 10.20.30.1
 
 ## 🙏 Acknowledgments
 
