@@ -80,7 +80,7 @@ mkdir -p homepage/icons
 
 # Start services
 print_status "Starting Prepper Pi services..."
-docker-compose up -d
+docker compose up -d
 
 # Wait for services to start
 print_status "Waiting for services to initialize..."
@@ -119,7 +119,7 @@ fi
 
 # Display status
 print_status "Current service status:"
-docker-compose ps
+docker compose ps
 
 echo ""
 print_success "Prepper Pi startup completed!"

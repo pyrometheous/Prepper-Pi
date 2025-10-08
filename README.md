@@ -87,15 +87,17 @@ Note: This is a hobby project with no guaranteed turnaround for issues or securi
 
 ```bash
 sudo apt update && sudo apt install -y git && git clone https://github.com/pyrometheous/Prepper-Pi.git \
-  && cd Prepper-Pi && sudo bash first-run-setup.sh
+  && cd Prepper-Pi && sudo bash scripts/first-run-setup.sh
 ```
 
-**On Raspberry Pi:** `cp docker-compose.pi.yml docker-compose.override.yml` before `docker compose up -d`.
+**On Raspberry Pi:** `cp compose/docker-compose.pi.yml docker-compose.override.yml` before `docker compose up -d`.
+Alternatively use explicit files:
+`docker compose -f docker-compose.yml -f compose/docker-compose.pi.yml up -d`.
 
 ### 🗑️ System Removal
 
 ```bash
-git clone https://github.com/pyrometheous/Prepper-Pi.git && cd Prepper-Pi && sudo bash cleanup.sh && cd .. && rm -rf Prepper-Pi
+git clone https://github.com/pyrometheous/Prepper-Pi.git && cd Prepper-Pi && sudo bash scripts/cleanup.sh && cd .. && rm -rf Prepper-Pi
 ```
 
 ## 🔒 Security Hardening (do this before field use)
@@ -312,7 +314,7 @@ nslookup example.com 10.20.30.1
 curl -I http://neverssl.com/ | head -n 5
 
 # Run configuration verification script
-./verify-ap.sh
+./scripts/verify-ap.sh
 ```
 
 **Success Indicators:**

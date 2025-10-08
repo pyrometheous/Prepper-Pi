@@ -1,23 +1,19 @@
-# Docker Compose Override for ARM64 Raspberry Pi
-# Copy this file to docker-compose.override.yml on your Pi if the default
-# multi-arch tag doesn't work properly
-
 version: '3.8'
 
 services:
   openwrt:
     # Use explicit ARM64 OpenWRT image if multi-arch tag fails
     # Uncomment one of these options if the default image doesn't work:
-    
+
     # Option 1: Try official ARM64 generic
     # image: openwrt/rootfs:23.05.2-aarch64_generic
-    
+
     # Option 2: Alternative ARM64 build (if available)
     # image: openwrt/rootfs:aarch64-23.05.2
-    
+
     # Option 3: Latest ARM64 if specific version unavailable
     # image: openwrt/rootfs:latest-aarch64
-    
+
     # If none work, enable host AP fallback:
     # environment:
     #   - ENABLE_HOST_AP_FALLBACK=1

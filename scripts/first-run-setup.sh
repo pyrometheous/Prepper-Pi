@@ -57,7 +57,7 @@ apt update
 
 # Install required packages
 print_status "Installing required packages..."
-apt install -y docker.io docker-compose git curl wget iproute2 iptables net-tools
+apt install -y docker.io docker-compose-plugin git curl wget iproute2 iptables net-tools
 
 # Add current user to docker group (if not root)
 if [ "$SUDO_USER" ]; then
@@ -106,7 +106,7 @@ mkdir -p media/documentaries media/podcasts media/radio-recordings
 
 # Download Docker images
 print_status "Pulling Docker images..."
-docker-compose pull
+docker compose pull
 
 # Create macvlan network helper script
 print_status "Creating network helper script..."
@@ -118,11 +118,11 @@ cat > setup-macvlan.sh << EOF
 docker network rm openwrt_net 2>/dev/null || true
 
 # Create macvlan network
-docker network create -d macvlan \\
-    --subnet=10.20.30.0/24 \\
-    --gateway=10.20.30.1 \\
-    --ip-range=10.20.30.0/24 \\
-    -o parent=$INTERFACE \\
+docker network create -d macvlan \
+    --subnet=10.20.30.0/24 \
+    --gateway=10.20.30.1 \
+    --ip-range=10.20.30.0/24 \
+    -o parent=$INTERFACE \
     openwrt_net
 
 echo "Macvlan network created successfully"
@@ -178,7 +178,7 @@ cat > setup-wifi-adapter.sh << EOF
 # Setup script for ALFA AWUS036ACM (MT7612U) WiFi adapter
 
 print_status() {
-    echo -e "\033[0;34m[INFO]\033[0m \$1"
+    echo -e "\033[0;34m[INFO]\033[0m $1"
 }
 
 # Configuration flags
@@ -267,9 +267,9 @@ chmod +x status.sh
 cat > restart.sh << EOF
 #!/bin/bash
 echo "🔄 Restarting Prepper Pi services..."
-docker-compose down
-[ "\${ENABLE_MACVLAN:-0}" = "1" ] && ./setup-host-bridge.sh
-docker-compose up -d
+docker compose down
+[ "${ENABLE_MACVLAN:-0}" = "1" ] && ./setup-host-bridge.sh
+docker compose up -d
 echo "✅ Services restarted"
 EOF
 
@@ -278,11 +278,11 @@ chmod +x restart.sh
 # Logs script
 cat > logs.sh << EOF
 #!/bin/bash
-if [ "\$1" ]; then
-    docker-compose logs -f "\$1"
+if [ "$1" ]; then
+    docker compose logs -f "$1"
 else
     echo "Available services:"
-    docker-compose ps --services
+    docker compose ps --services
     echo ""
     echo "Usage: ./logs.sh [service-name]"
     echo "Example: ./logs.sh openwrt"
@@ -301,41 +301,41 @@ cat > POST-SETUP.md << EOF
 Your Prepper Pi is now configured. Here's what's been set up:
 
 ### 🔧 Services Running:
-- **OpenWRT**: Router/firewall at \`10.20.30.1\`
-- **Homepage**: Landing page at \`http://prepper-pi.local:3000\`
-- **Portainer**: Container management at \`http://10.20.30.1:9000\`
-- **Jellyfin**: Media server at \`http://10.20.30.1:8096\`
+- **OpenWRT**: Router/firewall at `10.20.30.1`
+- **Homepage**: Landing page at `http://prepper-pi.local:3000`
+- **Portainer**: Container management at `http://10.20.30.1:9000`
+- **Jellyfin**: Media server at `http://10.20.30.1:8096`
 - **Samba**: File sharing (\\\\10.20.30.1)
 
 ### 📁 Directory Structure:
-- \`media/\`: Place your media files here for Jellyfin
-- \`shares/\`: Public file sharing via Samba
-- \`openwrt/config/\`: OpenWRT configuration files
+- `media/`: Place your media files here for Jellyfin
+- `shares/`: Public file sharing via Samba
+- `openwrt/config/`: OpenWRT configuration files
 
 ### 🔨 Useful Commands:
-- \`./status.sh\`: Check system status
-- \`./restart.sh\`: Restart all services
-- \`./logs.sh [service]\`: View service logs
-- \`docker-compose up -d\`: Start services
-- \`docker-compose down\`: Stop services
+- `./status.sh`: Check system status
+- `./restart.sh`: Restart all services
+- `./logs.sh [service]`: View service logs
+- `docker compose up -d`: Start services
+- `docker compose down`: Stop services
 
 ### 🌐 Next Steps:
 
 1. **Configure External WiFi Adapter (ALFA AWUS036ACM)**:
-   \`\`\`bash
+   ```bash
    sudo ./setup-wifi-adapter.sh
-   \`\`\`
+   ```
 
 2. **Access the Landing Page**:
    - Connect to your network
-   - Visit \`http://prepper-pi.local:3000\` or \`http://10.20.30.1:3000\`
+   - Visit `http://prepper-pi.local:3000` or `http://10.20.30.1:3000`
 
 3. **Configure OpenWRT**:
-   - Visit \`http://10.20.30.1\`
+   - Visit `http://10.20.30.1`
    - Set up your wireless networks and routing
 
 4. **Add Media to Jellyfin**:
-   - Copy media files to \`media/\` subdirectories
+   - Copy media files to `media/` subdirectories
    - Configure Jellyfin libraries
 
 5. **Test WiFi Hotspot**:
@@ -344,15 +344,15 @@ Your Prepper Pi is now configured. Here's what's been set up:
 
 ### 📱 Mobile Access:
 Once the WiFi hotspot is active, connect to "Prepper Pi" and visit:
-- \`http://10.20.30.1\` - Captive portal landing page
-- \`http://10.20.30.1:3000\` - Homepage dashboard  
-- \`http://10.20.30.1\` - Router admin
+- `http://10.20.30.1` - Captive portal landing page
+- `http://10.20.30.1:3000` - Homepage dashboard
+- `http://10.20.30.1` - Router admin
 
 ### 🚨 Troubleshooting:
-- Check status: \`./status.sh\`
-- View logs: \`./logs.sh openwrt\`
-- Restart services: \`./restart.sh\`
-- Check network: \`ip addr show\`
+- Check status: `./status.sh`
+- View logs: `./logs.sh openwrt`
+- Restart services: `./restart.sh`
+- Check network: `ip addr show`
 
 Enjoy your Prepper Pi! 🥧
 EOF
@@ -365,7 +365,7 @@ print_status "Running final setup steps..."
 
 # Start services
 print_status "Starting Prepper Pi services..."
-docker-compose up -d
+docker compose up -d
 
 # Wait for services to start
 print_status "Waiting for services to initialize..."
@@ -373,7 +373,7 @@ sleep 30
 
 # Check status
 print_status "Checking service status..."
-docker-compose ps
+docker compose ps
 
 print_success "Prepper Pi setup completed successfully!"
 print_success "Please read POST-SETUP.md for next steps"

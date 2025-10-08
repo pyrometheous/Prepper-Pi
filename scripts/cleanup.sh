@@ -54,7 +54,7 @@ fi
 
 # Stop and remove Docker containers
 print_status "Stopping and removing Docker containers..."
-docker-compose down -v --remove-orphans 2>/dev/null || true
+docker compose down -v --remove-orphans 2>/dev/null || true
 
 # Remove Docker images
 print_status "Removing Docker images..."
@@ -136,9 +136,9 @@ read -p "Do you want to remove Docker and related packages? (y/N): " -n 1 -r
 echo
 if [[ $REPLY =~ ^[Yy]$ ]]; then
     print_status "Removing Docker and related packages..."
-    apt remove -y docker.io docker-compose
+    apt remove -y docker.io docker-compose-plugin
     apt autoremove -y
-    
+
     # Remove user from docker group
     if [ "$SUDO_USER" ]; then
         deluser "$SUDO_USER" docker 2>/dev/null || true
@@ -158,4 +158,3 @@ print_warning "To completely remove all data, manually delete:"
 print_warning "  rm -rf media/ shares/"
 print_status ""
 print_success "System restored to pre-Prepper Pi state."
-# cleanup script placeholder
