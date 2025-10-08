@@ -271,6 +271,17 @@ curl -I http://neverssl.com/ | head -n 5
 * **[Standard Ebooks](https://standardebooks.org/)** – High-quality public domain literature collection for offline reading
 * **[Tvheadend](https://tvheadend.org/)** – TV backend software
 
+**Kindle & Kavita Integration**
+
+* **[WinterBreak (Kindle jailbreak)](https://kindlemodding.org/jailbreaking/WinterBreak/)** – Current, community-maintained jailbreak guide for supported Kindles. Project repo: [KindleModding/WinterBreak](https://github.com/KindleModding/WinterBreak).
+* **[Post‑JB: KOReader on Kindle](https://kindlemodding.org/jailbreaking/post-jailbreak/koreader.html)** – KOReader install steps (via KUAL/MRPI) after jailbreaking.
+* **[NiLuJe's Jailbreak Hotfix/Bridge](https://www.mobileread.com/forums/showthread.php?t=349767)** – Persists the jailbreak across updates and cleans demo-mode leftovers.
+* **[Kavita OPDS Guide](https://wiki.kavitareader.com/guides/features/opds/)** – Enable and copy your user‑specific OPDS URL/key for 3rd‑party readers.
+* **[Kavita × KOReader notes](https://wiki.kavitareader.com/guides/3rdparty/koreader/)** – Tips for connecting KOReader to Kavita (nightly KOReader recommended per Kavita docs).
+* **Community status threads**: MobileRead jailbreak discussions for recovery/rollback and firmware caveats.
+
+> **Quick Start:** Jailbreak (WinterBreak) → install Hotfix/Bridge → install KOReader → add your **Kavita OPDS** URL in KOReader (OPDS Catalog).
+
 **Radio, Mesh & Offline Resources**
 
 * **[Kiwix](https://www.kiwix.org/)** – Offline Wikipedia and documentation platform (Phase 2 resources)
