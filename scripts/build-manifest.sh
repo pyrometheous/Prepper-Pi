@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# SPDX-License-Identifier: LicenseRef-PP-NC-1.0
 set -euo pipefail
 
 OUT_DIR="${1:-./release-artifacts}"

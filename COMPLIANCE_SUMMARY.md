@@ -1,3 +1,7 @@
+<!--
+SPDX-License-Identifier: CC-BY-NC-4.0
+-->
+
 # Prepper Pi Compliance Audit - Implementation Summary
 
 This document summarizes the licensing and commercial compliance updates implemented based on the comprehensive audit.
@@ -80,11 +84,12 @@ With these updates, the Prepper Pi project is now **ready for commercial hardwar
 ### For Commercial Distributors
 1. Contact **pyrometheous** for commercial licensing agreement
 2. Run `scripts/build-manifest.sh` before each release
-3. **Create a GitHub Release** with:
+3. **Create a GitHub Release** (fail the release if any item is missing) with:
    - the **image/binary artifacts** (if any),
    - the matching **`source/` archive** (Corresponding Source),
    - the generated **`MANIFEST.txt`**,
-   - and the **checksums** for all posted artifacts.
+   - the **checksums** for all posted artifacts,
+   - (optional but recommended) a `/licenses` folder inside the `source/` archive with license texts.
 4. Include `licenses/THIRD_PARTY_NOTICES.md` with devices
 5. Follow branding guidelines in `TRADEMARKS.md`
 

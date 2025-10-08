@@ -31,6 +31,7 @@ When distributing devices with Prepper Pi:
 - **Provide Corresponding Source** via **concurrent source distribution** in the matching public release **or**, at Licensee's option, furnish a **written offer** valid for at least 3 years, for all GPL/LGPL components (including any patches). Include `licenses/SOURCE-OFFER.md` with a working URL. The written offer must be valid to **any third party** in possession of the object code.
 - If the device employs any installation lock-down, provide any **Installation Information** required by GPLv3. (Typical Raspberry Pi setups are user-modifiable.)
 - Where feasible, prefer downstream-supplied FFmpeg/codecs; do not enable non-free encoders unless you hold appropriate rights.
+- Licensee will reasonably cooperate to verify compliance (e.g., by providing the public release link containing the corresponding source).
 
 ## 7. Patents, Codecs & Firmware
 - Licensee is responsible for **patent** and **codec** licensing (e.g., H.264/AVC, HEVC, AAC) for any encoders/decoders distributed on devices in covered territories.
@@ -45,7 +46,7 @@ When distributing devices with Prepper Pi:
 AS-IS, no warranties. Neither party is liable for indirect, incidental, special, consequential, or punitive damages.
 
 ## 10. Termination
-- For breach not cured within 15 days after notice.
+- For breach (including failure to satisfy §6 FOSS Compliance) not cured within 15 days after notice.
 - Immediate termination for non-payment, fraudulent reporting, or misuse of marks.
 - On termination: cease sales and remove marks from goods/marketing; ongoing FOSS license obligations survive.
 

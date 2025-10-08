@@ -1,3 +1,7 @@
+<!--
+SPDX-License-Identifier: CC-BY-NC-4.0
+-->
+
 # 🥧 Prepper Pi
 
 > **⚠️ DISCLAIMER:** Personal project, early development. No warranties or support. Use at your own risk.
@@ -18,6 +22,8 @@
 **No copyrighted media included:** Devices ship **without** copyrighted content. Users are responsible for lawful use of media and RF features.
 
 **Codecs/patents note:** FFmpeg and certain codecs (e.g., H.264/AVC, HEVC, AAC) may be patent-encumbered in some regions. This project does not grant patent licenses. Where required, ship legal codecs from your OS vendor and let end-users enable optional encoders themselves.
+
+> **Note:** If a matching GitHub Release isn't published yet for a given image/binary, use the repository source at the tagged commit. Once a formal Release is cut, the corresponding source will be attached to that Release.
 
 ---
 

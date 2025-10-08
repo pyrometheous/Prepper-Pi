@@ -1,3 +1,7 @@
+<!--
+SPDX-License-Identifier: CC-BY-NC-4.0
+-->
+
 # Third-Party Notices
 
 This device/software distribution includes (or may fetch at install time) third-party components. Each component's license governs its use. Where applicable, corresponding source is available as described in `SOURCE-OFFER.md`.
@@ -26,6 +30,10 @@ This device/software distribution includes (or may fetch at install time) third-
 | Raspberry Pi OS / Debian packages | Various | https://www.raspberrypi.com/software / https://www.debian.org |
 
 \* *Currently "planned" per the README. If/when these components are included in shipped images, their licenses and any trademark policies will apply to those builds and will be reflected in the MANIFEST and source bundle for that release.*
+
+Image metadata may also include license files (e.g., in LinuxServer.io images), but this document is the canonical third-party notice list for releases.
+
+Licensing for Jellyfin/Tvheadend/FFmpeg components depends on the build configuration and distribution packages used in a given release; see the release MANIFEST and source bundle for the exact versions and flags.
 
 **Data Licenses**
 - OpenStreetMap data: **ODbL 1.0** — https://www.openstreetmap.org/copyright
