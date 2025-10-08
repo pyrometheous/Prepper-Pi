@@ -28,10 +28,18 @@ echo ""                                | tee -a "$MANIFEST"
 echo "[docker-images]"                 | tee -a "$MANIFEST"
 
 for img in "${IMAGES[@]}"; do
+  echo "Resolving digest for $img..." >&2
   if docker image inspect "$img" >/dev/null 2>&1; then
-    DIGEST="$(docker image inspect --format='{{index .RepoDigests 0}}' "$img" || true)"
-    echo "$img => ${DIGEST:-unknown}" | tee -a "$MANIFEST"
+    DIGEST="$(docker image inspect --format='{{index .RepoDigests 0}}' "$img" 2>/dev/null || echo '')"
+    if [[ -n "$DIGEST" && "$DIGEST" != "<no value>" ]]; then
+      echo "$img => $DIGEST" | tee -a "$MANIFEST"
+    else
+      echo "ERROR: Could not resolve digest for $img (may need docker pull)" >&2
+      echo "$img => digest_resolution_failed" | tee -a "$MANIFEST"
+      exit 1
+    fi
   else
+    echo "WARNING: Image $img not present locally" >&2
     echo "$img => not_present" | tee -a "$MANIFEST"
   fi
 done
