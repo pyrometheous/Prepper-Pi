@@ -6,7 +6,7 @@ We may publish device images, container images, or other binaries that include G
 - For **every image/binary release**, we publish a matching **GitHub Release** that includes a `source/` archive with:
   - Exact upstream source (or upstream commit references),
   - Any local patches and build/config scripts (Dockerfiles, compose files),
-  - A `MANIFEST.txt` enumerating components and versions/commits, plus SHA-256 checksums of binaries and sources.
+  - A `MANIFEST.txt` enumerating components and versions/commits, plus SHA-256 checksums of binaries and sources. For container images, we record **immutable digests** (e.g., `repo@sha256:...`) and avoid tag-only references in releases.
 
 ➡️ **Releases:** https://github.com/pyrometheous/Prepper-Pi/releases
 

@@ -11,20 +11,21 @@ This device/software distribution includes (or may fetch at install time) third-
 | openNDS (captive portal) | GPL-2.0 | https://github.com/openNDS/openNDS |
 | Homepage (dashboard) | MIT | https://gethomepage.dev / https://github.com/gethomepage/homepage |
 | Portainer **Community Edition** | zlib | https://www.portainer.io / https://github.com/portainer/portainer |
-| Icecast | GPL-2.0 | https://icecast.org / https://gitlab.xiph.org/xiph/icecast-server |
-| SoX | GPL-2.0+ | https://sourceforge.net/projects/sox/ |
 | Jellyfin | GPL-2.0 | https://jellyfin.org / https://github.com/jellyfin/jellyfin |
 | **FFmpeg** (used by Jellyfin) | LGPL-2.1+ and GPL (configuration-dependent) | https://ffmpeg.org / https://github.com/FFmpeg/FFmpeg |
-| Tvheadend | GPL-3.0 | https://tvheadend.org / https://github.com/tvheadend/tvheadend |
-| Kavita | GPL-3.0 | https://www.kavitareader.com / https://github.com/Kareadita/Kavita |
+| Samba (dperson/samba image) | GPL-3.0+ | https://www.samba.org / https://github.com/dperson/samba |
+| Icecast\* | GPL-2.0 | https://icecast.org / https://gitlab.xiph.org/xiph/icecast-server |
+| SoX\* | GPL-2.0+ | https://sourceforge.net/projects/sox/ |
+| Tvheadend\* | GPL-3.0 | https://tvheadend.org / https://github.com/tvheadend/tvheadend |
+| Kavita\* | GPL-3.0 | https://www.kavitareader.com / https://github.com/Kareadita/Kavita |
 | Meshtastic (protocol/firmware/tools)\* | GPL-3.0 (trademark policy applies) | https://meshtastic.org / https://github.com/meshtastic/ |
 | MeshCore\* | MIT | https://meshcore.co.uk / https://github.com/meshcore |
-| Kiwix | GPL-3.0 | https://www.kiwix.org / https://github.com/kiwix/ |
+| Kiwix\* | GPL-3.0 | https://www.kiwix.org / https://github.com/kiwix/ |
 | LinuxServer.io images (where used) | Varies by upstream | https://www.linuxserver.io |
 | Docker Engine / CLI | Apache-2.0 | https://www.docker.com / https://github.com/moby/moby |
 | Raspberry Pi OS / Debian packages | Various | https://www.raspberrypi.com/software / https://www.debian.org |
 
-\* *Listed as "planned" in the README. If/when distributed in images, they remain governed by their own licenses and trademark policies.*
+\* *Currently "planned" per the README. If/when these components are included in shipped images, their licenses and any trademark policies will apply to those builds and will be reflected in the MANIFEST and source bundle for that release.*
 
 **Data Licenses**
 - OpenStreetMap data: **ODbL 1.0** — https://www.openstreetmap.org/copyright

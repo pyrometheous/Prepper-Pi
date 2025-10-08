@@ -12,11 +12,13 @@ DATE_ISO="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 
 # Docker image list (edit to match your compose)
 IMAGES=(
-  "lscr.io/linuxserver/jellyfin"
-  "portainer/portainer-ce"
-  "tvheadend/tvheadend"
-  "ghcr.io/gethomepage/homepage"
-  "openwrt/openwrt"
+  "openwrt/rootfs:23.05.2"
+  "portainer/portainer-ce:latest"
+  "jellyfin/jellyfin:latest"
+  "ghcr.io/gethomepage/homepage:latest"
+  "dperson/samba:latest"
+  "lscr.io/linuxserver/tvheadend:latest"
+  "moul/icecast:latest"
 )
 
 echo "Prepper-Pi $DATE_ISO"            | tee "$MANIFEST"
@@ -25,8 +27,8 @@ echo ""                                | tee -a "$MANIFEST"
 echo "[docker-images]"                 | tee -a "$MANIFEST"
 
 for img in "${IMAGES[@]}"; do
-  if docker image inspect "$img:latest" >/dev/null 2>&1; then
-    DIGEST="$(docker image inspect --format='{{index .RepoDigests 0}}' "$img:latest" || true)"
+  if docker image inspect "$img" >/dev/null 2>&1; then
+    DIGEST="$(docker image inspect --format='{{index .RepoDigests 0}}' "$img" || true)"
     echo "$img => ${DIGEST:-unknown}" | tee -a "$MANIFEST"
   else
     echo "$img => not_present" | tee -a "$MANIFEST"

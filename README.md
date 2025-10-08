@@ -234,8 +234,8 @@ RPi5 Ethernet ← host networking → OpenWrt Container
 
 ### 🧪 Validation Tests
 
-**Expected Client Experience:**
-1. Connect to "Prepper Pi" SSID with password `PrepperPi2025!`
+**Expected Client Experience (example values; change yours in production):**
+1. Connect to "Prepper Pi" SSID with password `ChangeMeNow!`
 2. Get DHCP address from OpenWrt container (10.20.30.x range)
 3. Be redirected to landing page (http://10.20.30.1) via captive portal
 4. Access all services through the landing page
