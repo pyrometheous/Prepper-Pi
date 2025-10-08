@@ -7,11 +7,11 @@ Use a sealed NEMA 4X/IP66 polycarbonate enclosure with a through-wall thermal pa
 
 ---
 
-## Option A — Sealed + External Heatsink (Recommended)
+## Option A — Sealed + External Heatsink
 
 What: Keep the box fully sealed. Move heat to the outside via a thermal bridge (internal aluminum plate and thermal pad/epoxy) bolted to an external finned heatsink.
 
-Why: Highest ingress protection; no dust filters to service; excellent reliability in hot/cold/humid zones.
+Why: High ingress protection; no dust filters to service; suitable for hot/cold/humid zones.
 
 Core BOM
 - Enclosure: Polycarbonate NEMA 4X / IP66 (≈ 300×200×150 mm; light color).
@@ -36,7 +36,7 @@ Layout Notes
 
 What: IP55–IP65 enclosure with hydrophobic ePTFE vent media panels and PWM fans (intake/exhaust) creating slight positive pressure.
 
-Why: Lowest internal temperatures in high-load/hot ambients.  
+Why: Can achieve lower internal temperatures in high-load/hot ambients.  
 Trade-offs: Filters eventually need cleaning; not ideal for direct driving rain or fine dust over long unattended periods.
 
 Use when: You accept annual service for filters and expect very hot, continuous load operation.
@@ -47,7 +47,7 @@ Use when: You accept annual service for filters and expect very hot, continuous 
 
 What: A compact air-to-air cabinet heat-exchanger (two isolated paths) or pass-through heat pipes with an internal blower.
 
-Why: Best thermal performance while staying IP66.  
+Why: Strong thermal performance while staying IP66.  
 Trade-offs: Cost/complexity; sourcing the exchanger.
 
 ---
@@ -91,7 +91,7 @@ Tip: Lightly grease door gasket; torque latches evenly.
 
 - [ ] Mount shaded or under a small hood; keep external fins vertical/clear.  
 - [ ] Verify humidity card after first warm-up; swap desiccant if needed.  
-- [ ] Confirm PoE link + 5 V load headroom (≥5 A recommended).  
+- [ ] Confirm PoE link + 5 V load headroom (≥5 A typical).  
 - [ ] Label RF bulkheads (“LoRa-A”, “LoRa-B”, “ATSC”, “SDR-FM/NOAA”).  
 - [ ] Add internal temp/RH sensor and surface it in the dashboard.
 

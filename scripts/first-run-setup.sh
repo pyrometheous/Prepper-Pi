@@ -234,7 +234,7 @@ dhcp-range=192.168.4.2,192.168.4.20,255.255.255.0,24h
 EOL
 
 echo "[INFO] Host WiFi AP configured. This may conflict with OpenWRT container."
-echo "[WARN] Recommended: Use OpenWRT container AP instead."
+echo "[WARN] Note: The host-based AP conflicts with the OpenWrt container AP. Prefer one approach at a time."
 EOF_FALLBACK
 
 chmod +x setup-wifi-adapter.sh setup-wifi-adapter-fallback.sh

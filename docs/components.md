@@ -121,7 +121,7 @@ For detailed technical specifications and wiring diagrams, see [wiring.md](wirin
 
 ### Power Management & Toggling
 
-**Recommended for USB Options (B/C):**
+**USB Options (B/C):**
 - **uhubctl-compatible powered USB 3.0 hub** — per-port power switching from software
 - **Inline USB on/off switches (×2)** — manual toggles per radio USB line
 
@@ -131,7 +131,7 @@ For detailed technical specifications and wiring diagrams, see [wiring.md](wirin
 
 ### Antenna Strategy
 
-**Dual Antenna Setup (Recommended):**
+**Dual Antenna Setup:**
 - **Two separate 915 MHz antennas** with short LMR-240/LMR-200 pigtails
 - Maintain at least 30–50 cm separation between antennas
 - Simplest configuration, allows simultaneous operation
