@@ -119,6 +119,18 @@ jobs:
             echo "✅ Image digests found in MANIFEST.txt"
           fi
           
+          # Check for failed image resolution
+          if grep -q "not_present\|digest_resolution_failed" MANIFEST.txt; then
+            echo "❌ MANIFEST.txt contains failed image resolutions:"
+            grep "not_present\|digest_resolution_failed" MANIFEST.txt
+            echo ""
+            echo "All images must be successfully resolved to immutable digests."
+            echo "Run 'docker pull' for missing images or fix digest resolution issues."
+            exit 1
+          else
+            echo "✅ All images successfully resolved to digests"
+          fi
+          
           echo "✅ MANIFEST.txt format validation passed"
           
       - name: Verify checksums integrity

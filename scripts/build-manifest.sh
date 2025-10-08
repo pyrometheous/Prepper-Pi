@@ -11,16 +11,23 @@ MANIFEST="$OUT_DIR/MANIFEST.txt"
 GIT_COMMIT="$(git rev-parse --short=12 HEAD || echo unknown)"
 DATE_ISO="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 
-# Docker image list (edit to match your compose)
-IMAGES=(
-  "openwrt/rootfs:23.05.2"
-  "portainer/portainer-ce:latest"
-  "jellyfin/jellyfin:latest"
-  "ghcr.io/gethomepage/homepage:latest"
-  "dperson/samba:latest"
-  "lscr.io/linuxserver/tvheadend:latest"
-  "moul/icecast:latest"
+#
+# Discover active images from compose files (ignores commented lines).
+# Works without yq: we skip lines that start with '#' and capture the value after 'image:'.
+#
+readarray -t IMAGES < <(
+  awk '
+    /^[[:space:]]*#/ { next }                                           # ignore commented lines
+    match($0, /^[[:space:]]*image:[[:space:]]*([^[:space:]]+)/, m) {    # image: repo[:tag|@sha]
+      print m[1]
+    }
+  ' docker-compose*.yml 2>/dev/null | sort -u
 )
+
+if [[ ${#IMAGES[@]} -eq 0 ]]; then
+  echo "ERROR: No active images discovered in docker-compose*.yml" >&2
+  exit 1
+fi
 
 echo "Prepper-Pi $DATE_ISO"            | tee "$MANIFEST"
 echo "git_commit=$GIT_COMMIT"         | tee -a "$MANIFEST"
@@ -29,6 +36,8 @@ echo "[docker-images]"                 | tee -a "$MANIFEST"
 
 for img in "${IMAGES[@]}"; do
   echo "Resolving digest for $img..." >&2
+  # Always ensure local metadata is fresh
+  docker pull "$img" >/dev/null 2>&1 || true
   if docker image inspect "$img" >/dev/null 2>&1; then
     DIGEST="$(docker image inspect --format='{{index .RepoDigests 0}}' "$img" 2>/dev/null || echo '')"
     if [[ -n "$DIGEST" && "$DIGEST" != "<no value>" ]]; then

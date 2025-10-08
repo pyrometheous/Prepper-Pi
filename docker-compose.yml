@@ -39,7 +39,7 @@ services:
     container_name: portainer
     restart: unless-stopped
     ports:
-      - "9000:9000"
+      - "9000:9000"  # For production: bind to LAN only with "127.0.0.1:9000:9000" or enable HTTPS
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - portainer_data:/data
@@ -95,8 +95,8 @@ services:
     container_name: samba
     restart: unless-stopped
     ports:
-      - "139:139"
-      - "445:445"
+      - "139:139"  # For production: restrict to LAN subnets via firewall
+      - "445:445"  # or bind to specific interface: "10.20.30.1:445:445"
     volumes:
       - ./media:/media
       - ./shares:/shares
