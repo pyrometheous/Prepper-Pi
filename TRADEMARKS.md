@@ -1,26 +1,22 @@
 # Prepper Pi Trademarks Policy
 
-The “Prepper Pi” name, logo, and related branding (“Trademarks”) are the
-property of the project author (pyrometheous). These Trademarks are not
-licensed under the project’s software or documentation licenses.
+The "Prepper Pi" name, logo, and related branding ("Marks") are the property of the project author (pyrometheous). They are **not** licensed under the project's software or documentation licenses.
 
-## Permitted Use
-- Nominative, descriptive references (e.g., “compatible with Prepper Pi”)
-  are permitted if truthful, not misleading, and do not imply endorsement.
-- Screenshots in reviews, news, or documentation are permitted with proper
-  attribution and without modification of the logos beyond necessary scaling.
+## Permitted Use (without permission)
+- **Nominative fair use:** Truthful, limited phrases like "compatible with Prepper Pi" that do not imply endorsement.
+- **Editorial/review use:** Screenshots or references in news, reviews, or documentation with proper attribution and no logo modification beyond size.
 
-## Restricted Use
-You may NOT, without written permission:
-- Sell or market hardware, services, or products using the Trademarks.
-- Use the Trademarks in company names, product names, domain names, or
-  social media handles.
+## Restricted Use (permission required)
+You may **not** without written permission:
+- Sell or market hardware/services using the Prepper Pi Marks.
+- Use the Marks in company names, product names, domains, or social handles.
 - Modify the logos or create confusingly similar marks.
-- Suggest or imply that your project, fork, or product is endorsed by or
-  affiliated with the Prepper Pi project.
+- Imply endorsement, affiliation, or sponsorship by Prepper Pi.
 
-## License for Commercial Use
-To sell “Prepper Pi”-branded hardware or use the Trademarks in commerce,
-you must obtain a written license. Contact: pyrometheous.
+## Third-Party Trademarks
+All third-party names and logos (e.g., **Meshtastic**, **OpenWrt**, **Raspberry Pi**, **Jellyfin**, **Portainer**) are the property of their respective owners. Nothing in this project grants rights to use third-party marks. Follow each owner's branding/trademark policy.
 
-*This policy is a summary and does not constitute legal advice.*
+## Requests
+To request commercial use of Prepper Pi Marks (e.g., branded hardware), contact **pyrometheous** with product details and usage examples. Approvals may include brand guidelines and quality requirements.
+
+*This policy is informational and not legal advice.*

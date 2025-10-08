@@ -1,63 +1,56 @@
 # Prepper Pi Commercial Hardware License (Template)
 
-This is a non-binding template to outline terms for licensees who wish to
-sell preconfigured hardware incorporating the Prepper Pi software stack.
+> This template governs licensee sales of **preconfigured hardware** that includes the Prepper Pi software stack. Final terms subject to mutual signature. This is **not legal advice**.
 
 ## 1. Parties
-Licensor: pyrometheous
+Licensor: pyrometheous  
 Licensee: __________________________
 
 ## 2. Grant
-Licensor grants Licensee a non-exclusive, non-transferable license to:
-- Preinstall, configure, and distribute hardware devices that include
-  the Prepper Pi software stack, and
-- Use the “Prepper Pi” name and logo in marketing the licensed devices,
-  subject to the Trademarks Policy and brand guidelines provided by Licensor.
+Non-exclusive, non-transferable license to:
+- Preinstall, configure, and distribute hardware devices including the Prepper Pi software stack; and
+- Reference the "Prepper Pi" name and logo in marketing **solely as approved in writing** by Licensor and consistent with `TRADEMARKS.md`.
 
-## 3. Territory & Term
-Worldwide; initial term 1 year, auto-renews annually unless terminated with
-30 days’ written notice.
+No rights to third-party marks (e.g., Meshtastic, OpenWrt, Raspberry Pi, Jellyfin) are granted.
 
-## 4. Revenue Share
-- Licensee will pay Licensor a revenue share of ___% of Gross Revenue per
-  unit sold OR a fixed royalty of $___ per unit, whichever is specified in
-  the signed Order Form attached to this License.
-- “Gross Revenue” means collected sales price before taxes, shipping, and
-  refunds. Returns are excluded.
-- Reports and payments are due monthly within 15 days after month end.
-- Licensor may audit reasonable records on 7 days’ notice, not more than
-  once per quarter.
+## 3. Term & Territory
+Worldwide. Initial term one (1) year; auto-renews annually unless terminated on 30 days' notice.
+
+## 4. Revenue Share & Reporting
+- Licensee pays Licensor ___% of **Gross Revenue** per unit sold **or** $___ per-unit royalty (as specified in the Order Form).
+- Gross Revenue: collected sales price before taxes/shipping/returns.
+- Reports & payment monthly within 15 days after month-end.
+- Audit of reasonable records on 7 days' notice, not more than once per quarter.
 
 ## 5. Quality & Support
-- Licensee is responsible for hardware quality, warranties, and support.
-- Licensor provides no warranties or support unless separately agreed.
-- Licensee will not remove license notices within the software UI or docs.
+Licensee is solely responsible for hardware quality, warranties, customer support, and compliance with RF/regulatory rules (e.g., FCC/CE where applicable). Licensor provides no warranties or support unless separately agreed.
 
-## 6. Compliance & Attribution
-- Licensee must comply with all FOSS third-party licenses included in the
-  project and retain their notices.
-- Prominent attribution to the original project and repository URL must be
-  included in product materials and web pages.
+## 6. FOSS Compliance (Condition of License)
+When distributing devices with Prepper Pi:
+- **Retain third-party notices** and include `licenses/THIRD_PARTY_NOTICES.md`.
+- **Provide Corresponding Source** (or a **durable written offer** for at least 3 years) for all GPL/LGPL components, including any patches. Include `licenses/SOURCE-OFFER.md` with a working URL.
+- If the device employs any installation lock-down, provide any **Installation Information** required by GPLv3. (Typical Raspberry Pi setups are user-modifiable.)
+- Where feasible, prefer downstream-supplied FFmpeg/codecs; do not enable non-free encoders unless you hold appropriate rights.
 
-## 7. Brand Usage
-- All use of the “Prepper Pi” marks requires Licensor’s prior written
-  approval. Licensee agrees to comply with branding guidelines and to avoid
-  any use that may dilute or tarnish the marks.
+## 7. Patents, Codecs & Firmware
+- Licensee is responsible for **patent** and **codec** licensing (e.g., H.264/AVC, HEVC, AAC) for any encoders/decoders distributed on devices in covered territories.
+- Redistribution of proprietary **device firmware** (e.g., tuner/SDR blobs) must follow the firmware's license terms.
+- The license does not include any patent licenses.
 
-## 8. No Warranty; Limitation of Liability
-THE SOFTWARE AND MARKS ARE PROVIDED “AS IS” WITHOUT WARRANTY. LICENSOR
-WILL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL,
-OR PUNITIVE DAMAGES.
+## 8. Branding & Marketing
+- Use of Prepper Pi Marks requires Licensor's **prior written approval** and adherence to branding guidelines.
+- Licensee must not imply endorsement by third-party projects or use their marks except as allowed by their policies.
 
-## 9. Termination
+## 9. No Warranty; Limitation of Liability
+AS-IS, no warranties. Neither party is liable for indirect, incidental, special, consequential, or punitive damages.
+
+## 10. Termination
 - For breach not cured within 15 days after notice.
-- Immediate termination for fraudulent reporting, non-payment, or
-  misuse of marks.
-- On termination, Licensee ceases all sales and removes marks from goods.
+- Immediate termination for non-payment, fraudulent reporting, or misuse of marks.
+- On termination: cease sales and remove marks from goods/marketing; ongoing FOSS license obligations survive.
 
-## 10. Governing Law & Venue
-To be specified by the parties in the Order Form.
+## 11. Governing Law & Venue
+To be specified in the Order Form.
 
 ---
-*This template is provided for convenience and does not constitute legal advice.
-Consult an attorney to finalize your agreement.*
+*Consult your own attorney before using this template.*

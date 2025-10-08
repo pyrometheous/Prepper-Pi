@@ -1,18 +1,21 @@
 # 🥧 Prepper Pi
 
-> **⚠️ DISCLAIMER: This is a personal project in early development. No support is provided, and functionality is not guaranteed. Use at your own risk.**
+> **⚠️ DISCLAIMER:** Personal project, early development. No warranties or support. Use at your own risk.
 
-## 📄 License & Commercial Use
+## 📄 License, Trademarks & Commercial Use
 
-**License:** Code is under the **Prepper Pi Noncommercial License (PP-NC-1.0)**.  
-**Docs/Media:** **CC BY-NC 4.0**.  
-**Commercial hardware sales** (preconfigured devices or services using Prepper Pi) **require a commercial license** and a revenue-share agreement. See `COMMERCIAL-LICENSE.md` and contact **pyrometheous**.
+**Project code:** **Prepper Pi Noncommercial License (PP-NC-1.0)** (see `LICENSE`).  
+**Docs & media:** **CC BY-NC 4.0** (see `LICENSE-DOCS`).  
+**Third-party software:** Licensed under their own FOSS licenses. See `licenses/THIRD_PARTY_NOTICES.md`.  
+**Source code offer (GPL'd components):** See `licenses/SOURCE-OFFER.md`.
 
-**🆓 FREE for Personal/DIY Use:** This project is completely free for personal, educational, and DIY implementation. Build your own Prepper Pi system without restriction.
+**Commercial hardware sales (preconfigured devices):** Allowed **only** under a separate commercial license with revenue share. See `COMMERCIAL-LICENSE.md` and contact **pyrometheous**.
 
-**🏢 Commercial Hardware Sales:** Only the original author may sell preconfigured Prepper Pi hardware systems. If you wish to sell preconfigured hardware based on this project, you must contact the author for a commercial licensing agreement and profit-sharing arrangement.
+**Trademarks:** "Prepper Pi" name/logo are not covered by the software licenses. See `TRADEMARKS.md`. Do **not** market third-party marks (e.g., Meshtastic, OpenWrt, Raspberry Pi, Jellyfin) as product branding without their owners' permissions.
 
-**📧 Commercial Licensing:** Contact **pyrometheous** for commercial hardware sales licensing.
+**No copyrighted media included:** Devices ship **without** copyrighted content. Users are responsible for lawful use of media and RF features.
+
+**Codecs/patents note:** FFmpeg and certain codecs (e.g., H.264/AVC, HEVC, AAC) may be patent-encumbered in some regions. This project does not grant patent licenses. Where required, ship legal codecs from your OS vendor and let end-users enable optional encoders themselves.
 
 ---
 
@@ -23,15 +26,15 @@
 > **📋 Note:** The following features represent the planned capabilities of Prepper Pi. Phase 1 (WiFi infrastructure) is configured but requires hardware testing. Later phases require additional hardware acquisition.
 
 ### 📺 Concurrent Operations
-- **Two TV channels** streaming simultaneously via dual ATSC tuner
-- **Two radio stations** (FM + NOAA) streaming via dual RTL-SDR setup
-- **Dual LoRa mesh protocols** (Meshtastic + MeshCore) with text and GPS location sharing
-- **WiFi hotspot** serving multiple devices with WPA2 security and captive portal
-- **Media streaming** from local Jellyfin library
-- **Ebook library** serving digital books via Kavita reader
-- **File sharing** via Samba network shares
-- **Solar power monitoring** via Victron SmartSolar Bluetooth interface
-- **Real-time emergency broadcasts** (NOAA weather alerts, EAS)
+- Two ATSC TV channels via dual tuner
+- Two radio stations (FM + NOAA) via dual RTL-SDR
+- Dual LoRa meshes (Meshtastic + MeshCore)
+- Captive-portal Wi-Fi hotspot
+- Jellyfin media streaming
+- Kavita ebook server
+- Samba file sharing
+- Solar monitoring (Victron SmartSolar)
+- Real-time NOAA/EAS alerts
 
 ### 🔋 Power Management
 - **Solar charging** with MPPT optimization and battery monitoring
@@ -50,7 +53,6 @@
 5. **Antenna Mounting**: Install TV and LoRa antennas with proper grounding
 6. **Integration Testing**: Verify all systems before field deployment
 
-
 ## 📚 Documentation
 
 ### 📖 Complete Documentation
@@ -59,12 +61,13 @@
 - **[⚡ Wiring & Assembly](docs/wiring.md)** - Electrical specifications, diagrams, and safety guidelines
 - **[📡 WiFi Testing Protocol](docs/wifi-testing.md)** - Hardware validation guide for AP functionality
 
-## � Software Setup
+## 🔧 Software Setup
 
 ### ⚡ Automated Installation
 
 ```bash
-sudo apt update && sudo apt install -y git && git clone https://github.com/pyrometheous/Prepper-Pi.git && cd Prepper-Pi && sudo bash first-run-setup.sh
+sudo apt update && sudo apt install -y git && git clone https://github.com/pyrometheous/Prepper-Pi.git \
+  && cd Prepper-Pi && sudo bash first-run-setup.sh
 ```
 
 **On Raspberry Pi:** `cp docker-compose.pi.yml docker-compose.override.yml` before `docker compose up -d`.
