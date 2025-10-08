@@ -75,6 +75,12 @@
 └───────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+## Enclosure & Thermal Management (Field Deployment)
+
+For outdoor/zero-maintenance use, the project supports a sealed NEMA 4X/IP66 enclosure with an external heatsink and ePTFE pressure-equalization vent. The Pi’s heat is conducted through the enclosure wall to a fin stack outside; no dust filters or routine servicing are required. For cold/wet sites, a 10–20 W anti-condensation heater on a ~15 °C thermostat may be added.
+
+See: [Weatherproof Enclosure Options](./enclosures.md).
+
 ### Concurrency
 - 📺 **Two TV channels at once** (dual ATSC tuner).  
 - 📻 **Two radio stations at once** (two RTL‑SDR dongles: FM + NOAA).  
