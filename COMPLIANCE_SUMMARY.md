@@ -27,12 +27,12 @@ This document summarizes the licensing and commercial compliance updates impleme
   - Marked default credentials as examples requiring changes
 
 ### Legal Documents  
-- **`TRADEMARKS.md`**
+- **`docs/legal/TRADEMARKS.md`**
   - Enhanced policy structure with clear permitted/restricted use sections
   - Added third-party trademark responsibilities
   - Improved request process for commercial use
 
-- **`COMMERCIAL-LICENSE.md`**
+- **`docs/legal/COMMERCIAL-LICENSE.md`**
   - Added FOSS compliance requirements for commercial distributors
   - Included patent and codec licensing responsibilities
   - Enhanced branding and third-party mark usage clauses

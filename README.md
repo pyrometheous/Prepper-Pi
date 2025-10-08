@@ -11,19 +11,30 @@ SPDX-License-Identifier: CC-BY-NC-4.0
 **Project code:** **Prepper Pi Noncommercial License (PP-NC-1.0)** (see `LICENSE`).  
 **Docs & media:** **CC BY-NC 4.0** (see `LICENSE-DOCS`).  
 **Third-party software:** Licensed under their own FOSS licenses. See `licenses/THIRD_PARTY_NOTICES.md`.  
-**GPL/LGPL source:** We publish the Corresponding Source **in the matching GitHub Release** for any image/binary we ship. See `licenses/SOURCE-OFFER.md`.
+**GPL/LGPL source:** I publish the Corresponding Source **in the matching GitHub Release** for any image/binary I ship. See `licenses/SOURCE-OFFER.md`.
 **Project code license:** see `LICENSE` (PP-NC-1.0).  
 **Documentation/media license:** see `LICENSE-DOCS` (CC BY-NC 4.0).
 
-**Commercial hardware sales (preconfigured devices):** Allowed **only** under a separate commercial license with revenue share. See `COMMERCIAL-LICENSE.md` and contact **pyrometheous**.
+**DIY/personal use:** Free for personal, educational, and internal DIY builds.  
+**Commercial sales:** Selling preconfigured hardware or services that ship/market the Prepper‑Pi stack requires a separate commercial license with revenue share. See `docs/legal/COMMERCIAL-LICENSE.md`.
 
-**Trademarks:** "Prepper Pi" name/logo are not covered by the software licenses. See `TRADEMARKS.md`. Do **not** market third-party marks (e.g., Meshtastic, OpenWrt, Raspberry Pi, Jellyfin) as product branding without their owners' permissions.
+**Commercial hardware sales (preconfigured devices):** Allowed **only** under a separate commercial license with revenue share. See `docs/legal/COMMERCIAL-LICENSE.md` and contact **pyrometheous**.
+
+**Trademarks:** "Prepper Pi" name/logo are not covered by the software licenses. See `docs/legal/TRADEMARKS.md`. Do **not** market third-party marks (e.g., Meshtastic, OpenWrt, Raspberry Pi, Jellyfin) as product branding without their owners' permissions.
+
+For transparency about brand/trademark outreach, see `docs/legal/permissions-log.md`.
 
 **No copyrighted media included:** Devices ship **without** copyrighted content. Users are responsible for lawful use of media and RF features.
 
 **Codecs/patents note:** FFmpeg and certain codecs (e.g., H.264/AVC, HEVC, AAC) may be patent-encumbered in some regions. This project does not grant patent licenses. Where required, ship legal codecs from your OS vendor and let end-users enable optional encoders themselves.
 
 > **Note:** If a matching GitHub Release isn't published yet for a given image/binary, use the repository source at the tagged commit. Once a formal Release is cut, the corresponding source will be attached to that Release.
+
+### 🔐 Security
+
+Please report vulnerabilities privately via GitHub Security Advisories (GitHub → Security → Report a vulnerability). If that is unavailable, open a minimal Issue with the `security` label and I’ll follow up privately. See `SECURITY.md`.
+
+Note: This is a hobby project with no guaranteed turnaround for issues or security reports. I’ll review items as time permits.
 
 ---
 

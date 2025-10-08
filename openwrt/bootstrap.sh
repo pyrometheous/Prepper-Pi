@@ -39,7 +39,7 @@ echo "📶 Configuring wireless..."
 if [ -d /sys/class/ieee80211 ] && [ "$(ls -A /sys/class/ieee80211 2>/dev/null)" ]; then
   # Set regulatory domain first
   iw reg set US
-  # Generate fresh config to learn the correct paths, then apply our settings.
+  # Generate fresh config to learn the correct paths, then apply my settings.
   rm -f /etc/config/wireless
   wifi config
 

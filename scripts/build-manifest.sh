@@ -13,7 +13,7 @@ DATE_ISO="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 
 #
 # Discover active images from compose files (ignores commented lines).
-# Works without yq: we skip lines that start with '#' and capture the value after 'image:'.
+# Works without yq: this script skips lines that start with '#' and captures the value after 'image:'.
 #
 readarray -t IMAGES < <(
   awk '

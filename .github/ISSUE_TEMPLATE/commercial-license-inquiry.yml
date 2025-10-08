@@ -1,0 +1,43 @@
+name: Commercial license inquiry
+description: Contact the maintainer about a commercial Prepper Pi license (no personal email required)
+labels: ["commercial", "inquiry"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for your interest in a commercial license. Please provide the details below; avoid sharing sensitive info.
+  - type: input
+    id: company
+    attributes:
+      label: Company or individual name
+      placeholder: ACME Devices, Inc.
+  - type: textarea
+    id: product
+    attributes:
+      label: Product overview
+      description: Briefly describe the device/service and expected regions of sale.
+      placeholder: Preconfigured Raspberry Pi 5 device with WiFi AP and curated media stack; North America and EU
+  - type: input
+    id: volume
+    attributes:
+      label: Estimated volume
+      placeholder: e.g., 100 units/quarter
+  - type: dropdown
+    id: foss
+    attributes:
+      label: Will you distribute prebuilt images containing GPL components?
+      options:
+        - Yes
+        - No
+        - Unsure
+  - type: textarea
+    id: timeline
+    attributes:
+      label: Timeline
+      placeholder: Target launch date or milestone
+  - type: textarea
+    id: notes
+    attributes:
+      label: Additional notes
+      placeholder: Any specific branding or integration requests
