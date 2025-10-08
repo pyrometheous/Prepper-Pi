@@ -18,8 +18,6 @@
 
 **A comprehensive off-grid communication and media platform with solar power, dual LoRa mesh protocols, TV/radio reception, and WiFi hotspot capabilities.**
 
-Prepper Pi is a complete field-deployable system combining solar power, over-the-air TV/radio reception, dual LoRa mesh networking (Meshtastic + MeshCore), WiFi hotspot, and media services in a weatherproof enclosure - designed for emergency preparedness, off-grid living, and remote communication scenarios.
-
 ## ✨ Core Features
 
 > **📋 Note:** The following features represent the planned capabilities of Prepper Pi. Phase 1 (WiFi infrastructure) is configured but requires hardware testing. Later phases require additional hardware acquisition.
