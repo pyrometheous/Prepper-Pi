@@ -149,7 +149,7 @@ What works well on a Pi 5 (8 GB) today:
 - 3–4B can run with tight memory; keep context short and use 4‑bit quantization.
 - 7B usually requires more RAM than is comfortably available for the OS + services.
 
-Recommended approaches
+Approaches
 - Ollama (simple runner + registry)
   - Install on ARM64 Linux (Pi OS 64‑bit): https://ollama.com/download/linux
   - Pull tiny models first (examples):
@@ -161,7 +161,7 @@ Recommended approaches
   - Project: https://github.com/ggerganov/llama.cpp
   - Use 4‑bit (Q4_K_M) quantized models and modest context windows for speed.
 - Whisper.cpp (optional speech‑to‑text)
-  - For offline transcription of short voice notes or radio clips (tiny/base models recommended).
+  - For offline transcription of short voice notes or radio clips (tiny/base models tend to work best).
   - Project: https://github.com/ggml-org/whisper.cpp
 
 Model pointers (GGUF)

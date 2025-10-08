@@ -130,6 +130,7 @@
 - **Grounding/Lightning:** arrestors, bonding straps, ground rod (camp or base station)
 
 ### Enclosure & Hardware (Phase 6 - Custom Design)
+- Field deployment option: use a sealed NEMA 4X/IP66 enclosure with an external heatsink and ePTFE pressure‑equalization vent. The Pi’s heat is conducted through the enclosure wall to a fin stack outside; no dust filters or routine servicing are required. For cold/wet sites, a 10–20 W anti‑condensation heater on a ~15 °C thermostat may be added. See: [Weatherproof Enclosure Options](./enclosures.md).
 - **Custom 3D printed enclosure** (weather-resistant, designed with friend's assistance)  
 - **Metal partition** (🧱) between power and RF bays with adequate ventilation
 - **Bulkhead feed‑throughs:** MC4 (PV), F‑female (TV), SMA/N (RF), cable glands for DC/USB/Ethernet  
@@ -137,7 +138,7 @@
 
 ---
 
-## Optional Software Stack (Docker)
+## Software Stack (Docker)
 - **Tvheadend**: live TV backend (uses dual ATSC USB tuner)  
 - **Icecast + rtl_fm/Liquidsoap**: FM & NOAA audio streams for phones on LAN  
 - **Dual LoRa Mesh**: Meshtastic + MeshCore services with Web UI (and MQTT if desired)  

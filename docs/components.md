@@ -61,10 +61,17 @@
 ### Enclosure & Hardware
 | Qty | Make | Model/Part | Notes |
 |-----|------|------------|-------|
-| 1 | Custom | Custom 3D print | Weather-resistant enclosure, internal partition |
-| as needed | Various | Bulkhead feed-throughs (MC4 / F / SMA) & cable glands | Wall pass-throughs, strain relief |
-| as needed | Various | Ground Rod & Strap | Single-point bond for case/arrestor |
-| as needed | Various | 12 V case fans + grills | Vent the power bay |
+| 1 | Hammond / Bud / Polycase | Polycarbonate NEMA 4X / IP66 enclosure (≈ 300×200×150 mm, light color) | Sealed outdoor box; UV-stabilized |
+| 1 | Generic / Fischer / Wakefield | External finned heatsink (≈ 200×150×25 mm), vertical fins | Through-wall thermal rejection (Option A) |
+| 1 | 6061 plate | Aluminum transfer plate, 3–4 mm | Internal thermal bridge under sink footprint |
+| 1 | FujiPoly / Gelid / Arctic | Thermal pad 1–2 mm, ≥6 W/m·K (or thin thermal epoxy) | Between wall↔plate and/or plate↔sink |
+| 1–2 | Gore / equivalent | ePTFE pressure-equalization vent, M12 | Prevents baro-pumping; reduces condensation |
+| 1 | Industrial PoE splitter | 802.3at PoE → 5 V/5 A (USB-C) | One-cable outdoor power for Pi + peripherals |
+| 1 | Transtherm / Stego (opt.) | Mini anti-condensation heater 10–20 W, ~15 °C stat | Cold/wet climates; low duty cycle |
+| as needed | L-com / Amphenol | IP68 cable glands (M16/M20), SMA/N bulkheads | Ethernet/DC entries, RF pass-throughs |
+| as needed | PolyPhaser / Proxicast | Coax/PoE surge protectors | Protection at enclosure entry |
+| 1 | Desiccant + RH card | Silica gel packs + humidity indicator | Door-side visual check |
+| (opt.) | Custom | 3D-printed brackets/partition | Mounting inside sealed box (non-structural) |
 
 ## Development Phases
 
@@ -114,7 +121,7 @@ For detailed technical specifications and wiring diagrams, see [wiring.md](wirin
 
 ### Power Management & Toggling
 
-**Recommended for USB Options (B/C):**
+**USB Options (B/C):**
 - **uhubctl-compatible powered USB 3.0 hub** — per-port power switching from software
 - **Inline USB on/off switches (×2)** — manual toggles per radio USB line
 
@@ -124,7 +131,7 @@ For detailed technical specifications and wiring diagrams, see [wiring.md](wirin
 
 ### Antenna Strategy
 
-**Dual Antenna Setup (Recommended):**
+**Dual Antenna Setup:**
 - **Two separate 915 MHz antennas** with short LMR-240/LMR-200 pigtails
 - Maintain at least 30–50 cm separation between antennas
 - Simplest configuration, allows simultaneous operation
