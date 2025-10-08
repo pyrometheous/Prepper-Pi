@@ -65,18 +65,19 @@
 │             │
 │             └──▶ 🔵▶ 📺 USB ATSC **Dual** Tuner ▶ 🟩 Pi 5 ▶ 🟩 Tvheadend ▶ 📱 Clients
 │
-│  🟠 LoRa branch
-│     🟠 Antenna (915 MHz omni on mast) ─▶ 🟠 bulkhead ▶ 🟠 short LMR to
-│     🟠 USB/HAT LoRa Radio ▶ 🟩 Pi 5 ▶ 💬 meshtasticd (Web UI + MQTT optional)
+│  🟠 LoRa branch (dual mesh)
+│     🟠 Antenna A (915 MHz) ─▶ 🟠 bulkhead ▶ 🟠 short LMR to LoRa-A (Meshtastic)
+│     🟠 Antenna B (915 MHz) ─▶ 🟠 bulkhead ▶ 🟠 short LMR to LoRa-B (MeshCore)
+│     🟠 USB/HAT LoRa Radios ▶ 🟩 Pi 5 ▶ 💬 Mesh protocols (Web UI + MQTT optional)
 │
-│  🟩 Pi 5 roles: OpenWrt AP + Docker (Tvheadend, Icecast/Liquidsoap, Meshtastic)
+│  🟩 Pi 5 roles: OpenWrt AP + Docker (Tvheadend, Icecast/Liquidsoap, Dual Mesh)
 └───────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ### Concurrency
 - 📺 **Two TV channels at once** (dual ATSC tuner).  
 - 📻 **Two radio stations at once** (two RTL‑SDR dongles: FM + NOAA).  
-- 💬 LoRa mesh text/location via Meshtastic Web on your local Wi‑Fi.
+- 💬 **Dual LoRa mesh protocols** (Meshtastic + MeshCore) with text/location sharing via Web UI on your local Wi‑Fi.
 
 ---
 
@@ -112,11 +113,12 @@
 - **Filter for NOAA leg:** FM band‑stop/notch (88–108 MHz) inline ahead of RTL‑SDR #2  
 - **(Optional)** inline attenuators (3–10 dB) if overload appears
 
-### LoRa / Meshtastic (Phase 5 - Hardware to be Acquired)
-- **Radio on Pi:** Waveshare SX1262 915 MHz LoRa HAT (for Pi)
-- **Antenna:** ALFA Network ARS-915P (SMA) 915 MHz omni on mast; short LMR‑240 jumpers inside case  
-- **Companions:** 1–2 handheld Meshtastic nodes (LILYGO T‑Beam) for phone BLE pairing
-- **Software:** `meshtasticd` (+ Web UI, optional MQTT)
+### LoRa (Phase 5 - Hardware to be Acquired)
+- **Radios:** Dual setup - Waveshare SX1262 915 MHz LoRa HAT(s) or USB LoRa modules
+- **Antennas:** ALFA Network ARS-915P (SMA) 915 MHz omni x2, or single antenna with A/B switch
+- **RF Jumpers:** Short LMR‑240 SMA patches (~3 ft) inside case for each radio
+- **Companions:** 1–2 handheld LoRa nodes (LILYGO T‑Beam) for phone BLE pairing
+- **Software:** Dual mesh protocols - Meshtastic + MeshCore (Web UI + optional MQTT)
 
 ### Power / Solar / UPS (Phase 6 - Hardware to be Acquired)
 - **Battery:** LiTime 12 V 50 Ah LiFePO₄ (may scale to 100Ah based on runtime requirements)  
@@ -137,8 +139,8 @@
 ## Optional Software Stack (Docker)
 - **Tvheadend**: live TV backend (uses dual ATSC USB tuner)  
 - **Icecast + rtl_fm/Liquidsoap**: FM & NOAA audio streams for phones on LAN  
-- **Meshtasticd**: LoRa mesh service with Web UI (and MQTT if desired)  
-- **OpenWrt** (router/AP) + captive landing page linking to Tvheadend, streams, and Meshtastic
+- **Dual LoRa Mesh**: Meshtastic + MeshCore services with Web UI (and MQTT if desired)  
+- **OpenWrt** (router/AP) + captive landing page linking to Tvheadend, streams, and mesh protocols
 
 ---
 
@@ -146,11 +148,6 @@
 - Observe regional **ISM band** limits (LoRa TX power/duty cycle).  
 - Follow **NEC‑style** grounding practices; use proper weatherproofing and drip loops.  
 - Verify **fuse sizes** match wire gauges and worst‑case load; place fuses close to the source.
-
----
-
-*Last updated:* 2025-09-30
-
 
 ---
 
@@ -179,7 +176,7 @@
 
 > **NOTE:** This is for future phases when hardware is acquired.  
 > Currently only basic WiFi infrastructure (Phase 1) is deployed.  
-> Replace `/path/...` with real host paths. Keep Meshtastic ports LAN‑only.
+> Replace `/path/...` with real host paths. Keep mesh protocol ports LAN‑only.
 
 ```yaml
 version: "3.9"
@@ -188,7 +185,7 @@ services:
     image: meshtastic/meshtasticd:latest
     container_name: meshtasticd
     restart: unless-stopped
-    # USB LoRa (change bus/device to match `ls -l /dev/serial/by-id`):
+    # USB LoRa A (change bus/device to match `ls -l /dev/serial/by-id`):
     devices:
       - /dev/bus/usb/001/006:/dev/bus/usb/001/006
     # For Waveshare SX1262 HAT instead, use:
@@ -198,6 +195,18 @@ services:
       - "127.0.0.1:4403:4403/tcp"   # Web UI (LAN only)
     networks:
       - meshtastic_net
+
+  meshcore:
+    image: meshcore/meshcore:latest
+    container_name: meshcore
+    restart: unless-stopped
+    # USB LoRa B (change bus/device to match second LoRa radio):
+    devices:
+      - /dev/bus/usb/001/007:/dev/bus/usb/001/007
+    ports:
+      - "127.0.0.1:4404:4404/tcp"   # Web UI (LAN only)
+    networks:
+      - meshcore_net
 
   tvheadend:
     image: linuxserver/tvheadend:latest
@@ -236,6 +245,8 @@ services:
 networks:
   meshtastic_net:
     driver: bridge
+  meshcore_net:
+    driver: bridge
   tvheadend_net:
     driver: bridge
   icecast_net:
@@ -243,11 +254,115 @@ networks:
 ```
 
 ### Compose Notes
-1. **Device paths:** Adjust `/dev/bus/usb/...` to match your system (`lsusb` or `/dev/serial/by-id/`).  
+1. **Device paths:** Adjust `/dev/bus/usb/...` to match your system (`lsusb` or `/dev/serial/by-id/`). Use separate USB devices for dual LoRa setup.  
 2. **Host volumes:** Replace `/path/...` with real directories for config and recordings.  
 3. **Network security:** Bind sensitive services to `127.0.0.1` (LAN‑only) where shown.  
 4. **RTL‑SDR:** Implementation pending hardware acquisition (Phase 4).
+5. **Dual LoRa:** Configure separate USB ports/devices for Meshtastic and MeshCore radios.
 
 ---
 
-*Appendix updated:* 2025-09-30
+## Clarifications & Notes
+
+**Distribution Amp Input Voltage (CM‑3414):** Verify your unit's DC input spec. If it requires ~13–15 V, keep the dedicated regulator in the chain. If your model tolerates 12 V, you may feed it directly from the 12 V bus. Always keep the preamp **power inserter before** the distribution amp so DC reaches the mast preamp but not the amp outputs.
+
+**USB Power Headroom:** Dual ATSC + 2× RTL‑SDR can exceed what the Pi can stably source under heat/load. If you encounter brownouts or tuner dropouts, insert a **powered USB 3.0 hub** for the capture devices.
+
+**Inline Attenuators (SDR legs):** If you see ADC overload (clipping), insert **6 dB SMA attenuators** at the SDR inputs (after the 75 Ω→SMA adaptation).
+
+**EMI/RFI Hygiene:** Add **ferrite snap‑on cores** to USB leads (SDRs/ATSC) and, where practical, to coax jumpers near the enclosure. Keep power pairs twisted and route RF away from DC switching paths.
+
+**Bus Protection:** Add a **TVS diode** across the 12 V rails near the distribution block to clamp transients from switching or hot‑plug events.
+
+**Weatherproofing:** At exterior bulkheads, apply **self‑fusing silicone tape** or use coax boots over F‑connectors and form **drip loops** before entry.
+
+**Grounding (Field Use):** In portable scenarios without a permanent ground rod, enclosure bonding plus the gas discharge path of the arrestor helps but **is not a substitute for proper earthing**. Disconnect antennas during storms when practical.
+
+---
+
+## Dual LoRa Mesh Wiring (Meshtastic + MeshCore)
+
+**Goal:** Run **two independent 915 MHz LoRa radios** so you can use **Meshtastic** and **MeshCore** side‑by‑side, with easy toggling and clear RF isolation.
+
+### RF Topologies
+
+**Option 1 — Two antennas (preferred for simplicity)**
+- Antenna A → LoRa‑A (Meshtastic)
+- Antenna B → LoRa‑B (MeshCore)
+- Keep at least **30–50 cm** separation between antennas; more is better.
+- Use **50 Ω** jumpers (LMR‑200/240, SMA male‑male, 0.3–0.5 m).
+
+**Option 2 — Single antenna via SMA A/B switch (manual)**
+```
+[915 MHz Antenna]
+        │
+   [SMA A/B Switch]──A──> LoRa‑A (Meshtastic)
+                     └──B─> LoRa‑B (MeshCore)
+```
+- Only **one radio** is connected to the antenna at a time → prevents TX collisions.
+- Choose an A/B switch rated for UHF with **low insertion loss**; DC‑pass on at least one throw is handy if you ever insert an inline LNA (not required for baseline).
+
+> ⚠️ **Warning:** Avoid simple splitters/combiners unless you have proper TX isolation and coordination—simultaneous TX can damage hardware.
+
+### Physical/Power Layout
+
+**USB Radios (ESP32+SX1262/1276):**
+- Plug into a **powered USB 3.0 hub**; label the ports: **LoRa‑A** and **LoRa‑B**.
+- Optionally use **inline USB on/off switches** for manual control.
+- For software control, use a hub that works with **uhubctl** (per‑port power).
+
+**Pi HAT Radios (SX1262):**
+- Use **standoffs** for stacking/clearance; route short SMA pigtails to bulkhead.
+- For on/off, add a **2‑channel DC load‑switch/relay** to cut radio Vcc (GPIO‑controlled).
+- Label PCB headers/cables to prevent cross‑wiring between A and B.
+
+### Grounding & EMC
+- Maintain **single‑point ground** (enclosure, arrestor, DC‑ bus). Keep RF jumpers short.
+- Add **ferrite snap‑ons** to USB leads near the SDR/LoRa radios to curb common‑mode noise.
+- Keep RF (LoRa/ATSC/SDR) away from buck converters and high‑di/dt DC wiring.
+
+### Software & Labels
+- Assign clear identities:
+  - **LoRa‑A** → Meshtastic
+  - **LoRa‑B** → MeshCore
+- If using a single antenna with A/B switch, add a simple **toggle script** to ensure only the intended radio is powered before flipping the switch.
+
+### Example: uhubctl toggle scripts (per‑port power)
+> Replace `BUS=1`, `PORT_A=2`, `PORT_B=3` with your actual hub bus/port numbers (`uhubctl` will list them).
+
+```bash
+#!/usr/bin/env bash
+# lora-switch.sh
+set -euo pipefail
+BUS="${BUS:-1}"
+PORT_A="${PORT_A:-2}"   # Meshtastic
+PORT_B="${PORT_B:-3}"   # MeshCore
+
+usage(){ echo "Usage: $0 {A|B|off}"; exit 1; }
+[[ $# -eq 1 ]] || usage
+
+case "$1" in
+  A|a)
+    uhubctl -l $BUS -p $PORT_B -a off || true   # ensure B is off
+    uhubctl -l $BUS -p $PORT_A -a on
+    echo "LoRa-A (Meshtastic) ON, LoRa-B OFF"
+    ;;
+  B|b)
+    uhubctl -l $BUS -p $PORT_A -a off || true
+    uhubctl -l $BUS -p $PORT_B -a on
+    echo "LoRa-B (MeshCore) ON, LoRa-A OFF"
+    ;;
+  off)
+    uhubctl -l $BUS -p $PORT_A -a off || true
+    uhubctl -l $BUS -p $PORT_B -a off || true
+    echo "Both LoRa radios OFF"
+    ;;
+  *)
+    usage
+    ;;
+esac
+```
+
+> **Tip:** Pair this with systemd services or a tiny web button on your admin UI so you can switch roles without SSHing into the Pi.
+
+*Last updated: 2025-10-07*

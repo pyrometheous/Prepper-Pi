@@ -16,9 +16,9 @@
 
 ---
 
-**A comprehensive off-grid communication and media platform with solar power, LoRa mesh, TV/radio reception, and WiFi hotspot capabilities.**
+**A comprehensive off-grid communication and media platform with solar power, dual LoRa mesh protocols, TV/radio reception, and WiFi hotspot capabilities.**
 
-Prepper Pi is a complete field-deployable system combining solar power, over-the-air TV/radio reception, LoRa mesh networking, WiFi hotspot, and media services in a weatherproof enclosure - designed for emergency preparedness, off-grid living, and remote communication scenarios.
+Prepper Pi is a complete field-deployable system combining solar power, over-the-air TV/radio reception, dual LoRa mesh networking (Meshtastic + MeshCore), WiFi hotspot, and media services in a weatherproof enclosure - designed for emergency preparedness, off-grid living, and remote communication scenarios.
 
 ## ✨ Core Features
 
@@ -27,7 +27,7 @@ Prepper Pi is a complete field-deployable system combining solar power, over-the
 ### 📺 Concurrent Operations
 - **Two TV channels** streaming simultaneously via dual ATSC tuner
 - **Two radio stations** (FM + NOAA) streaming via dual RTL-SDR setup
-- **LoRa mesh messaging** with text and GPS location sharing
+- **Dual LoRa mesh protocols** (Meshtastic + MeshCore) with text and GPS location sharing
 - **WiFi hotspot** serving multiple devices with WPA2 security and captive portal
 - **Media streaming** from local Jellyfin library
 - **Ebook library** serving digital books via Kavita reader
@@ -92,7 +92,8 @@ git clone https://github.com/pyrometheous/Prepper-Pi.git && cd Prepper-Pi && sud
 | Jellyfin | http://10.20.30.1:8096 | ⚠️ **Experimental** | Media server |
 | Portainer | http://10.20.30.1:9000 | ⚠️ **Experimental** | Container management |
 | Tvheadend | http://10.20.30.1:9981 | 📋 **Planned** | TV backend (Phase 4) |
-| Meshtastic | http://10.20.30.1:2443 | 📋 **Planned** | LoRa mesh (Phase 5) |
+| Meshtastic | http://10.20.30.1:2443 | 📋 **Planned** | LoRa mesh A (Phase 5) |
+| MeshCore | http://10.20.30.1:2444 | 📋 **Planned** | LoRa mesh B (Phase 5) |
 | Samba | \\\\10.20.30.1 | 📋 **Planned** | File sharing (Phase 3) |
 
 **Status Legend:**
@@ -134,7 +135,7 @@ RPi5 Ethernet ← host networking → OpenWrt Container
 ### 📡 RF Communications (Future Hardware)
 - **Dual RTL-SDR Dongles** for FM radio and NOAA weather reception
 - **Dual TV Tuner** USB devices for OTA broadcast reception
-- **LoRa Radio Modules** for mesh networking capability
+- **Dual LoRa Radio Modules** for Meshtastic and MeshCore mesh networking
 - **Antenna System** with proper impedance matching and grounding
 
 ### 🔋 Power Systems (Future Hardware)
@@ -190,10 +191,11 @@ RPi5 Ethernet ← host networking → OpenWrt Container
 - [❌] Integration testing with existing Docker services
 
 ### Phase 5: LoRa Mesh Networking (Acquire Hardware)
-- [❌] LoRa radio modules and Meshtastic device integration
-- [❌] Mesh network configuration and range testing
+- [❌] Dual LoRa radio modules for Meshtastic and MeshCore integration
+- [❌] Mesh network configuration and range testing for both protocols
 - [❌] Emergency messaging and offline communication protocols
 - [❌] Multi-node mesh deployment and routing optimization
+- [❌] Cross-protocol mesh interoperability testing
 - [❌] Integration with emergency resource database
 
 ### Phase 6: Solar Power & Enclosure Design

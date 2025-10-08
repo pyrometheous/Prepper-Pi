@@ -23,11 +23,13 @@
 | Radio (SDR) | 2 | RTL-SDR Blog | RTL-SDR V4 (dongle-only) | Two simultaneous radio stations |
 | Radio (SDR) | 1 | Nooelec (example) | Flamingo+ Broadcast FM Notch | FM band-stop for NOAA leg |
 | Radio (SDR) | 2 | Nooelec / Pasternack (example) | F-female → SMA-male pigtail/adapter | Adapt 75Ω RG-6 to SDR SMA |
-| **LoRa / Meshtastic** | | | | |
-| LoRa / Meshtastic | 1 | Waveshare | SX1262 915 MHz LoRa HAT (for Pi) | Pi-attached LoRa radio |
-| LoRa / Meshtastic | 1 | ALFA Network | ARS-915P (SMA) | 915 MHz omni antenna |
-| LoRa / Meshtastic | 1 | L-com / Times Microwave | LMR-240 SMA patch (~3 ft) | Short RF jumper inside case |
-| LoRa / Meshtastic | 2 | LILYGO | T-Beam (ESP32 + SX1262) | Handheld companion nodes (BLE + GPS variants available) |
+| **LoRa** | | | | |
+| LoRa | 1-2 | Waveshare | SX1262 915 MHz LoRa HAT (for Pi) | Pi-attached LoRa radio(s) - qty 2 for dual mesh |
+| LoRa | 1-2 | ALFA Network | ARS-915P (SMA) | 915 MHz omni antenna(s) |
+| LoRa | 1-2 | L-com / Times Microwave | LMR-240 SMA patch (~3 ft) | Short RF jumper(s) inside case |
+| LoRa | 2 | LILYGO | T-Beam (ESP32 + SX1262) | Handheld companion nodes (BLE + GPS variants available) |
+| LoRa | 1 | Various | SMA A/B manual RF switch (DC-pass) | Optional - for single antenna dual radio setup |
+| LoRa | 1 | Various | uhubctl-compatible powered USB 3.0 hub | Optional - for USB LoRa radio power control |
 | **Cables / Bulkheads** | | | | |
 | Cables / Bulkheads | 1 | Belden / CommScope (example) | RG-6 Quad-Shield Coax (cut to length) | OTA coax runs |
 | Cables / Bulkheads | 1 | Various | Ground Block (F-type, 75Ω) | Bond to case/ground |
@@ -58,8 +60,9 @@
 - Dual RTL-SDR setup for FM/NOAA reception
 
 ### Phase 5: LoRa Mesh Networking (Hardware to be Acquired) ❌
-- Waveshare LoRa HAT and companion nodes
-- 915 MHz antenna system
+- Dual LoRa radio setup for Meshtastic and MeshCore capabilities
+- Waveshare LoRa HAT(s) and companion nodes
+- 915 MHz antenna system with switching capability
 
 ### Phase 6: Solar Power & Enclosure (Hardware to be Acquired) ❌
 - Complete solar power system with battery
@@ -69,4 +72,73 @@
 
 For detailed technical specifications and wiring diagrams, see [wiring.md](wiring.md).
 
-*Last updated: 2025-09-30*
+## Dual LoRa Mesh Radios (Meshtastic + MeshCore)
+
+> **Goal:** Run **two independent 915 MHz LoRa radios** so Meshtastic and MeshCore can both be utilized, with **simple on/off toggling** and a clear antenna strategy.
+
+### Radio Configuration Options
+
+**Option A — Two Pi HATs (SX1262, 915 MHz):**
+- Components: Waveshare SX1262 LoRa HAT ×2
+- Pros: Compact design, direct GPIO interface
+- Cons: Power control/toggling complexity, physical stacking clearance required
+
+**Option B — Two USB LoRa nodes (ESP32 + SX1262/1276, 915 MHz):**
+- Components: Meshtastic-capable ESP32 LoRa boards ×2 (one Meshtastic, one MeshCore firmware)
+- Pros: Simple USB isolation, easy power toggle, flexible placement
+- Cons: Slightly larger footprint than HATs
+
+**Option C — Mixed Configuration:**
+- Components: 1× HAT + 1× USB LoRa node
+- Pros: Balances compactness with flexibility
+
+### Power Management & Toggling
+
+**Recommended for USB Options (B/C):**
+- **uhubctl-compatible powered USB 3.0 hub** — per-port power switching from software
+- **Inline USB on/off switches (×2)** — manual toggles per radio USB line
+
+**For HAT Option (A):**
+- **2-channel DC load switch/relay board** (5V GPIO-controlled) — cuts radio Vcc
+- **Raspberry Pi PoE/ATX-style HAT** — advanced option for managed power domains
+
+### Antenna Strategy
+
+**Dual Antenna Setup (Recommended):**
+- **Two separate 915 MHz antennas** with short LMR-240/LMR-200 pigtails
+- Maintain at least 30–50 cm separation between antennas
+- Simplest configuration, allows simultaneous operation
+
+**Single Antenna with A/B Switch:**
+- **SMA A/B coax switch (DC-pass on "A" side)** feeding single 915 MHz antenna
+- Set A=Meshtastic or B=MeshCore; only one connected at a time
+- Prevents TX collisions but requires manual/software switching
+
+> ⚠️ **Important:** Avoid simple splitters/combiners for simultaneous TX — they can cause damage unless properly isolated and PTT-coordinated.
+
+### Additional Dual LoRa Components
+
+- **2× 915 MHz LoRa radios** (per chosen configuration above)
+- **1× Powered USB 3.0 hub (uhubctl-compatible)** *or* **2× Inline USB on/off switches**
+- **1× SMA A/B manual RF switch (DC-pass)** *or* **1× Second 915 MHz antenna**
+- **2–4× SMA male–male coax jumpers** (0.3–0.5 m, 50 Ω)
+- **2× 915 MHz rubber-duck or short omni antennas** *(for dual-antenna setup)*
+- **Mounting hardware/spacers** for stacked HATs *(if Option A)*
+- **Short USB-A/USB-C cables** for radio placement/strain relief *(if Option B/C)*
+
+### Software & Labeling Notes
+
+- Label radios and ports clearly: **LoRa-A (Meshtastic)**, **LoRa-B (MeshCore)**
+- If using `uhubctl`, implement service scripts to toggle ports and prevent concurrent transmission when using single antenna via A/B switch
+- Consider automated switching logic to prevent RF interference between mesh protocols
+
+## Additional Components (Optional)
+
+- **Powered USB 3.0 hub (5 V, ≥3 A PSU)** — optional for SDR/ATSC stability under load
+- **SMA inline attenuators (2×, 6 dB typical)** — for front‑end overload control on SDR legs
+- **ATO/ATC fuse assortment (1–30 A)** — mixed pack to match sizing table
+- **Ferrite snap‑on cores (5–7 mm ID, 6–10 pcs)** — common‑mode chokes for USB/coax leads
+- **12 V TVS diode (e.g., SMAJ58A or system‑appropriate)** — transient suppression on 12 V bus
+- **Coax weatherproofing** — self‑fusing silicone tape or boots for exterior F‑connectors
+
+*Last updated: 2025-10-07*
