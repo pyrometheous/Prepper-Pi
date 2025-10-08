@@ -68,4 +68,10 @@ mkdir -p "$(dirname "$VERSION_FILE")" || true
   echo "manifest_sha256=$(sha256sum "$MANIFEST" | awk '{print $1}')"
 } | sudo tee "$VERSION_FILE" >/dev/null
 
+# Sanity: ensure all recorded images use immutable digests
+if grep -Eq '=>[[:space:]]+[^[:space:]]+:(latest|[0-9]+\.[0-9]+(\.[0-9]+)?)$' "$MANIFEST"; then
+  echo "ERROR: MANIFEST contains tag-only references; immutable digests are required." >&2
+  exit 1
+fi
+
 echo "Wrote $MANIFEST and $VERSION_FILE"

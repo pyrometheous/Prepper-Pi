@@ -133,6 +133,50 @@ jobs:
           
           echo "✅ MANIFEST.txt format validation passed"
           
+      - name: Ensure every compose image has a digest in MANIFEST
+        run: |
+          echo "🔍 Cross-checking compose images vs MANIFEST..."
+          # Collect active images from compose (ignore commented lines)
+          COMPOSE_IMAGES=$(awk '
+            /^[[:space:]]*#/ { next }
+            match($0, /^[[:space:]]*image:[[:space:]]*([^[:space:]]+)/, m) { print m[1] }
+          ' docker-compose*.yml 2>/dev/null | sort -u)
+
+          MISSING=0
+          while IFS= read -r IMG; do
+            # Expect a line like: "<repo[:tag]> => <repo@sha256:...>"
+            if ! grep -E -q "^${IMG//\//\\/}[[:space:]]*=>[[:space:]]*[^[:space:]]+@sha256:[0-9a-f]{64}$" release-assets/MANIFEST.txt; then
+              echo "❌ MANIFEST missing digest for image: $IMG"
+              MISSING=1
+            fi
+          done <<< "$COMPOSE_IMAGES"
+
+          if [[ $MISSING -ne 0 ]]; then
+            echo "💥 COMPLIANCE CHECK FAILED: every compose image must be recorded by immutable digest in MANIFEST.txt"
+            exit 1
+          fi
+
+          echo "✅ All compose images recorded by immutable digest in MANIFEST"
+          
+      - name: Inspect source archive contents
+        run: |
+          cd release-assets
+          SRC=$(ls source-*.tar.gz source-*.zip source.tar.gz source.zip 2>/dev/null | head -n1 || true)
+          if [[ -z "$SRC" ]]; then
+            echo "⚠️  Skipping source archive inspection (none found)"
+            exit 0
+          fi
+
+          echo "🔎 Inspecting $SRC for /licenses and THIRD_PARTY_NOTICES.md..."
+          if [[ "$SRC" == *.zip ]]; then
+            unzip -l "$SRC" | tee contents.txt
+          else
+            tar -tzf "$SRC" | tee contents.txt
+          fi
+
+          grep -qE '/licenses/?$' contents.txt || echo "⚠️  /licenses folder not detected in source archive"
+          grep -q 'THIRD_PARTY_NOTICES.md' contents.txt || echo "⚠️  THIRD_PARTY_NOTICES.md not detected in source archive"
+          
       - name: Verify checksums integrity
         run: |
           cd release-assets
