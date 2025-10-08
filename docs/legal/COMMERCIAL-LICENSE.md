@@ -1,7 +1,5 @@
 # Prepper Pi Commercial Hardware License (Template)
 
-Note: This file has moved to `docs/legal/COMMERCIAL-LICENSE.md`. This copy remains for compatibility and will be kept in sync.
-
 > This template governs licensee sales of **preconfigured hardware** that includes the Prepper Pi software stack. Final terms subject to mutual signature. This is **not legal advice**.
 
 ## 1. Parties

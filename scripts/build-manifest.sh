@@ -1,67 +1,77 @@
-#!/bin/bash
-# Build manifest for GPL compliance tracking
-# This script generates version tracking files for source code offer compliance
+#!/usr/bin/env bash
+# SPDX-License-Identifier: LicenseRef-PP-NC-1.0
+set -euo pipefail
 
-set -e
+OUT_DIR="${1:-./release-artifacts}"
+mkdir -p "$OUT_DIR"
 
-MANIFEST_FILE="MANIFEST.txt"
 VERSION_FILE="/etc/prepper-pi/VERSION"
-GIT_COMMIT=$(git rev-parse HEAD 2>/dev/null || echo "unknown")
-GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "unknown")
-BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+MANIFEST="$OUT_DIR/MANIFEST.txt"
 
-echo "Building compliance manifest..."
+GIT_COMMIT="$(git rev-parse --short=12 HEAD || echo unknown)"
+DATE_ISO="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 
-# Create version file content
-mkdir -p "$(dirname "$VERSION_FILE")" 2>/dev/null || true
-cat > "$VERSION_FILE" << EOF
-# Prepper Pi Version Information
-# Generated: $BUILD_DATE
+#
+# Discover active images from compose files (ignores commented lines).
+# Works without yq: this script skips lines that start with '#' and captures the value after 'image:'.
+#
+readarray -t IMAGES < <(
+  awk '
+    /^[[:space:]]*#/ { next }                                           # ignore commented lines
+    match($0, /^[[:space:]]*image:[[:space:]]*([^[:space:]]+)/, m) {    # image: repo[:tag|@sha]
+      print m[1]
+    }
+  ' docker-compose*.yml 2>/dev/null | sort -u
+)
 
-GIT_COMMIT=$GIT_COMMIT
-GIT_BRANCH=$GIT_BRANCH
-BUILD_DATE=$BUILD_DATE
-SOURCE_OFFER_URL=https://github.com/pyrometheous/Prepper-Pi/releases
-THIRD_PARTY_NOTICES=licenses/THIRD_PARTY_NOTICES.md
-EOF
-
-# Create manifest for source distribution
-cat > "$MANIFEST_FILE" << EOF
-# Prepper Pi Source Manifest
-# Generated: $BUILD_DATE
-# Git Commit: $GIT_COMMIT
-
-# Core Components
-Repository: https://github.com/pyrometheous/Prepper-Pi.git
-Commit: $GIT_COMMIT
-Branch: $GIT_BRANCH
-
-# Container Images (update with actual versions used)
-OpenWrt: openwrt/openwrt:latest
-Homepage: ghcr.io/gethomepage/homepage:latest
-Portainer: portainer/portainer-ce:latest
-Jellyfin: lscr.io/linuxserver/jellyfin:latest
-Kavita: lscr.io/linuxserver/kavita:latest
-
-# Build Dependencies
-Docker Compose Version: $(docker compose version --short 2>/dev/null || echo "unknown")
-System: $(uname -a)
-
-# License Information
-Project License: Prepper Pi Noncommercial License (PP-NC-1.0)
-Documentation License: CC BY-NC 4.0
-Third-Party Notices: licenses/THIRD_PARTY_NOTICES.md
-Source Offer: licenses/SOURCE-OFFER.md
-EOF
-
-echo "Manifest files generated:"
-echo "  - $MANIFEST_FILE"
-echo "  - $VERSION_FILE"
-
-# If running in container, also copy to a standard location
-if [ -f /.dockerenv ] || [ -n "$CONTAINER" ]; then
-    cp "$VERSION_FILE" /tmp/prepper-pi-version 2>/dev/null || true
-    echo "  - /tmp/prepper-pi-version (container copy)"
+if [[ ${#IMAGES[@]} -eq 0 ]]; then
+  echo "ERROR: No active images discovered in docker-compose*.yml" >&2
+  exit 1
 fi
 
-echo "Done!"
+echo "Prepper-Pi $DATE_ISO"            | tee "$MANIFEST"
+echo "git_commit=$GIT_COMMIT"         | tee -a "$MANIFEST"
+echo ""                                | tee -a "$MANIFEST"
+echo "[docker-images]"                 | tee -a "$MANIFEST"
+
+for img in "${IMAGES[@]}"; do
+  echo "Resolving digest for $img..." >&2
+  # Always ensure local metadata is fresh
+  docker pull "$img" >/dev/null 2>&1 || true
+  if docker image inspect "$img" >/dev/null 2>&1; then
+    DIGEST="$(docker image inspect --format='{{index .RepoDigests 0}}' "$img" 2>/dev/null || echo '')"
+    if [[ -n "$DIGEST" && "$DIGEST" != "<no value>" ]]; then
+      echo "$img => $DIGEST" | tee -a "$MANIFEST"
+    else
+      echo "ERROR: Could not resolve digest for $img (may need docker pull)" >&2
+      echo "$img => digest_resolution_failed" | tee -a "$MANIFEST"
+      exit 1
+    fi
+  else
+    echo "WARNING: Image $img not present locally" >&2
+    echo "$img => not_present" | tee -a "$MANIFEST"
+  fi
+done
+
+# Hash key configs for traceability
+echo ""                                         | tee -a "$MANIFEST"
+echo "[checksums]"                              | tee -a "$MANIFEST"
+for f in docker-compose*.yml *.env; do
+  [[ -f "$f" ]] && sha256sum "$f" | tee -a "$MANIFEST"
+done
+
+# Ensure VERSION file exists on system images; for dev, write locally too
+mkdir -p "$(dirname "$VERSION_FILE")" || true
+{
+  echo "date=$DATE_ISO"
+  echo "git_commit=$GIT_COMMIT"
+  echo "manifest_sha256=$(sha256sum "$MANIFEST" | awk '{print $1}')"
+} | sudo tee "$VERSION_FILE" >/dev/null
+
+# Sanity: ensure all recorded images use immutable digests
+if grep -Eq '=>[[:space:]]+[^[:space:]]+:(latest|[0-9]+\.[0-9]+(\.[0-9]+)?)$' "$MANIFEST"; then
+  echo "ERROR: MANIFEST contains tag-only references; immutable digests are required." >&2
+  exit 1
+fi
+
+echo "Wrote $MANIFEST and $VERSION_FILE"

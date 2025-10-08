@@ -1,11 +1,13 @@
 # Prepper Pi Noncommercial License (PP-NC-1.0)
 
+DIY/personal use is free under this license. Selling preconfigured hardware or services that ship/market the Prepper‑Pi stack requires a separate commercial license with revenue share (see `docs/legal/COMMERCIAL-LICENSE.md`).
+
 Copyright (c) 2025 pyrometheous
 
 Permission is granted to use, reproduce, and modify this project's source code for **personal, educational, or internal DIY** purposes, provided that:
 - You include this license notice in copies or substantial portions of the code; and
 - You do not sell, rent, or offer commercial services that primarily consist of this code or a preconfigured distribution of this code.
 
-**Commercial Use Prohibited** without a separate written license from the copyright holder. For commercial hardware sales or services, contact the author and see `COMMERCIAL-LICENSE.md`.
+**Commercial Use Prohibited** without a separate written license from the copyright holder. For commercial hardware sales or services, contact the author and see `docs/legal/COMMERCIAL-LICENSE.md`.
 
 This license does not apply to third-party software included in this project, which remains under its respective licenses. Trademarks are not licensed.

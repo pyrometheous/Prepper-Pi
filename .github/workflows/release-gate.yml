@@ -1,0 +1,219 @@
+# SPDX-License-Identifier: LicenseRef-PP-NC-1.0
+name: Release Gate Compliance Check
+
+on:
+  release:
+    types: [published, edited]
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: 'Tag name to validate (e.g., v1.0.0)'
+        required: true
+        type: string
+
+jobs:
+  compliance-check:
+    name: Verify GPL/LGPL Compliance Artifacts
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.release.tag_name || inputs.tag_name }}
+          
+      - name: Get release information
+        id: release
+        run: |
+          if [[ "${{ github.event_name }}" == "release" ]]; then
+            TAG_NAME="${{ github.event.release.tag_name }}"
+            RELEASE_ID="${{ github.event.release.id }}"
+          else
+            TAG_NAME="${{ inputs.tag_name }}"
+            # Get release ID for manual dispatch
+            RELEASE_ID=$(gh release view "$TAG_NAME" --json id --jq '.id')
+          fi
+          echo "tag_name=$TAG_NAME" >> $GITHUB_OUTPUT
+          echo "release_id=$RELEASE_ID" >> $GITHUB_OUTPUT
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Download release assets
+        run: |
+          mkdir -p release-assets
+          gh release download "${{ steps.release.outputs.tag_name }}" --dir release-assets
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Check required compliance artifacts
+        run: |
+          cd release-assets
+          echo "🔍 Checking for required GPL/LGPL compliance artifacts..."
+          
+          # Check for source archive
+          if ls source-*.tar.gz source-*.zip source.tar.gz source.zip 2>/dev/null; then
+            echo "✅ Source archive found"
+            SOURCE_FOUND=true
+          else
+            echo "❌ No source archive found (expected: source-*.tar.gz, source-*.zip, source.tar.gz, or source.zip)"
+            SOURCE_FOUND=false
+          fi
+          
+          # Check for MANIFEST.txt
+          if [[ -f "MANIFEST.txt" ]]; then
+            echo "✅ MANIFEST.txt found"
+            MANIFEST_FOUND=true
+          else
+            echo "❌ MANIFEST.txt not found"
+            MANIFEST_FOUND=false
+          fi
+          
+          # Check for checksums file
+          if ls *.sha256 checksums.txt SHA256SUMS 2>/dev/null; then
+            echo "✅ Checksums file found"
+            CHECKSUMS_FOUND=true
+          else
+            echo "❌ No checksums file found (expected: *.sha256, checksums.txt, or SHA256SUMS)"
+            CHECKSUMS_FOUND=false
+          fi
+          
+          # Fail if any required artifact is missing
+          if [[ "$SOURCE_FOUND" == "false" || "$MANIFEST_FOUND" == "false" || "$CHECKSUMS_FOUND" == "false" ]]; then
+            echo ""
+            echo "💥 COMPLIANCE CHECK FAILED"
+            echo "Required artifacts for GPL/LGPL compliance are missing from this release."
+            echo "Please ensure the release includes:"
+            echo "  - Source archive (source-*.tar.gz, source-*.zip, source.tar.gz, or source.zip)"
+            echo "  - MANIFEST.txt (component inventory with digests)"
+            echo "  - Checksums file (*.sha256, checksums.txt, or SHA256SUMS)"
+            echo ""
+            echo "See licenses/SOURCE-OFFER.md for details on concurrent source distribution requirements."
+            exit 1
+          fi
+          
+      - name: Validate MANIFEST.txt format
+        run: |
+          cd release-assets
+          echo "🔍 Validating MANIFEST.txt format..."
+          
+          if ! grep -q "git_commit=" MANIFEST.txt; then
+            echo "❌ MANIFEST.txt missing git_commit field"
+            exit 1
+          fi
+          
+          if ! grep -q "\[docker-images\]" MANIFEST.txt; then
+            echo "❌ MANIFEST.txt missing [docker-images] section"
+            exit 1
+          fi
+          
+          if ! grep -q "\[checksums\]" MANIFEST.txt; then
+            echo "❌ MANIFEST.txt missing [checksums] section"
+            exit 1
+          fi
+          
+          # Check for image digests (should have @sha256: entries)
+          if ! grep -q "@sha256:" MANIFEST.txt; then
+            echo "⚠️  WARNING: No image digests found in MANIFEST.txt"
+            echo "   Consider using immutable digests for reproducible builds"
+          else
+            echo "✅ Image digests found in MANIFEST.txt"
+          fi
+          
+          # Check for failed image resolution
+          if grep -q "not_present\|digest_resolution_failed" MANIFEST.txt; then
+            echo "❌ MANIFEST.txt contains failed image resolutions:"
+            grep "not_present\|digest_resolution_failed" MANIFEST.txt
+            echo ""
+            echo "All images must be successfully resolved to immutable digests."
+            echo "Run 'docker pull' for missing images or fix digest resolution issues."
+            exit 1
+          else
+            echo "✅ All images successfully resolved to digests"
+          fi
+          
+          echo "✅ MANIFEST.txt format validation passed"
+          
+      - name: Ensure every compose image has a digest in MANIFEST
+        run: |
+          echo "🔍 Cross-checking compose images vs MANIFEST..."
+          # Collect active images from compose (ignore commented lines)
+          COMPOSE_IMAGES=$(awk '
+            /^[[:space:]]*#/ { next }
+            match($0, /^[[:space:]]*image:[[:space:]]*([^[:space:]]+)/, m) { print m[1] }
+          ' docker-compose*.yml 2>/dev/null | sort -u)
+
+          MISSING=0
+          while IFS= read -r IMG; do
+            # Expect a line like: "<repo[:tag]> => <repo@sha256:...>"
+            if ! grep -E -q "^${IMG//\//\\/}[[:space:]]*=>[[:space:]]*[^[:space:]]+@sha256:[0-9a-f]{64}$" release-assets/MANIFEST.txt; then
+              echo "❌ MANIFEST missing digest for image: $IMG"
+              MISSING=1
+            fi
+          done <<< "$COMPOSE_IMAGES"
+
+          if [[ $MISSING -ne 0 ]]; then
+            echo "💥 COMPLIANCE CHECK FAILED: every compose image must be recorded by immutable digest in MANIFEST.txt"
+            exit 1
+          fi
+
+          echo "✅ All compose images recorded by immutable digest in MANIFEST"
+          
+      - name: Inspect source archive contents
+        run: |
+          cd release-assets
+          SRC=$(ls source-*.tar.gz source-*.zip source.tar.gz source.zip 2>/dev/null | head -n1 || true)
+          if [[ -z "$SRC" ]]; then
+            echo "⚠️  Skipping source archive inspection (none found)"
+            exit 0
+          fi
+
+          echo "🔎 Inspecting $SRC for /licenses and THIRD_PARTY_NOTICES.md..."
+          if [[ "$SRC" == *.zip ]]; then
+            unzip -l "$SRC" | tee contents.txt
+          else
+            tar -tzf "$SRC" | tee contents.txt
+          fi
+
+          grep -qE '/licenses/?$' contents.txt || echo "⚠️  /licenses folder not detected in source archive"
+          grep -q 'THIRD_PARTY_NOTICES.md' contents.txt || echo "⚠️  THIRD_PARTY_NOTICES.md not detected in source archive"
+          
+      - name: Verify checksums integrity
+        run: |
+          cd release-assets
+          echo "🔍 Verifying checksums integrity..."
+          
+          # Find checksums file
+          CHECKSUMS_FILE=""
+          for file in *.sha256 checksums.txt SHA256SUMS; do
+            if [[ -f "$file" ]]; then
+              CHECKSUMS_FILE="$file"
+              break
+            fi
+          done
+          
+          if [[ -n "$CHECKSUMS_FILE" ]]; then
+            echo "📝 Using checksums file: $CHECKSUMS_FILE"
+            
+            # Verify checksums
+            if sha256sum -c "$CHECKSUMS_FILE"; then
+              echo "✅ All checksums verified successfully"
+            else
+              echo "❌ Checksum verification failed"
+              exit 1
+            fi
+          else
+            echo "❌ No checksums file found for verification"
+            exit 1
+          fi
+          
+      - name: Compliance summary
+        run: |
+          echo ""
+          echo "🎉 COMPLIANCE CHECK PASSED"
+          echo ""
+          echo "This release includes all required artifacts for GPL/LGPL compliance:"
+          echo "  ✅ Source archive (Corresponding Source)"
+          echo "  ✅ MANIFEST.txt (component inventory)"
+          echo "  ✅ Checksums verification"
+          echo ""
+          echo "Release ${{ steps.release.outputs.tag_name }} is ready for distribution."

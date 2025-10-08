@@ -1,3 +1,7 @@
+<!--
+SPDX-License-Identifier: CC-BY-NC-4.0
+-->
+
 # 🥧 Prepper Pi
 
 > **⚠️ DISCLAIMER:** Personal project, early development. No warranties or support. Use at your own risk.
@@ -7,15 +11,30 @@
 **Project code:** **Prepper Pi Noncommercial License (PP-NC-1.0)** (see `LICENSE`).  
 **Docs & media:** **CC BY-NC 4.0** (see `LICENSE-DOCS`).  
 **Third-party software:** Licensed under their own FOSS licenses. See `licenses/THIRD_PARTY_NOTICES.md`.  
-**Source code offer (GPL'd components):** See `licenses/SOURCE-OFFER.md`.
+**GPL/LGPL source:** I publish the Corresponding Source **in the matching GitHub Release** for any image/binary I ship. See `licenses/SOURCE-OFFER.md`.
+**Project code license:** see `LICENSE` (PP-NC-1.0).  
+**Documentation/media license:** see `LICENSE-DOCS` (CC BY-NC 4.0).
 
-**Commercial hardware sales (preconfigured devices):** Allowed **only** under a separate commercial license with revenue share. See `COMMERCIAL-LICENSE.md` and contact **pyrometheous**.
+**DIY/personal use:** Free for personal, educational, and internal DIY builds.  
+**Commercial sales:** Selling preconfigured hardware or services that ship/market the Prepper‑Pi stack requires a separate commercial license with revenue share. See `docs/legal/COMMERCIAL-LICENSE.md`.
 
-**Trademarks:** "Prepper Pi" name/logo are not covered by the software licenses. See `TRADEMARKS.md`. Do **not** market third-party marks (e.g., Meshtastic, OpenWrt, Raspberry Pi, Jellyfin) as product branding without their owners' permissions.
+**Commercial hardware sales (preconfigured devices):** Allowed **only** under a separate commercial license with revenue share. See `docs/legal/COMMERCIAL-LICENSE.md` and contact **pyrometheous**.
+
+**Trademarks:** "Prepper Pi" name/logo are not covered by the software licenses. See `docs/legal/TRADEMARKS.md`. Do **not** market third-party marks (e.g., Meshtastic, OpenWrt, Raspberry Pi, Jellyfin) as product branding without their owners' permissions.
+
+For transparency about brand/trademark outreach, see `docs/legal/permissions-log.md`.
 
 **No copyrighted media included:** Devices ship **without** copyrighted content. Users are responsible for lawful use of media and RF features.
 
 **Codecs/patents note:** FFmpeg and certain codecs (e.g., H.264/AVC, HEVC, AAC) may be patent-encumbered in some regions. This project does not grant patent licenses. Where required, ship legal codecs from your OS vendor and let end-users enable optional encoders themselves.
+
+> **Note:** If a matching GitHub Release isn't published yet for a given image/binary, use the repository source at the tagged commit. Once a formal Release is cut, the corresponding source will be attached to that Release.
+
+### 🔐 Security
+
+Please report vulnerabilities privately via GitHub Security Advisories (GitHub → Security → Report a vulnerability). If that is unavailable, open a minimal Issue with the `security` label and I’ll follow up privately. See `SECURITY.md`.
+
+Note: This is a hobby project with no guaranteed turnaround for issues or security reports. I’ll review items as time permits.
 
 ---
 
@@ -31,8 +50,9 @@
 - Dual LoRa meshes (Meshtastic + MeshCore)
 - Captive-portal Wi-Fi hotspot
 - Jellyfin media streaming
-- Kavita ebook server
+- Kavita ebook server (OPDS feeds for KOReader/Kindle)
 - Samba file sharing
+- Local LLM (offline Q&A) with Pi‑friendly models (via Ollama/llama.cpp; optional Open WebUI)
 - Solar monitoring (Victron SmartSolar)
 - Real-time NOAA/EAS alerts
 
@@ -78,11 +98,19 @@ sudo apt update && sudo apt install -y git && git clone https://github.com/pyrom
 git clone https://github.com/pyrometheous/Prepper-Pi.git && cd Prepper-Pi && sudo bash cleanup.sh && cd .. && rm -rf Prepper-Pi
 ```
 
+## 🔒 Security Hardening (do this before field use)
+1. **Change all defaults** (OpenWrt root password, Wi-Fi SSID/passphrase, disable passwordless logins).
+2. **Enable HTTPS** on admin interfaces; restrict management to wired or trusted VLAN.
+3. **Rotate API keys/secrets** for any services you enable (Jellyfin, Portainer CE).
+4. **Update & lock** package versions; rebuild images with `scripts/build-manifest.sh` to record digests.
+5. **Back up** `/etc/prepper-pi/VERSION` and the full `MANIFEST.txt` with each release.
+
 ## ⚙️ Service Access & Configuration
 
 ### 🌐 Network Access
-- **Default Gateway:** `10.20.30.1` (OpenWrt admin interface, username: `root`, no password)
-- **WiFi Network:** "Prepper Pi" SSID with password `PrepperPi2025!`
+- **Default Gateway (example):** `10.20.30.1` (OpenWrt admin interface)
+- **Initial Credentials (example):** username: `root`, password: *(set on first boot)*
+- **Wi-Fi Network (example):** SSID "Prepper Pi", password `ChangeMeNow!`  ← update during setup
 - **DHCP Range:** 10.20.30.100-199 for client devices
 
 ### 📊 Service URLs
@@ -90,7 +118,7 @@ git clone https://github.com/pyrometheous/Prepper-Pi.git && cd Prepper-Pi && sud
 |---------|-----|--------|-------|
 | Landing Page | http://10.20.30.1 | ⚠️ **Experimental** | Captive portal redirect |
 | Jellyfin | http://10.20.30.1:8096 | ⚠️ **Experimental** | Media server |
-| Portainer | http://10.20.30.1:9000 | ⚠️ **Experimental** | Container management |
+| Portainer | http://10.20.30.1:9000 | ⚠️ **Experimental** | Container management *(Community Edition)* |
 | Tvheadend | http://10.20.30.1:9981 | 📋 **Planned** | TV backend (Phase 4) |
 | Meshtastic | http://10.20.30.1:2443 | 📋 **Planned** | LoRa mesh A (Phase 5) |
 | MeshCore | http://10.20.30.1:2444 | 📋 **Planned** | LoRa mesh B (Phase 5) |
@@ -100,6 +128,51 @@ git clone https://github.com/pyrometheous/Prepper-Pi.git && cd Prepper-Pi && sud
 - ✅ **Implemented** - Tested and working
 - ⚠️ **Experimental** - Configured but needs hardware validation  
 - 📋 **Planned** - Service templates ready, hardware needed
+
+## 🧠 Local LLM on Raspberry Pi (Pi‑friendly options)
+
+> Goal: run small, useful, fully offline models on a Raspberry Pi 5 for emergency Q&A, checklists, and basic text tasks.
+
+What works well on a Pi 5 (8 GB) today:
+- Prefer 1–2B parameter models (quantized GGUF) for responsiveness.
+- 3–4B can run with tight memory; keep context short and use 4‑bit quantization.
+- 7B usually requires more RAM than is comfortably available for the OS + services.
+
+Recommended approaches
+- Ollama (simple runner + registry)
+  - Install on ARM64 Linux (Pi OS 64‑bit): https://ollama.com/download/linux
+  - Pull tiny models first (examples):
+    - Qwen2‑1.5B‑Instruct (good general small chat; Apache‑2.0)
+    - Gemma 3 1B (very small; basic tasks)
+  - Pair with a web UI: Open WebUI supports Ollama out‑of‑the‑box (Docker or pip). See docs: https://docs.openwebui.com/
+- llama.cpp (lowest overhead, flexible server)
+  - Runs GGUF models with a lightweight CLI and an OpenAI‑compatible HTTP server (`llama-server`).
+  - Project: https://github.com/ggerganov/llama.cpp
+  - Use 4‑bit (Q4_K_M) quantized models and modest context windows for speed.
+- Whisper.cpp (optional speech‑to‑text)
+  - For offline transcription of short voice notes or radio clips (tiny/base models recommended).
+  - Project: https://github.com/ggml-org/whisper.cpp
+
+Model pointers (GGUF)
+- Qwen/Qwen2‑1.5B‑Instruct‑GGUF (Apache‑2.0): https://huggingface.co/Qwen/Qwen2-1.5B-Instruct-GGUF
+- TheBloke/phi‑2‑GGUF (MSR research license – noncommercial): https://huggingface.co/TheBloke/phi-2-GGUF
+
+Practical tips on a Pi 5
+- Cooling matters: avoid thermal throttling with a fan or active cooler.
+- Keep context short (e.g., 512–1024 tokens) to reduce RAM/CPU use.
+- Prefer 4‑bit quantization (Q4_K_M) for a good quality/speed tradeoff.
+- Check model licenses—many are noncommercial/research‑only; this project’s noncommercial code license does not change third‑party model terms.
+
+Web UIs
+- Open WebUI (works offline; integrates with Ollama; has RAG tools):
+  - Project: https://github.com/open-webui/open-webui
+  - “Bundled with Ollama” images and usage: https://docs.openwebui.com/
+
+References
+- Ollama quickstart, models, and CLI: https://github.com/ollama/ollama
+- llama.cpp quickstart and server: https://github.com/ggerganov/llama.cpp
+- Open WebUI installation and troubleshooting: https://docs.openwebui.com/
+- Whisper.cpp quickstart and memory guidance: https://github.com/ggml-org/whisper.cpp
 
 ## 🌐 Network Architecture
 
@@ -224,8 +297,8 @@ RPi5 Ethernet ← host networking → OpenWrt Container
 
 ### 🧪 Validation Tests
 
-**Expected Client Experience:**
-1. Connect to "Prepper Pi" SSID with password `PrepperPi2025!`
+**Expected Client Experience (example values; change yours in production):**
+1. Connect to "Prepper Pi" SSID with password `ChangeMeNow!`
 2. Get DHCP address from OpenWrt container (10.20.30.x range)
 3. Be redirected to landing page (http://10.20.30.1) via captive portal
 4. Access all services through the landing page
@@ -306,6 +379,17 @@ curl -I http://neverssl.com/ | head -n 5
 **Community Contributions**
 
 * **[Paul MacKinnon](https://github.com/paulmackinnon)** – Original [Docker macvlan guide](https://paul-mackinnon.medium.com/openwrt-raspberry-pi-docker-vlan-project-9cb1db10684c)
+
+
+**AI & Local LLMs**
+
+* **[Ollama](https://github.com/ollama/ollama)** – Local model runner and registry; ARM64 Linux install: https://ollama.com/download/linux
+* **[llama.cpp](https://github.com/ggerganov/llama.cpp)** – Lightweight GGUF inference and OpenAI‑compatible server
+* **[Open WebUI](https://github.com/open-webui/open-webui)** — Self‑hosted AI UI; docs with “bundled with Ollama” option: https://docs.openwebui.com/
+* **[whisper.cpp](https://github.com/ggml-org/whisper.cpp)** — Offline speech‑to‑text (tiny/base models fit best on Pi)
+* Models (GGUF examples):
+  - **Qwen/Qwen2‑1.5B‑Instruct‑GGUF** (Apache‑2.0): https://huggingface.co/Qwen/Qwen2-1.5B-Instruct-GGUF
+  - **TheBloke/phi‑2‑GGUF** (Microsoft Research license): https://huggingface.co/TheBloke/phi-2-GGUF
 
 ---
 
