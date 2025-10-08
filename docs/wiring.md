@@ -65,10 +65,11 @@
 │             │
 │             └──▶ 🔵▶ 📺 USB ATSC **Dual** Tuner ▶ 🟩 Pi 5 ▶ 🟩 Tvheadend ▶ 📱 Clients
 │
-│  🟠 LoRa branch (dual mesh)
+│  🟠 LoRa branch (dual mesh - required)
 │     🟠 Antenna A (915 MHz) ─▶ 🟠 bulkhead ▶ 🟠 short LMR to LoRa-A (Meshtastic)
 │     🟠 Antenna B (915 MHz) ─▶ 🟠 bulkhead ▶ 🟠 short LMR to LoRa-B (MeshCore)
-│     🟠 USB/HAT LoRa Radios ▶ 🟩 Pi 5 ▶ 💬 Mesh protocols (Web UI + MQTT optional)
+│       OR: Single antenna via A/B switch ─▶ 🟠 bulkhead ▶ 🟠 switch ▶ LoRa-A/B
+│     🟠 Dual USB/HAT LoRa Radios ▶ 🟩 Pi 5 ▶ 💬 Mesh protocols (Web UI + MQTT optional)
 │
 │  🟩 Pi 5 roles: OpenWrt AP + Docker (Tvheadend, Icecast/Liquidsoap, Dual Mesh)
 └───────────────────────────────────────────────────────────────────────────────────┘
@@ -114,11 +115,11 @@
 - **(Optional)** inline attenuators (3–10 dB) if overload appears
 
 ### LoRa (Phase 5 - Hardware to be Acquired)
-- **Radios:** Dual setup - Waveshare SX1262 915 MHz LoRa HAT(s) or USB LoRa modules
-- **Antennas:** ALFA Network ARS-915P (SMA) 915 MHz omni x2, or single antenna with A/B switch
-- **RF Jumpers:** Short LMR‑240 SMA patches (~3 ft) inside case for each radio
-- **Companions:** 1–2 handheld LoRa nodes (LILYGO T‑Beam) for phone BLE pairing
-- **Software:** Dual mesh protocols - Meshtastic + MeshCore (Web UI + optional MQTT)
+- **Radios:** Dual setup required - 2× Waveshare SX1262 915 MHz LoRa HAT or USB LoRa modules
+- **Antennas:** 1-2× ALFA Network ARS-915P (SMA) 915 MHz omni (qty depends on antenna strategy)
+- **RF Jumpers:** 2× short LMR‑240 SMA patches (~3 ft) inside case for each radio
+- **Companions:** 2× handheld LoRa nodes (LILYGO T‑Beam) for phone BLE pairing
+- **Software:** Dual mesh protocols required - Meshtastic + MeshCore (Web UI + optional MQTT)
 
 ### Power / Solar / UPS (Phase 6 - Hardware to be Acquired)
 - **Battery:** LiTime 12 V 50 Ah LiFePO₄ (may scale to 100Ah based on runtime requirements)  
@@ -282,7 +283,9 @@ networks:
 
 ## Dual LoRa Mesh Wiring (Meshtastic + MeshCore)
 
-**Goal:** Run **two independent 915 MHz LoRa radios** so you can use **Meshtastic** and **MeshCore** side‑by‑side, with easy toggling and clear RF isolation.
+**Goal:** Run **two independent 915 MHz LoRa radios** for simultaneous **Meshtastic** and **MeshCore** operation, with easy toggling and clear RF isolation.
+
+> **Required Configuration:** This build mandates **dual LoRa radios** for full mesh protocol support. Antenna configuration (1 or 2 antennas) remains flexible based on RF requirements and enclosure constraints.
 
 ### RF Topologies
 

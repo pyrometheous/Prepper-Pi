@@ -191,7 +191,7 @@ RPi5 Ethernet ← host networking → OpenWrt Container
 - [❌] Integration testing with existing Docker services
 
 ### Phase 5: LoRa Mesh Networking (Acquire Hardware)
-- [❌] Dual LoRa radio modules for Meshtastic and MeshCore integration
+- [❌] Dual LoRa radio modules required for Meshtastic and MeshCore integration
 - [❌] Mesh network configuration and range testing for both protocols
 - [❌] Emergency messaging and offline communication protocols
 - [❌] Multi-node mesh deployment and routing optimization

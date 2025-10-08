@@ -4,49 +4,67 @@
 
 ## Complete Bill of Materials
 
-| Category | Qty | Make | Model/Part | Notes |
-|----------|-----|------|------------|-------|
-| **Compute & Core** | | | | |
-| Compute & Core | 1 | Raspberry Pi Foundation | Raspberry Pi 5 (8GB) | Main board |
-| Compute & Core | 1 | Raspberry Pi Foundation | 27W USB-C Power Supply | If not powering from 12→5V buck |
-| Compute & Core | 1 | Raspberry Pi Foundation | Pi 5 Active Cooler | Heatsink + fan |
-| Compute & Core | 1 | Raspberry Pi Foundation | M.2 HAT+ (Compact) | NVMe carrier for Pi 5 |
-| Compute & Core | 1 | TeamGroup / WD / Crucial (example) | NVMe SSD 512GB (PCIe 3.0, 2280) | Storage |
-| Compute & Core | 1 | ALFA Network | AWUS036ACM | Long-Range Dual-Band AC1200 USB WiFi Adapter w/External Antenna |
-| **TV (75Ω path)** | | | | |
-| TV (75Ω path) | 1 | Antennas Direct | ClearStream 2MAX | VHF-Hi/UHF OTA antenna |
-| TV (75Ω path) | 1 | Channel Master | CM-7777HD | Mast preamp + power inserter; FM-trap/LTE filtering |
-| TV (75Ω path) | 1 | Proxicast / PolyPhaser | 75Ω F-F Coax Lightning Arrestor | Protects OTA run; at entry |
-| TV (75Ω path) | 1 | Channel Master | CM-3414 (Ultra Mini 4) | 4-port distribution amp |
-| TV (75Ω path) | 1 | Hauppauge | WinTV-dualHD (USB Dual ATSC) | Two independent TV tuners in one |
-| **Radio (SDR)** | | | | |
-| Radio (SDR) | 2 | RTL-SDR Blog | RTL-SDR V4 (dongle-only) | Two simultaneous radio stations |
-| Radio (SDR) | 1 | Nooelec (example) | Flamingo+ Broadcast FM Notch | FM band-stop for NOAA leg |
-| Radio (SDR) | 2 | Nooelec / Pasternack (example) | F-female → SMA-male pigtail/adapter | Adapt 75Ω RG-6 to SDR SMA |
-| **LoRa** | | | | |
-| LoRa | 1-2 | Waveshare | SX1262 915 MHz LoRa HAT (for Pi) | Pi-attached LoRa radio(s) - qty 2 for dual mesh |
-| LoRa | 1-2 | ALFA Network | ARS-915P (SMA) | 915 MHz omni antenna(s) |
-| LoRa | 1-2 | L-com / Times Microwave | LMR-240 SMA patch (~3 ft) | Short RF jumper(s) inside case |
-| LoRa | 2 | LILYGO | T-Beam (ESP32 + SX1262) | Handheld companion nodes (BLE + GPS variants available) |
-| LoRa | 1 | Various | SMA A/B manual RF switch (DC-pass) | Optional - for single antenna dual radio setup |
-| LoRa | 1 | Various | uhubctl-compatible powered USB 3.0 hub | Optional - for USB LoRa radio power control |
-| **Cables / Bulkheads** | | | | |
-| Cables / Bulkheads | 1 | Belden / CommScope (example) | RG-6 Quad-Shield Coax (cut to length) | OTA coax runs |
-| Cables / Bulkheads | 1 | Various | Ground Block (F-type, 75Ω) | Bond to case/ground |
-| Cables / Bulkheads | 1 | MC4 / Amphenol (example) | MC4 PV Leads/Bulkheads | Panel → controller |
-| **Power / Solar / UPS** | | | | |
-| Power / Solar / UPS | 1 | LiTime (example) | 12 V 50 Ah LiFePO₄ | Main battery (size per runtime) |
-| Power / Solar / UPS | 1 | Victron Energy | SmartSolar MPPT 75/15 | Solar charge controller (12 V system) |
-| Power / Solar / UPS | 1 | Renogy (example) | 100 W 12 V Monocrystalline Panel | Foldable or rigid |
-| Power / Solar / UPS | 1 | Pololu (or equivalent) | D24V50F5 (5 V / 5 A Buck) | Pi power from 12 V |
-| Power / Solar / UPS | 1 | Optional | 13.2 V DC Regulator | For CM-3414 if you want fixed 13.2 V |
-| Power / Solar / UPS | 1 | Powerwerx (example) | Anderson Powerpole Kit (150-pc) | DC distribution/connectors |
-| Power / Solar / UPS | 2 | InstallGear / Littelfuse (example) | Inline ATO/ATC Fuse Holders (10 AWG) | Branch protection |
-| **Enclosure & Hardware** | | | | |
-| Enclosure & Hardware | 1 | Custom | Custom 3D print | Weather-resistant enclosure, internal partition |
-| Enclosure & Hardware | as needed | Various | Bulkhead feed-throughs (MC4 / F / SMA) & cable glands | Wall pass-throughs, strain relief |
-| Enclosure & Hardware | as needed | Various | Ground Rod & Strap | Single-point bond for case/arrestor |
-| Enclosure & Hardware | as needed | Various | 12 V case fans + grills | Vent the power bay |
+### Compute & Core
+| Qty | Make | Model/Part | Notes |
+|-----|------|------------|-------|
+| 1 | Raspberry Pi Foundation | Raspberry Pi 5 (8GB) | Main board |
+| 1 | Raspberry Pi Foundation | 27W USB-C Power Supply | If not powering from 12→5V buck |
+| 1 | Raspberry Pi Foundation | Pi 5 Active Cooler | Heatsink + fan |
+| 1 | Raspberry Pi Foundation | M.2 HAT+ (Compact) | NVMe carrier for Pi 5 |
+| 1 | TeamGroup / WD / Crucial (example) | NVMe SSD 512GB (PCIe 3.0, 2280) | Storage |
+| 1 | ALFA Network | AWUS036ACM | Long-Range Dual-Band AC1200 USB WiFi Adapter w/External Antenna |
+
+### TV (75Ω path)
+| Qty | Make | Model/Part | Notes |
+|-----|------|------------|-------|
+| 1 | Antennas Direct | ClearStream 2MAX | VHF-Hi/UHF OTA antenna |
+| 1 | Channel Master | CM-7777HD | Mast preamp + power inserter; FM-trap/LTE filtering |
+| 1 | Proxicast / PolyPhaser | 75Ω F-F Coax Lightning Arrestor | Protects OTA run; at entry |
+| 1 | Channel Master | CM-3414 (Ultra Mini 4) | 4-port distribution amp |
+| 1 | Hauppauge | WinTV-dualHD (USB Dual ATSC) | Two independent TV tuners in one |
+
+### Radio (SDR)
+| Qty | Make | Model/Part | Notes |
+|-----|------|------------|-------|
+| 2 | RTL-SDR Blog | RTL-SDR V4 (dongle-only) | Two simultaneous radio stations |
+| 1 | Nooelec (example) | Flamingo+ Broadcast FM Notch | FM band-stop for NOAA leg |
+| 2 | Nooelec / Pasternack (example) | F-female → SMA-male pigtail/adapter | Adapt 75Ω RG-6 to SDR SMA |
+
+### LoRa
+| Qty | Make | Model/Part | Notes |
+|-----|------|------------|-------|
+| 2 | Waveshare | SX1262 915 MHz LoRa HAT (for Pi) | Pi-attached LoRa radios - dual mesh requirement |
+| 1-2 | ALFA Network | ARS-915P (SMA) | 915 MHz omni antenna(s) - qty 2 for dual antenna setup |
+| 2 | L-com / Times Microwave | LMR-240 SMA patch (~3 ft) | Short RF jumper(s) inside case |
+| 2 | LILYGO | T-Beam (ESP32 + SX1262) | Handheld companion nodes (BLE + GPS variants available) |
+| 1 | Various | SMA A/B manual RF switch (DC-pass) | Optional - for single antenna dual radio setup |
+| 1 | Various | uhubctl-compatible powered USB 3.0 hub | Optional - for USB LoRa radio power control |
+
+### Cables / Bulkheads
+| Qty | Make | Model/Part | Notes |
+|-----|------|------------|-------|
+| 1 | Belden / CommScope (example) | RG-6 Quad-Shield Coax (cut to length) | OTA coax runs |
+| 1 | Various | Ground Block (F-type, 75Ω) | Bond to case/ground |
+| 1 | MC4 / Amphenol (example) | MC4 PV Leads/Bulkheads | Panel → controller |
+
+### Power / Solar / UPS
+| Qty | Make | Model/Part | Notes |
+|-----|------|------------|-------|
+| 1 | LiTime (example) | 12 V 50 Ah LiFePO₄ | Main battery (size per runtime) |
+| 1 | Victron Energy | SmartSolar MPPT 75/15 | Solar charge controller (12 V system) |
+| 1 | Renogy (example) | 100 W 12 V Monocrystalline Panel | Foldable or rigid |
+| 1 | Pololu (or equivalent) | D24V50F5 (5 V / 5 A Buck) | Pi power from 12 V |
+| 1 | Optional | 13.2 V DC Regulator | For CM-3414 if you want fixed 13.2 V |
+| 1 | Powerwerx (example) | Anderson Powerpole Kit (150-pc) | DC distribution/connectors |
+| 2 | InstallGear / Littelfuse (example) | Inline ATO/ATC Fuse Holders (10 AWG) | Branch protection |
+
+### Enclosure & Hardware
+| Qty | Make | Model/Part | Notes |
+|-----|------|------------|-------|
+| 1 | Custom | Custom 3D print | Weather-resistant enclosure, internal partition |
+| as needed | Various | Bulkhead feed-throughs (MC4 / F / SMA) & cable glands | Wall pass-throughs, strain relief |
+| as needed | Various | Ground Rod & Strap | Single-point bond for case/arrestor |
+| as needed | Various | 12 V case fans + grills | Vent the power bay |
 
 ## Development Phases
 
@@ -74,7 +92,9 @@ For detailed technical specifications and wiring diagrams, see [wiring.md](wirin
 
 ## Dual LoRa Mesh Radios (Meshtastic + MeshCore)
 
-> **Goal:** Run **two independent 915 MHz LoRa radios** so Meshtastic and MeshCore can both be utilized, with **simple on/off toggling** and a clear antenna strategy.
+> **Goal:** Run **two independent 915 MHz LoRa radios** for simultaneous Meshtastic and MeshCore capabilities, with **simple on/off toggling** and a clear antenna strategy.
+
+> **Required:** This build assumes **dual LoRa radios are mandatory** for full mesh protocol support. Antenna configuration (1 or 2 antennas) is flexible based on implementation preference.
 
 ### Radio Configuration Options
 
@@ -118,11 +138,11 @@ For detailed technical specifications and wiring diagrams, see [wiring.md](wirin
 
 ### Additional Dual LoRa Components
 
-- **2× 915 MHz LoRa radios** (per chosen configuration above)
+- **2× 915 MHz LoRa radios** (required - per chosen configuration above)
 - **1× Powered USB 3.0 hub (uhubctl-compatible)** *or* **2× Inline USB on/off switches**
 - **1× SMA A/B manual RF switch (DC-pass)** *or* **1× Second 915 MHz antenna**
 - **2–4× SMA male–male coax jumpers** (0.3–0.5 m, 50 Ω)
-- **2× 915 MHz rubber-duck or short omni antennas** *(for dual-antenna setup)*
+- **1-2× 915 MHz rubber-duck or short omni antennas** *(qty depends on antenna strategy)*
 - **Mounting hardware/spacers** for stacked HATs *(if Option A)*
 - **Short USB-A/USB-C cables** for radio placement/strain relief *(if Option B/C)*
 
