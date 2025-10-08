@@ -52,9 +52,8 @@ Prepper Pi is a complete field-deployable system combining solar power, over-the
 5. **Antenna Mounting**: Install TV and LoRa antennas with proper grounding
 6. **Integration Testing**: Verify all systems before field deployment
 
-*See [docs/wiring.md](docs/wiring.md) for detailed component layout and connection diagrams.*
 
-## � Documentation
+## 📚 Documentation
 
 ### 📖 Complete Documentation
 - **[📝 Documentation Index](docs/README.md)** - Overview of all technical documentation
@@ -62,7 +61,7 @@ Prepper Pi is a complete field-deployable system combining solar power, over-the
 - **[⚡ Wiring & Assembly](docs/wiring.md)** - Electrical specifications, diagrams, and safety guidelines
 - **[📡 WiFi Testing Protocol](docs/wifi-testing.md)** - Hardware validation guide for AP functionality
 
-## �🖥️ Software Setup
+## � Software Setup
 
 ### ⚡ Automated Installation
 
@@ -164,7 +163,7 @@ RPi5 Ethernet ← host networking → OpenWrt Container
 - [⭐] **Docker Compose service stack** - *Configuration complete, awaiting hardware testing*
 - [⭐] **WiFi hotspot configuration** - *Complete with host networking, DNAT redirects, and captive portal*
 - [⭐] **Landing page with captive portal** - *Service templates ready, needs hardware validation*
-- [�] **Hardware integration testing** - *Ready for validation on actual Pi hardware*
+- [🔄] **Hardware integration testing** - *Ready for validation on actual Pi hardware*
 
 **Current Status:** All WiFi AP functionality is properly configured with host networking mode, firewall4/nftables DNAT redirects, and unified service URLs. The system uses router IP (10.20.30.1) for all services with proper port forwarding to host containers. Configuration is complete but requires hardware testing to validate Docker stack, WiFi AP functionality, and service accessibility.
 
