@@ -16,54 +16,58 @@ This public log records brand/trademark and permissions-related outreach for Pre
   - Channel: web form (https://www.raspberrypi.com/contact/)
   - Ask: descriptive use ("for Raspberry Pi"), attribution line, any logo usage constraints
   - Links: trademark rules https://www.raspberrypi.com/trademark-rules/
-  - Status: planned
+  - Status: sent
 
 - 2025-10-08 — OpenWrt — Descriptive use of name in docs/marketing
   - Channel: contact page (https://openwrt.org/contact)
   - Ask: confirm descriptive use; preferred attribution
   - Links: https://openwrt.org/legal/trademark
-  - Status: planned
+  - Status: sent
 
 - 2025-10-08 — Jellyfin — Descriptive use and screenshots guidance
   - Channel: forum (https://forum.jellyfin.org/)
   - Ask: descriptive use confirmation; logo/screenshot guidelines
-  - Status: planned
+  - Status: planned  
+  - Note: outreach not yet sent (still determining contact path)
 
 - 2025-10-08 — openNDS — Captive portal credit and descriptive use
   - Channel: email (opennds@blue-wave.net)
   - Ask: descriptive use; acceptable credit phrasing
-  - Status: planned
+  - Status: sent
 
 - 2025-10-08 — Portainer CE — Descriptive use guidance
   - Channel: contact form (https://www.portainer.io/contact)
   - Ask: descriptive name use; screenshots policy
-  - Status: planned
+  - Status: sent
 
 - 2025-10-08 — Homepage (gethomepage) — Name/screenshots guidance
   - Channel: GitHub Discussions (https://github.com/gethomepage/homepage/discussions)
   - Ask: descriptive name use; screenshots policy; attribution line
-  - Status: planned
+  - Status: sent
 
 - 2025-10-08 — Samba — Descriptive use of name in docs
   - Channel: project site (https://www.samba.org/)
   - Ask: any preferred attribution wording
-  - Status: planned
+  - Status: planned  
+  - Note: outreach not yet sent (still determining contact path)
 
 - 2025-10-08 — Tvheadend — Descriptive use, potential screenshots
   - Channel: GitHub (https://github.com/tvheadend/tvheadend)
   - Ask: descriptive name use; logo/screenshot guidelines
-  - Status: planned
+  - Status: planned  
+  - Note: outreach not yet sent (still determining contact path)
 
 - 2025-10-08 — Icecast — Descriptive use
   - Channel: project site (https://icecast.org/)
   - Ask: descriptive name use; logo/screenshot guidelines
-  - Status: planned
+  - Status: planned  
+  - Note: outreach not yet sent (still determining contact path)
 
 - 2025-10-08 — Meshtastic — Descriptive use for compatibility claims
-  - Channel: contact page (https://meshtastic.org/contact)
+  - Channel: email
   - Ask: trademark policy alignment; permitted wording for kits
   - Links: trademark policy https://meshtastic.org/docs/legal/trademark-policy
-  - Status: planned
+  - Status: sent
 
 ---
 
