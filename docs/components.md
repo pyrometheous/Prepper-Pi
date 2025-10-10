@@ -21,7 +21,18 @@
 | 1 | Channel Master | CM-7777HD | Mast preamp + power inserter; FM-trap/LTE filtering |
 | 1 | Proxicast / PolyPhaser | 75Ω F-F Coax Lightning Arrestor | Protects OTA run; at entry |
 | 1 | Channel Master | CM-3414 (Ultra Mini 4) | 4-port distribution amp |
-| 1 | Hauppauge | WinTV-dualHD (USB Dual ATSC) | Two independent TV tuners in one |
+| 1 | Hauppauge | WinTV-dualHD (USB Dual ATSC 1.0) | Two independent TV tuners in one |
+
+#### ATSC 3.0 (NextGen TV) notes
+- Market availability varies; some markets simulcast both ATSC 1.0 and 3.0.
+- Common codecs: HEVC (video) and AC‑4 (audio). Ensure your OS/software provides legal decoders; this project does not ship codec licenses.
+- Some ATSC 3.0 services may be encrypted; reception of encrypted content is limited by tuner and software capabilities. This project does not circumvent content protection.
+- Software support is evolving. Tvheadend may require external tools or patches for 3.0 workflows.
+- Example 3.0‑capable devices (non‑exhaustive; verify driver/OS support):
+	- HDHomeRun CONNECT 4K (network tuner)
+	- Hauppauge WinTV‑quadHD ATSC 3.0 (where available) or newer Hauppauge 3.0 products
+	- PCIe/USB ATSC 3.0 tuners from regional vendors (Linux driver support varies)
+
 
 ### Radio (SDR)
 | Qty | Make | Model/Part | Notes |
@@ -168,4 +179,4 @@ For detailed technical specifications and wiring diagrams, see [wiring.md](wirin
 - **12 V TVS diode (e.g., SMAJ58A or system‑appropriate)** — transient suppression on 12 V bus
 - **Coax weatherproofing** — self‑fusing silicone tape or boots for exterior F‑connectors
 
-*Last updated: 2025-10-07*
+*Last updated: 2025-10-09*
