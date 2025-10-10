@@ -68,6 +68,8 @@ This document summarizes the licensing and commercial compliance updates impleme
 - ✅ Quality and support responsibility clarifications
 - ✅ Security hardening guidance with credential change requirements
 
+> ATSC 3.0 (NextGen TV) receive-only: Consumer reception of ATSC 3.0 is permitted where available. Broadcasters have local simulcasting obligations subject to waivers. Some ATSC 3.0 services may be encrypted. This project is receive-only and does not circumvent content protection. FCC reference: https://docs.fcc.gov/public/attachments/DOC-415053A1.pdf.
+
 ## 🎯 Commercial Readiness Status
 
 With these updates, the Prepper Pi project is now ready for commercial hardware sales provided the distributor:

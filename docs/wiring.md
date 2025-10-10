@@ -230,6 +230,8 @@ services:
     networks:
       - tvheadend_net
 
+> Note on ATSC 3.0 (NextGen TV): Reception depends on market availability, tuner/driver support, and software capabilities. ATSC 3.0 commonly uses HEVC video and AC‑4 audio; some broadcasts may be encrypted. Tvheadend workflows for 3.0 are evolving and may require external tooling. This project is receive‑only and does not circumvent content protection.
+
   # RTL-SDR services (for future implementation)
   icecast:
     image: moul/icecast
