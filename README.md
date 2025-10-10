@@ -24,7 +24,9 @@ For transparency about brand/trademark outreach, see `docs/legal/permissions-log
 
 **No copyrighted media included:** Devices ship **without** copyrighted content. Users are responsible for lawful use of media and RF features.
 
-**Codecs/patents note:** FFmpeg and certain codecs (e.g., H.264/AVC, HEVC, AAC) may be patent-encumbered in some regions. This project does not grant patent licenses. Where required, ship legal codecs from your OS vendor and let end-users enable optional encoders themselves.
+**Codecs/patents note:** FFmpeg and certain codecs (e.g., H.264/AVC, HEVC, AAC, AC-4) may be patent-encumbered in some regions. ATSC 3.0 deployments commonly use HEVC video and AC-4 audio. This project does not grant patent licenses. Where required, ship legal codecs from your OS vendor and let end-users enable optional encoders themselves.
+
+**Regulatory note:** The FCC’s NextGen TV (ATSC 3.0) transition is voluntary and preserves consumer reception while requiring local simulcasting obligations for broadcasters, subject to waivers. Consumer use of ATSC 3.0 receivers where available is permitted. See FCC guidance (DOC‑415053A1): https://docs.fcc.gov/public/attachments/DOC-415053A1.pdf. This project is receive‑only; do not retransmit or bypass content protection.
 
 > **Note:** If a matching GitHub Release isn't published yet for a given image/binary, use the repository source at the tagged commit. Once a formal Release is cut, the corresponding source will be attached to that Release.
 
@@ -43,7 +45,7 @@ Note: This is a hobby project with no guaranteed turnaround for issues or securi
 > **📋 Note:** The following features represent the planned capabilities of Prepper Pi. Phase 1 (WiFi infrastructure) is configured and intended for a drop‑in OpenWrt‑in‑Docker setup, but still requires on‑device hardware validation.
 
 ### 📺 Concurrent Operations
-- Two ATSC TV channels via dual tuner
+- Two OTA TV channels (ATSC 1.0 or ATSC 3.0/NextGen TV, market/tuner dependent) via dual tuner
 - Two radio stations (FM + NOAA) via dual RTL-SDR
 - Dual LoRa meshes (Meshtastic + MeshCore)
 - Captive-portal Wi-Fi hotspot
@@ -130,7 +132,7 @@ git clone https://github.com/pyrometheous/Prepper-Pi.git && cd Prepper-Pi && sud
 | Landing Page | http://10.20.30.1 | ⚠️ **Experimental** | Captive portal redirect |
 | Jellyfin | http://10.20.30.1:8096 | ⚠️ **Experimental** | Media server |
 | Portainer | http://10.20.30.1:9000 | ⚠️ **Experimental** | Container management *(Community Edition)* |
-| Tvheadend | http://10.20.30.1:9981 | 📋 **Planned** | TV backend (Phase 4) |
+| Tvheadend | http://10.20.30.1:9981 | 📋 **Planned** | TV backend (ATSC 1.0; ATSC 3.0 where supported; HEVC/AC‑4; encryption varies) |
 | Meshtastic | http://10.20.30.1:2443 | 📋 **Planned** | LoRa mesh A (Phase 5) |
 | MeshCore | http://10.20.30.1:2444 | 📋 **Planned** | LoRa mesh B (Phase 5) |
 | Samba | \\\\10.20.30.1 | 📋 **Planned** | File sharing (Phase 3) |
@@ -218,7 +220,7 @@ RPi5 Ethernet ← host networking → OpenWrt Container
 
 ### 📡 RF Communications (Future Hardware)
 - **Dual RTL-SDR Dongles** for FM radio and NOAA weather reception
-- **Dual TV Tuner** USB devices for OTA broadcast reception
+- **Dual TV Tuner** USB devices for OTA broadcast reception (ATSC 1.0 or ATSC 3.0‑capable, depending on your market and needs)
 - **Dual LoRa Radio Modules** for Meshtastic and MeshCore mesh networking
 - **Antenna System** with proper impedance matching and grounding
 
@@ -271,7 +273,9 @@ RPi5 Ethernet ← host networking → OpenWrt Container
 - [❌] Dual TV tuner USB devices for OTA broadcast reception
 - [❌] Dual RTL-SDR dongles for FM radio and NOAA weather reception
 - [❌] Antenna system design and RF signal optimization
-- [❌] Tvheadend configuration and emergency broadcast monitoring
+- [❌] Tvheadend configuration and emergency broadcast monitoring (ATSC 1.0; experimental ATSC 3.0 as supported)
+
+Note: ATSC 3.0 commonly uses HEVC video and AC‑4 audio. Some ATSC 3.0 broadcasts may be encrypted. Compatibility depends on tuner hardware, drivers, and software (e.g., Tvheadend). This project does not circumvent content protection.
 - [❌] Integration testing with existing Docker services
 
 ### Phase 5: LoRa Mesh Networking (Acquire Hardware)
