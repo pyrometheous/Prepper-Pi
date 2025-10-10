@@ -32,6 +32,11 @@
                     url: http://jellyfin:8096
                     key: REPLACE_ME
 
+    - Tvheadend:
+        href: http://10.20.30.1:9981
+        icon: tv.png
+        description: TV backend (ATSC 1.0; ATSC 3.0 where supported; HEVC/AC-4; encryption varies)
+
     - File Shares:
         href: smb://10.20.30.1
         icon: folder.png

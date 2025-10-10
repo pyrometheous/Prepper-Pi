@@ -49,6 +49,8 @@ Prepper-Pi/
 - **Assembly Guide:** See [wiring.md](wiring.md) for technical specifications
 - **Development Status:** See [../README.md#-development-roadmap](../README.md#-development-roadmap) for current progress
 
+> Tvheadend & ATSC 3.0: ATSC 3.0 (NextGen TV) reception depends on market availability, tuner/driver support, and software capabilities. 3.0 often uses HEVC video and AC‑4 audio, and some broadcasts may be encrypted. See components list for 3.0‑capable options and constraints.
+
 ---
 
-*Documentation last updated: 2025-09-30*
+*Documentation last updated: 2025-10-09*
