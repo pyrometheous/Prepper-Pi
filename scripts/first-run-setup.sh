@@ -141,6 +141,7 @@ fi
 
 # Download Docker images
 print_status "Pulling Docker images..."
+echo "DEBUG: Running: docker compose ${COMPOSE_FILES[@]} pull"
 docker compose "${COMPOSE_FILES[@]}" pull
 
 # Create macvlan network helper script
