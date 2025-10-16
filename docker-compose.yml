@@ -4,7 +4,7 @@ version: '3.8'
 services:
   # OpenWRT Router in Docker with host networking for WiFi AP
   openwrt:
-    image: openwrt/rootfs:23.05.2        # Multi-arch tag for ARM64 Pi support
+    image: openwrt/rootfs:x86-64-23.05.5        # Use x86-64 for dev/testing, override with Pi-specific image in production
     container_name: openwrt
     restart: unless-stopped
     network_mode: "host"

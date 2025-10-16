@@ -2,8 +2,8 @@ version: '3.8'
 
 services:
   openwrt:
-    # Use explicit ARM64 OpenWrt image if multi-arch tag fails on Pi
-    image: openwrt/rootfs:23.05.2-aarch64_generic
+    # Use explicit ARM64 OpenWrt image for Raspberry Pi
+    image: openwrt/rootfs:aarch64_generic-23.05.5
     network_mode: "host"
     privileged: true
     cap_add:
