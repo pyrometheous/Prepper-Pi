@@ -204,8 +204,26 @@ EOF
         print_success "Prepper Pi WiFi configured: SSID='Prepper Pi', Gateway=10.20.30.1"
         print_warning "Default WiFi password: ChangeMeNow! (change via RaspAP)"
         print_warning "RaspAP admin: admin/secret (change immediately)"
+        
+        # Configure captive portal and internet passthrough
+        SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+        if [ -f "$SCRIPT_DIR/captive-portal-setup.sh" ]; then
+            print_status "Configuring captive portal and internet passthrough..."
+            bash "$SCRIPT_DIR/captive-portal-setup.sh"
+        else
+            print_warning "captive-portal-setup.sh not found. Run it manually after setup."
+        fi
     else
         print_status "RaspAP is already installed"
+        
+        # Check if captive portal is configured
+        if ! systemctl is-active --quiet captive-portal; then
+            SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+            if [ -f "$SCRIPT_DIR/captive-portal-setup.sh" ]; then
+                print_status "Configuring captive portal and internet passthrough..."
+                bash "$SCRIPT_DIR/captive-portal-setup.sh"
+            fi
+        fi
     fi
 else
     print_warning "Not running on Raspberry Pi - skipping RaspAP installation"
@@ -511,8 +529,10 @@ echo "   1. Start Docker services:"
 echo "      cp compose/docker-compose.pi.yml docker-compose.override.yml"
 echo "      docker compose up -d"
 echo ""
-echo "   2. Configure captive portal and internet passthrough:"
-echo "      sudo bash scripts/captive-portal-setup.sh"
+echo "   2. Test connectivity from a WiFi client:"
+echo "      - Connect to 'Prepper Pi' WiFi"
+echo "      - Test internet access"
+echo "      - Browse to http://10.20.30.1:3000"
 echo ""
 echo "   See docs/QUICK-DEPLOY-CHECKLIST.md for full testing guide"
 echo ""
