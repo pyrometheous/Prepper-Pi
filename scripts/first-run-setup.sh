@@ -136,19 +136,44 @@ print_status "Setting up media directories..."
 mkdir -p media/movies media/tv-shows media/music media/audiobooks
 mkdir -p media/documentaries media/podcasts media/radio-recordings
 
-# Detect if running on Raspberry Pi and set up compose files
+# Install RaspAP for WiFi AP management
 if grep -q "Raspberry Pi" /proc/cpuinfo 2>/dev/null || grep -q "BCM" /proc/cpuinfo 2>/dev/null; then
-    print_status "Raspberry Pi detected - using Pi-specific configuration"
-    COMPOSE_FILES=(-f docker-compose.yml -f compose/docker-compose.pi.yml)
+    print_status "Raspberry Pi detected - installing RaspAP for WiFi management"
+    
+    # Check if RaspAP is already installed
+    if [ ! -d "/var/www/html/raspap" ]; then
+        print_status "Downloading and installing RaspAP..."
+        
+        # Download RaspAP installer
+        curl -sL https://install.raspap.com > /tmp/raspap_install.sh
+        
+        # Run RaspAP Quick Installer (non-interactive)
+        # Default settings: AP on wlan0, webserver on port 80
+        print_warning "RaspAP installation will configure your WiFi interface..."
+        print_warning "Default credentials: admin / secret"
+        print_warning "Access at: http://<pi-ip>:80"
+        
+        # Run installer with default options
+        bash /tmp/raspap_install.sh --yes --openvpn 0 --adblock 0 --wireguard 0
+        
+        print_success "RaspAP installed successfully"
+        
+        # Configure RaspAP to use port 8080 to avoid conflicts
+        print_status "Configuring RaspAP to use port 8080..."
+        if [ -f /etc/lighttpd/lighttpd.conf ]; then
+            sed -i 's/server.port.*=.*80/server.port = 8080/' /etc/lighttpd/lighttpd.conf
+            systemctl restart lighttpd
+        fi
+    else
+        print_status "RaspAP is already installed"
+    fi
 else
-    print_status "Non-Pi system detected - using standard configuration"
-    COMPOSE_FILES=(-f docker-compose.yml)
+    print_warning "Not running on Raspberry Pi - skipping RaspAP installation"
 fi
 
 # Download Docker images
 print_status "Pulling Docker images..."
-echo "DEBUG: Running: docker compose ${COMPOSE_FILES[@]} pull"
-docker compose "${COMPOSE_FILES[@]}" pull
+docker compose pull
 
 # Create macvlan network helper script
 print_status "Creating network helper script..."
@@ -295,8 +320,9 @@ echo ""
 echo "Network Interfaces:"
 ip addr show | grep -E "(inet|UP|DOWN)"
 echo ""
-echo "OpenWRT Status:"
-docker exec openwrt uci show network 2>/dev/null || echo "OpenWRT not running"
+echo "RaspAP Status:"
+systemctl status lighttpd | grep -E "(Active|Main PID)" || echo "RaspAP not running"
+systemctl status hostapd | grep -E "(Active|Main PID)" || echo "hostapd not running"
 EOF
 
 chmod +x status.sh
@@ -305,14 +331,12 @@ chmod +x status.sh
 cat > restart.sh << 'EOF'
 #!/bin/bash
 echo "🔄 Restarting Prepper Pi services..."
-if grep -q "Raspberry Pi" /proc/cpuinfo 2>/dev/null || grep -q "BCM" /proc/cpuinfo 2>/dev/null; then
-    COMPOSE_FILES=(-f docker-compose.yml -f compose/docker-compose.pi.yml)
-else
-    COMPOSE_FILES=(-f docker-compose.yml)
-fi
-docker compose "${COMPOSE_FILES[@]}" down
+docker compose down
 [ "${ENABLE_MACVLAN:-0}" = "1" ] && ./setup-host-bridge.sh
-docker compose "${COMPOSE_FILES[@]}" up -d
+docker compose up -d
+echo "Restarting RaspAP services..."
+systemctl restart lighttpd
+systemctl restart hostapd
 echo "✅ Services restarted"
 EOF
 
@@ -408,7 +432,7 @@ print_status "Running final setup steps..."
 
 # Start services
 print_status "Starting Prepper Pi services..."
-docker compose "${COMPOSE_FILES[@]}" up -d
+docker compose up -d
 
 # Wait for services to start
 print_status "Waiting for services to initialize..."
@@ -424,9 +448,14 @@ print_success "Please read POST-SETUP.md for next steps"
 echo ""
 echo "🌟 Quick Access URLs:"
 echo "   - Landing Page: http://prepper-pi.local:3000"
-echo "   - OpenWRT Admin: http://10.20.30.1"
-echo "   - Portainer: http://10.20.30.1:9000"
-echo "   - Jellyfin: http://10.20.30.1:8096"
+echo "   - RaspAP Router: http://prepper-pi.local:8080 (admin/secret)"
+echo "   - Portainer: http://prepper-pi.local:9000"
+echo "   - Jellyfin: http://prepper-pi.local:8096"
+echo ""
+echo "📡 WiFi Access Point:"
+echo "   Default SSID: raspi-webgui"
+echo "   Default Password: ChangeMe"
+echo "   Configure via RaspAP at http://prepper-pi.local:8080"
 echo ""
 echo "📖 For detailed instructions, see: POST-SETUP.md"
 echo "🔧 Check status anytime with: ./status.sh"

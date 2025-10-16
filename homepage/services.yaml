@@ -11,10 +11,10 @@
                     env: 2
                     key: REPLACE_ME
 
-    - OpenWRT:
-        href: http://10.20.30.1/cgi-bin/luci
-        icon: openwrt.png
-        description: Router & Network Control
+    - RaspAP:
+        href: http://10.20.30.1:8080
+        icon: raspberrypi.png
+        description: WiFi Router & Network Control
 
     - System Monitor:
         href: http://10.20.30.1:3000/system
