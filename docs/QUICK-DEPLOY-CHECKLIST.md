@@ -30,23 +30,19 @@ scp admin@prepper-pi.local:~/backup-*.txt ./docs/backup/
    sudo apt update && sudo apt upgrade -y
    ```
 
-3. ⬜ Clone and setup
+3. ⬜ Clone and setup (includes RaspAP + captive portal configuration)
    ```bash
    git clone https://github.com/pyrometheous/Prepper-Pi.git
    cd Prepper-Pi
    git checkout feature/native-hostapd
    sudo bash scripts/first-run-setup.sh
    ```
+   Note: This automatically configures captive portal and internet passthrough
 
 4. ⬜ Start Docker services
    ```bash
    cp compose/docker-compose.pi.yml docker-compose.override.yml
    docker compose up -d
-   ```
-
-5. ⬜ Configure captive portal
-   ```bash
-   sudo bash scripts/captive-portal-setup.sh
    ```
 
 ## Quick Tests
@@ -67,7 +63,8 @@ scp admin@prepper-pi.local:~/backup-*.txt ./docs/backup/
 ✅ DNS resolves properly
 
 ## If Problems
-- Internet not working: Check `scripts/captive-portal-setup.sh` ran successfully
+- Internet not working: Check `systemctl status captive-portal` and firewall rules
 - DNS issues: `cat /etc/dnsmasq.d/090_raspap.conf` (should have server=8.8.8.8)
 - Services not accessible: `docker compose ps` (all should be "Up")
 - WiFi not broadcasting: `systemctl status hostapd`
+- Captive portal not configured: Manually run `sudo bash scripts/captive-portal-setup.sh`
