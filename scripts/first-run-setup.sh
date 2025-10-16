@@ -148,22 +148,74 @@ if grep -q "Raspberry Pi" /proc/cpuinfo 2>/dev/null || grep -q "BCM" /proc/cpuin
         curl -sL https://install.raspap.com > /tmp/raspap_install.sh
         
         # Run RaspAP Quick Installer (non-interactive)
-        # Default settings: AP on wlan0, webserver on port 80
-        print_warning "RaspAP installation will configure your WiFi interface..."
-        print_warning "Default credentials: admin / secret"
-        print_warning "Access at: http://<pi-ip>:80"
-        
-        # Run installer with default options
+        print_status "Installing RaspAP with default settings..."
         bash /tmp/raspap_install.sh --yes --openvpn 0 --adblock 0 --wireguard 0
         
         print_success "RaspAP installed successfully"
         
-        # Configure RaspAP to use port 8080 to avoid conflicts
-        print_status "Configuring RaspAP to use port 8080..."
+        # Configure RaspAP with custom Prepper Pi settings
+        print_status "Configuring Prepper Pi network settings..."
+        
+        # Configure lighttpd to use port 8080
         if [ -f /etc/lighttpd/lighttpd.conf ]; then
             sed -i 's/server.port.*=.*80/server.port = 8080/' /etc/lighttpd/lighttpd.conf
-            systemctl restart lighttpd
         fi
+        
+        # Configure hostapd with custom SSID
+        if [ -f /etc/hostapd/hostapd.conf ]; then
+            sed -i 's/^ssid=.*/ssid=Prepper Pi/' /etc/hostapd/hostapd.conf
+            sed -i 's/^wpa_passphrase=.*/wpa_passphrase=ChangeMeNow!/' /etc/hostapd/hostapd.conf
+        fi
+        
+        # Configure dnsmasq for 10.20.30.0/24 network
+        if [ -f /etc/dnsmasq.d/090_raspap.conf ]; then
+            cat > /etc/dnsmasq.d/090_raspap.conf << 'EOF'
+interface=wlan0
+domain-needed
+bogus-priv
+dhcp-range=10.20.30.100,10.20.30.199,255.255.255.0,24h
+address=/#/10.20.30.1
+EOF
+        fi
+        
+        # Configure wlan0 interface with 10.20.30.1
+        if [ -f /etc/dhcpcd.conf ]; then
+            sed -i '/interface wlan0/,/static domain_name_servers/c\
+interface wlan0\
+    static ip_address=10.20.30.1/24\
+    nohook wpa_supplicant' /etc/dhcpcd.conf
+        fi
+        
+        # Enable captive portal functionality
+        print_status "Enabling captive portal redirect..."
+        if [ -f /etc/dnsmasq.d/090_raspap.conf ]; then
+            # Add captive portal DNS hijacking
+            echo "address=/#/10.20.30.1" >> /etc/dnsmasq.d/090_raspap.conf
+        fi
+        
+        # Configure nodogsplash for captive portal (if available)
+        if command -v nodogsplash &> /dev/null; then
+            print_status "Configuring nodogsplash captive portal..."
+            cat > /etc/nodogsplash/nodogsplash.conf << 'EOF'
+GatewayInterface wlan0
+GatewayAddress 10.20.30.1
+MaxClients 250
+AuthIdleTimeout 480
+RedirectURL http://10.20.30.1:3000
+EOF
+            systemctl enable nodogsplash
+        fi
+        
+        # Restart services
+        print_status "Restarting network services..."
+        systemctl restart dhcpcd
+        systemctl restart dnsmasq
+        systemctl restart hostapd
+        systemctl restart lighttpd
+        
+        print_success "Prepper Pi WiFi configured: SSID='Prepper Pi', Gateway=10.20.30.1"
+        print_warning "Default WiFi password: ChangeMeNow! (change via RaspAP)"
+        print_warning "RaspAP admin: admin/secret (change immediately)"
     else
         print_status "RaspAP is already installed"
     fi
@@ -446,16 +498,22 @@ print_success "Prepper Pi setup completed successfully!"
 print_success "Please read POST-SETUP.md for next steps"
 
 echo ""
-echo "🌟 Quick Access URLs:"
-echo "   - Landing Page: http://prepper-pi.local:3000"
-echo "   - RaspAP Router: http://prepper-pi.local:8080 (admin/secret)"
-echo "   - Portainer: http://prepper-pi.local:9000"
-echo "   - Jellyfin: http://prepper-pi.local:8096"
+echo "🌟 Quick Access URLs (from WiFi clients):"
+echo "   - Landing Page: http://10.20.30.1:3000 (auto-opens on connect)"
+echo "   - RaspAP Router: http://10.20.30.1:8080 (admin/secret)"
+echo "   - Portainer: http://10.20.30.1:9000"
+echo "   - Jellyfin: http://10.20.30.1:8096"
 echo ""
 echo "📡 WiFi Access Point:"
-echo "   Default SSID: raspi-webgui"
-echo "   Default Password: ChangeMe"
-echo "   Configure via RaspAP at http://prepper-pi.local:8080"
+echo "   SSID: Prepper Pi"
+echo "   Password: ChangeMeNow!"
+echo "   Gateway: 10.20.30.1"
+echo "   DHCP Range: 10.20.30.100-199"
+echo ""
+echo "🔒 IMPORTANT - Change these immediately:"
+echo "   1. WiFi password via RaspAP: http://10.20.30.1:8080"
+echo "   2. RaspAP admin password (currently: admin/secret)"
+echo "   3. Portainer admin password on first login"
 echo ""
 echo "📖 For detailed instructions, see: POST-SETUP.md"
 echo "🔧 Check status anytime with: ./status.sh"

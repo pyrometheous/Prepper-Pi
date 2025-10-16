@@ -112,24 +112,26 @@ git clone https://github.com/pyrometheous/Prepper-Pi.git && cd Prepper-Pi && sud
 ```
 
 ## 🔒 Security Hardening (do this before field use)
-1. **Change all defaults** (OpenWrt root password, Wi-Fi SSID/passphrase, disable passwordless logins).
-2. **Enable HTTPS** on admin interfaces; restrict management to wired or trusted VLAN.
-3. **Rotate API keys/secrets** for any services you enable (Jellyfin, Portainer CE).
-4. **Update & lock** package versions; rebuild images with `scripts/build-manifest.sh` to record digests.
-5. **Back up** `/etc/prepper-pi/VERSION` and the full `MANIFEST.txt` with each release.
+1. **Change all defaults** (RaspAP admin password, Wi-Fi SSID/passphrase, Pi user password).
+2. **Configure RaspAP security**: Change SSID from "raspi-webgui", set strong WiFi password, change admin password from "secret".
+3. **Enable HTTPS** on admin interfaces; restrict management to wired or trusted network.
+4. **Rotate API keys/secrets** for any services you enable (Jellyfin, Portainer CE).
+5. **Update & lock** package versions; rebuild images with `scripts/build-manifest.sh` to record digests.
+6. **Back up** `/etc/prepper-pi/VERSION` and the full `MANIFEST.txt` with each release.
 
 ## ⚙️ Service Access & Configuration
 
 ### 🌐 Network Access
-- **Default Gateway (example):** `10.20.30.1` (OpenWrt admin interface)
-- **Initial Credentials (example):** username: `root`, password: *(set on first boot)*
-- **Wi‑Fi Network (default):** SSID "Prepper Pi", password `ChangeMeNow!`  ← change in production
+- **Pi Gateway/Router:** `10.20.30.1` (WiFi AP gateway)
+- **RaspAP Admin:** `http://10.20.30.1:8080` - Default credentials: `admin` / `secret`
+- **Wi‑Fi Network (default):** SSID "Prepper Pi", password `ChangeMeNow!`  ← change via RaspAP web UI
 - **DHCP Range:** 10.20.30.100-199 for client devices
 
 ### 📊 Service URLs
 | Service | URL | Status | Notes |
 |---------|-----|--------|-------|
-| Landing Page | http://10.20.30.1 | ⚠️ **Experimental** | Captive portal redirect |
+| RaspAP Router | http://10.20.30.1:8080 | ✅ **Implemented** | WiFi & network management |
+| Landing Page | http://10.20.30.1:3000 | ⚠️ **Experimental** | Homepage dashboard (captive portal) |
 | Jellyfin | http://10.20.30.1:8096 | ⚠️ **Experimental** | Media server |
 | Portainer | http://10.20.30.1:9000 | ⚠️ **Experimental** | Container management *(Community Edition)* |
 | Tvheadend | http://10.20.30.1:9981 | 📋 **Planned** | TV backend (ATSC 1.0; ATSC 3.0 where supported; HEVC/AC‑4; encryption varies) |
@@ -191,22 +193,24 @@ References
 
 ### 📡 Network Topology
 ```
-Internet/Cellular Modem (optional)
+Internet Connection (ethernet/cellular - optional)
      |
-   Router (host network)
+Raspberry Pi 5 (10.20.30.1 WiFi AP Gateway)
      |
-RPi5 Ethernet ← host networking → OpenWrt Container
-                      |                     |
-               Docker Bridge         WiFi Access Point
-              (172.20.0.0/16)        "Prepper Pi" SSID
-                      |              (10.20.30.0/24)
-               Container Services            |
-              (Jellyfin, Portainer)   Client devices
-                                    (10.20.30.100-199)
+     ├── Native RaspAP (hostapd + dnsmasq)
+     │   └── WiFi Access Point "Prepper Pi"
+     │       └── Client devices (10.20.30.100-199)
+     │       └── Captive Portal → Homepage (3000)
+     │
+     └── Docker Bridge (172.17.0.0/16)
+         ├── Homepage (port 3000) ← Landing page
+         ├── Jellyfin (port 8096)
+         ├── Portainer (port 9000)
+         └── Samba (port 445)
 ```
 
-### 🔗 Service Access Table
-*All services accessible via the unified 10.20.30.1 IP address with port-specific access as listed above. Captive portal redirects new connections to the landing page.*
+### 🔗 Service Access
+*All services accessible via `10.20.30.1` gateway IP with specific ports. Captive portal redirects new WiFi connections to the homepage dashboard at http://10.20.30.1:3000*
 
 ## 📋 Hardware Requirements
 
@@ -312,28 +316,35 @@ Note: ATSC 3.0 commonly uses HEVC video and AC‑4 audio. Some ATSC 3.0 broadcas
 
 ### 🧪 Validation Tests
 
-**Expected Client Experience (example values; change yours in production):**
+**Expected Client Experience:**
 1. Connect to "Prepper Pi" SSID with password `ChangeMeNow!`
-2. Get DHCP address from OpenWrt container (10.20.30.x range)
-3. Be redirected to landing page (http://10.20.30.1) via captive portal
-4. Access all services through the landing page
+2. Get DHCP address from RaspAP (10.20.30.100-199 range)
+3. Browser automatically opens to landing page (http://10.20.30.1:3000)
+4. Access all services through the landing page or direct URLs
 
-**Manual Verification Commands:**
+**Manual Verification Commands (on Pi):**
 ```bash
-# Test DNS resolution from connected client
-nslookup example.com 10.20.30.1
+# Check WiFi AP status
+sudo systemctl status hostapd
 
-# Test captive portal redirect (should return 302/303)
-curl -I http://neverssl.com/ | head -n 5
+# Check DHCP server
+sudo systemctl status dnsmasq
 
-# Run configuration verification script
-./scripts/verify-ap.sh
+# View connected clients
+iw dev wlan0 station dump
+
+# Check interface configuration
+ip addr show wlan0
+
+# Test services are accessible
+curl -I http://10.20.30.1:3000  # Homepage
+curl -I http://10.20.30.1:8080  # RaspAP
 ```
 
 **Success Indicators:**
-- `iw list` shows AP mode support
-- `iw dev` lists wireless interfaces
-- `logread` shows DHCP assignments
+- WiFi SSID "Prepper Pi" is visible
+- Clients can connect and get 10.20.30.x addresses
+- Captive portal redirects to homepage
 - All services accessible via 10.20.30.1
 
 ## 🙏 Acknowledgments
