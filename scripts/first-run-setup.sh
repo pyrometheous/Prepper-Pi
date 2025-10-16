@@ -83,6 +83,12 @@ if ! command -v docker &> /dev/null; then
     print_success "Docker installed successfully"
 else
     print_status "Docker is already installed"
+    
+    # Ensure Docker Compose plugin is installed even if Docker already exists
+    if ! docker compose version &> /dev/null; then
+        print_status "Installing Docker Compose plugin..."
+        apt install -y docker-compose-plugin
+    fi
 fi
 
 # Add current user to docker group (if not root)
