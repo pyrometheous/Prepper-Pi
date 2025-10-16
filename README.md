@@ -84,6 +84,9 @@ Note: This is a hobby project with no guaranteed turnaround for issues or securi
 ## 🔧 Software Setup
 
 ### ⚡ Automated Installation
+```bash
+sudo apt update && sudo apt install -y git
+```
 
 ```bash
 sudo apt update && sudo apt install -y git && git clone https://github.com/pyrometheous/Prepper-Pi.git \
