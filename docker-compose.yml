@@ -50,25 +50,25 @@ services:
       retries: 3
 
   # Media server
-  jellyfin:
-    image: jellyfin/jellyfin:latest
-    container_name: jellyfin
-    restart: unless-stopped
-    ports:
-      - "8096:8096"
-    volumes:
-      - jellyfin_config:/config
-      - jellyfin_cache:/cache
-      - ./media:/media:ro
-    environment:
-      - JELLYFIN_PublishedServerUrl=http://jellyfin.local
-    cap_drop:
-      - ALL
-    healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:8096/health || exit 1"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+  # jellyfin:
+  #   image: jellyfin/jellyfin:latest
+  #   container_name: jellyfin
+  #   restart: unless-stopped
+  #   ports:
+  #     - "8096:8096"
+  #   volumes:
+  #     - jellyfin_config:/config
+  #     - jellyfin_cache:/cache
+  #     - ./media:/media:ro
+  #   environment:
+  #     - JELLYFIN_PublishedServerUrl=http://jellyfin.local
+  #   cap_drop:
+  #     - ALL
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "curl -f http://localhost:8096/health || exit 1"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 3
 
   # Landing page / dashboard
   homepage:
