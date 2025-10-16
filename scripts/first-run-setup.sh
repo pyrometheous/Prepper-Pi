@@ -167,16 +167,8 @@ if grep -q "Raspberry Pi" /proc/cpuinfo 2>/dev/null || grep -q "BCM" /proc/cpuin
             sed -i 's/^wpa_passphrase=.*/wpa_passphrase=ChangeMeNow!/' /etc/hostapd/hostapd.conf
         fi
         
-        # Configure dnsmasq for 10.20.30.0/24 network
-        if [ -f /etc/dnsmasq.d/090_raspap.conf ]; then
-            cat > /etc/dnsmasq.d/090_raspap.conf << 'EOF'
-interface=wlan0
-domain-needed
-bogus-priv
-dhcp-range=10.20.30.100,10.20.30.199,255.255.255.0,24h
-address=/#/10.20.30.1
-EOF
-        fi
+        # Note: dnsmasq configuration will be handled by captive-portal-setup.sh
+        # to avoid DNS wildcard hijacking that breaks internet access
         
         # Configure wlan0 interface with 10.20.30.1
         if [ -f /etc/dhcpcd.conf ]; then
@@ -186,12 +178,8 @@ interface wlan0\
     nohook wpa_supplicant' /etc/dhcpcd.conf
         fi
         
-        # Enable captive portal functionality
-        print_status "Enabling captive portal redirect..."
-        if [ -f /etc/dnsmasq.d/090_raspap.conf ]; then
-            # Add captive portal DNS hijacking
-            echo "address=/#/10.20.30.1" >> /etc/dnsmasq.d/090_raspap.conf
-        fi
+        # Note: Captive portal configuration (DNS, firewall, detection) is handled by
+        # running scripts/captive-portal-setup.sh after Docker services are started
         
         # Configure nodogsplash for captive portal (if available)
         if command -v nodogsplash &> /dev/null; then
@@ -517,3 +505,14 @@ echo "   3. Portainer admin password on first login"
 echo ""
 echo "📖 For detailed instructions, see: POST-SETUP.md"
 echo "🔧 Check status anytime with: ./status.sh"
+echo ""
+echo "⚠️  NEXT STEPS:"
+echo "   1. Start Docker services:"
+echo "      cp compose/docker-compose.pi.yml docker-compose.override.yml"
+echo "      docker compose up -d"
+echo ""
+echo "   2. Configure captive portal and internet passthrough:"
+echo "      sudo bash scripts/captive-portal-setup.sh"
+echo ""
+echo "   See docs/QUICK-DEPLOY-CHECKLIST.md for full testing guide"
+echo ""
