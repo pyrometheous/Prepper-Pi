@@ -55,9 +55,35 @@ print_status "Using network interface: $INTERFACE"
 print_status "Updating package lists..."
 apt update
 
-# Install required packages
-print_status "Installing required packages..."
-apt install -y docker.io docker-compose-plugin git curl wget iproute2 iptables net-tools
+# Install prerequisites for Docker installation
+print_status "Installing prerequisites..."
+apt install -y ca-certificates curl gnupg lsb-release git wget iproute2 iptables net-tools
+
+# Check if Docker is already installed
+if ! command -v docker &> /dev/null; then
+    print_status "Installing Docker from official repository..."
+    
+    # Add Docker's official GPG key
+    install -m 0755 -d /etc/apt/keyrings
+    curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+    chmod a+r /etc/apt/keyrings/docker.gpg
+    
+    # Add Docker repository
+    echo \
+      "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian \
+      $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+      tee /etc/apt/sources.list.d/docker.list > /dev/null
+    
+    # Update package list with Docker repo
+    apt update
+    
+    # Install Docker Engine, CLI, containerd, and Compose plugin
+    apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+    
+    print_success "Docker installed successfully"
+else
+    print_status "Docker is already installed"
+fi
 
 # Add current user to docker group (if not root)
 if [ "$SUDO_USER" ]; then

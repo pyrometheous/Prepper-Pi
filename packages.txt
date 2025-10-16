@@ -1,7 +1,10 @@
 # Prepper Pi Required Packages
-# Container and Orchestration
-docker.io
-docker-compose-plugin
+# Note: Docker is installed from Docker's official repository via the setup script
+# Prerequisites for Docker installation
+ca-certificates
+curl
+gnupg
+lsb-release
 
 # Network utilities
 iproute2
