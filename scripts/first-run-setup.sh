@@ -131,17 +131,17 @@ mkdir -p media/movies media/tv-shows media/music media/audiobooks
 mkdir -p media/documentaries media/podcasts media/radio-recordings
 
 # Detect if running on Raspberry Pi and set up compose files
-COMPOSE_FILES="-f docker-compose.yml"
 if grep -q "Raspberry Pi" /proc/cpuinfo 2>/dev/null || grep -q "BCM" /proc/cpuinfo 2>/dev/null; then
     print_status "Raspberry Pi detected - using Pi-specific configuration"
-    COMPOSE_FILES="-f docker-compose.yml -f compose/docker-compose.pi.yml"
+    COMPOSE_FILES=(-f docker-compose.yml -f compose/docker-compose.pi.yml)
 else
     print_status "Non-Pi system detected - using standard configuration"
+    COMPOSE_FILES=(-f docker-compose.yml)
 fi
 
 # Download Docker images
 print_status "Pulling Docker images..."
-docker compose ${COMPOSE_FILES} pull
+docker compose "${COMPOSE_FILES[@]}" pull
 
 # Create macvlan network helper script
 print_status "Creating network helper script..."
@@ -295,16 +295,17 @@ EOF
 chmod +x status.sh
 
 # Restart script
-cat > restart.sh << EOF
+cat > restart.sh << 'EOF'
 #!/bin/bash
 echo "🔄 Restarting Prepper Pi services..."
-COMPOSE_FILES="-f docker-compose.yml"
 if grep -q "Raspberry Pi" /proc/cpuinfo 2>/dev/null || grep -q "BCM" /proc/cpuinfo 2>/dev/null; then
-    COMPOSE_FILES="-f docker-compose.yml -f compose/docker-compose.pi.yml"
+    COMPOSE_FILES=(-f docker-compose.yml -f compose/docker-compose.pi.yml)
+else
+    COMPOSE_FILES=(-f docker-compose.yml)
 fi
-docker compose \${COMPOSE_FILES} down
+docker compose "${COMPOSE_FILES[@]}" down
 [ "${ENABLE_MACVLAN:-0}" = "1" ] && ./setup-host-bridge.sh
-docker compose \${COMPOSE_FILES} up -d
+docker compose "${COMPOSE_FILES[@]}" up -d
 echo "✅ Services restarted"
 EOF
 
@@ -400,7 +401,7 @@ print_status "Running final setup steps..."
 
 # Start services
 print_status "Starting Prepper Pi services..."
-docker compose ${COMPOSE_FILES} up -d
+docker compose "${COMPOSE_FILES[@]}" up -d
 
 # Wait for services to start
 print_status "Waiting for services to initialize..."
