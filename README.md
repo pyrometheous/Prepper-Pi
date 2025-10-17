@@ -42,13 +42,13 @@ Note: This is a hobby project with no guaranteed turnaround for issues or securi
 
 ## ✨ Core Features
 
-> **📋 Note:** The following features represent the planned capabilities of Prepper Pi. Phase 1 (WiFi infrastructure) is configured and intended for a drop‑in OpenWrt‑in‑Docker setup, but still requires on‑device hardware validation.
+> **📋 Note:** The following features represent the planned capabilities of Prepper Pi. Phase 1 (WiFi infrastructure with RaspAP) is working and validated on Raspberry Pi 5. Remaining phases require additional hardware.
 
 ### 📺 Concurrent Operations
 - Two OTA TV channels (ATSC 1.0 or ATSC 3.0/NextGen TV, market/tuner dependent) via dual tuner
 - Two radio stations (FM + NOAA) via dual RTL-SDR
 - Dual LoRa meshes (Meshtastic + MeshCore)
-- Captive-portal Wi-Fi hotspot
+- WiFi hotspot with service dashboard
 - Jellyfin media streaming
 - Kavita ebook server (OPDS feeds for KOReader/Kindle)
 - Samba file sharing
@@ -84,6 +84,9 @@ Note: This is a hobby project with no guaranteed turnaround for issues or securi
 ## 🔧 Software Setup
 
 ### ⚡ Automated Installation
+```bash
+sudo apt update && sudo apt install -y git
+```
 
 ```bash
 sudo apt update && sudo apt install -y git && git clone https://github.com/pyrometheous/Prepper-Pi.git \
@@ -94,16 +97,11 @@ sudo apt update && sudo apt install -y git && git clone https://github.com/pyrom
 Alternatively use explicit files:
 `docker compose -f docker-compose.yml -f compose/docker-compose.pi.yml up -d`.
 
-Requirements for WiFi AP:
-- Run Docker with host networking for the `openwrt` service
-- Pass through USB WiFi radios and firmware (`/dev/bus/usb`, `/lib/firmware`)
-- Allow access to radio discovery (`/sys/class/ieee80211`, `/run/udev`)
-
-Optional environment overrides for Wi‑Fi (set on the `openwrt` service):
-- WIFI_COUNTRY (default: US)
-- WIFI_SSID_24 (default: "Prepper Pi")
-- WIFI_SSID_5G (default: "Prepper Pi 5G")
-- WIFI_PASS (default: "ChangeMeNow!")
+**WiFi Configuration:**
+- Uses native RaspAP with hostapd for WiFi AP functionality
+- Configure WiFi settings via RaspAP web interface at `http://10.20.30.1:8080`
+- Default SSID: "Prepper Pi", default password: `ChangeMeNow!` ⚠️ **Change immediately**
+- Supports dual WiFi setup: wlan0 (upstream/internet), wlan1 (AP for clients)
 
 ### 🗑️ System Removal
 
@@ -112,34 +110,38 @@ git clone https://github.com/pyrometheous/Prepper-Pi.git && cd Prepper-Pi && sud
 ```
 
 ## 🔒 Security Hardening (do this before field use)
-1. **Change all defaults** (OpenWrt root password, Wi-Fi SSID/passphrase, disable passwordless logins).
-2. **Enable HTTPS** on admin interfaces; restrict management to wired or trusted VLAN.
-3. **Rotate API keys/secrets** for any services you enable (Jellyfin, Portainer CE).
-4. **Update & lock** package versions; rebuild images with `scripts/build-manifest.sh` to record digests.
-5. **Back up** `/etc/prepper-pi/VERSION` and the full `MANIFEST.txt` with each release.
+1. **Change all defaults** (RaspAP admin password from "secret", WiFi SSID/passphrase from "Prepper Pi"/"ChangeMeNow!", Pi user password).
+2. **Configure RaspAP security**: Set strong WiFi password, change admin password, consider restricting management to wired access only.
+3. **Enable HTTPS** on admin interfaces; restrict management to wired or trusted network.
+4. **Rotate API keys/secrets** for any services you enable (Jellyfin, Portainer CE).
+5. **Update & lock** package versions; rebuild images with `scripts/build-manifest.sh` to record digests.
+6. **Back up** `/etc/prepper-pi/VERSION` and the full `MANIFEST.txt` with each release.
 
 ## ⚙️ Service Access & Configuration
 
 ### 🌐 Network Access
-- **Default Gateway (example):** `10.20.30.1` (OpenWrt admin interface)
-- **Initial Credentials (example):** username: `root`, password: *(set on first boot)*
-- **Wi‑Fi Network (default):** SSID "Prepper Pi", password `ChangeMeNow!`  ← change in production
+- **Pi Gateway/Router:** `10.20.30.1` (WiFi AP gateway)
+- **RaspAP Admin:** `http://10.20.30.1:8080` - **Default credentials: `admin` / `secret`** ⚠️ **CHANGE IMMEDIATELY**
+- **Wi‑Fi Network (default):** SSID "Prepper Pi", password `ChangeMeNow!` ⚠️ **Change via RaspAP web UI**
 - **DHCP Range:** 10.20.30.100-199 for client devices
+- **Homepage Dashboard:** `http://10.20.30.1:3000` (manual access - no automatic captive portal redirect)
 
 ### 📊 Service URLs
 | Service | URL | Status | Notes |
 |---------|-----|--------|-------|
-| Landing Page | http://10.20.30.1 | ⚠️ **Experimental** | Captive portal redirect |
-| Jellyfin | http://10.20.30.1:8096 | ⚠️ **Experimental** | Media server |
-| Portainer | http://10.20.30.1:9000 | ⚠️ **Experimental** | Container management *(Community Edition)* |
+| RaspAP Router | http://10.20.30.1:8080 | ✅ **Working** | WiFi & network management (admin/secret) |
+| Homepage Dashboard | http://10.20.30.1:3000 | 🔄 **In Development** | Service dashboard (manual access) |
+| Portainer | http://10.20.30.1:9000 | 🔄 **In Development** | Container management *(Community Edition)* |
+| Jellyfin | http://10.20.30.1:8096 | 🔄 **In Development** | Media server (needs content) |
+| Samba | \\\\10.20.30.1 | ✅ **Working** | File sharing |
 | Tvheadend | http://10.20.30.1:9981 | 📋 **Planned** | TV backend (ATSC 1.0; ATSC 3.0 where supported; HEVC/AC‑4; encryption varies) |
 | Meshtastic | http://10.20.30.1:2443 | 📋 **Planned** | LoRa mesh A (Phase 5) |
 | MeshCore | http://10.20.30.1:2444 | 📋 **Planned** | LoRa mesh B (Phase 5) |
-| Samba | \\\\10.20.30.1 | 📋 **Planned** | File sharing (Phase 3) |
 
 **Status Legend:**
-- ✅ **Implemented** - Tested and working
-- ⚠️ **Experimental** - Configured but needs hardware validation  
+- ✅ **Working** - Tested and verified on Raspberry Pi 5
+- 🔄 **In Development** - Functional but undergoing improvements
+- ⏸️ **On Hold** - Deprioritized; may not be pursued
 - 📋 **Planned** - Service templates ready, hardware needed
 
 ## 🧠 Local LLM on Raspberry Pi (Pi‑friendly options)
@@ -191,22 +193,26 @@ References
 
 ### 📡 Network Topology
 ```
-Internet/Cellular Modem (optional)
+Internet Connection (ethernet/cellular - optional)
      |
-   Router (host network)
+     └── wlan0 (upstream WiFi - builtin)
+          |
+Raspberry Pi 5 (10.20.30.1 WiFi AP Gateway)
      |
-RPi5 Ethernet ← host networking → OpenWrt Container
-                      |                     |
-               Docker Bridge         WiFi Access Point
-              (172.20.0.0/16)        "Prepper Pi" SSID
-                      |              (10.20.30.0/24)
-               Container Services            |
-              (Jellyfin, Portainer)   Client devices
-                                    (10.20.30.100-199)
+     ├── wlan1 (AP - ALFA AWUS036ACM USB WiFi)
+     │   └── RaspAP (hostapd + dnsmasq)
+     │       └── WiFi Access Point "Prepper Pi"
+     │           └── Client devices (10.20.30.100-199)
+     │
+     └── Docker Bridge (172.17.0.0/16)
+         ├── Homepage (port 3000) ← Service dashboard
+         ├── Jellyfin (port 8096)
+         ├── Portainer (port 9000)
+         └── Samba (port 445)
 ```
 
-### 🔗 Service Access Table
-*All services accessible via the unified 10.20.30.1 IP address with port-specific access as listed above. Captive portal redirects new connections to the landing page.*
+### 🔗 Service Access
+*All services accessible via `10.20.30.1` gateway IP with specific ports. Homepage dashboard at http://10.20.30.1:3000 provides links to all services. Internet passthrough from wlan0 → wlan1 via NAT.*
 
 ## 📋 Hardware Requirements
 
@@ -239,20 +245,24 @@ RPi5 Ethernet ← host networking → OpenWrt Container
 ## 🛣️ Development Roadmap
 
 **Status Legend:**
-- ✅ **Tested & Working** - Deployed and verified in field conditions
-- ⭐ **Code Complete** - Implementation finished, awaiting testing
-- 🔄 **In Development** - Actively being coded/configured
+- ✅ **Tested & Working** - Deployed and verified on Raspberry Pi 5
+- ⭐ **Code Complete** - Implementation finished, tested and working
+- 🔄 **In Development** - Functional but actively being improved
+- ⏸️ **On Hold** - Deprioritized; may not be pursued
 - 📋 **Planned** - Not yet started
 - ❌ **Blocked** - Waiting on hardware/dependencies
 
 ### Phase 1: Basic WiFi Infrastructure
 - [✅] Raspberry Pi 5 setup with adequate cooling and NVMe storage
-- [⭐] **Docker Compose service stack** - *Configuration complete, awaiting hardware testing*
-- [⭐] **WiFi hotspot configuration** - *Complete with host networking, DNAT redirects, and captive portal*
-- [⭐] **Landing page with captive portal** - *Service templates ready, needs hardware validation*
-- [🔄] **Hardware integration testing** - *Ready for validation on actual Pi hardware*
+- [✅] **Docker Compose service stack** - *Tested and working on Pi 5 (8GB)*
+- [✅] **WiFi hotspot configuration** - *Working with RaspAP native hostapd*
+- [✅] **Hardware integration testing** - *Complete: validated on Pi 5 with dual WiFi*
+- [🔄] **Homepage dashboard** - *Functional, undergoing UI/UX improvements*
+- [⏸️] **Automatic captive portal redirect** - *On hold; may not be pursued (manual access works)*
 
-**Current Status:** WiFi AP is configured with host networking, firewall4/nftables DNAT redirects to host services, and captive portal pages. It should operate as a drop‑in OpenWrt container on a Pi with a supported USB WiFi adapter. Final verification still requires on‑device testing.
+**Current Status:** Phase 1 is functionally complete! WiFi AP works reliably with RaspAP, all Docker services are accessible, and internet passthrough is operational. Hardware validation complete on Raspberry Pi 5 with dual WiFi adapters (wlan0=upstream, wlan1=AP). Homepage provides clean dashboard for service access. Automatic captive portal redirect has been deprioritized in favor of manual access.
+
+**Active Development:** Homepage UI/UX improvements ongoing in `feature/native-hostapd` branch.
 
 ### Phase 2: Emergency Resources & AI
 - [📋] Offline emergency resource database (first aid, survival guides)
@@ -302,50 +312,68 @@ Note: ATSC 3.0 commonly uses HEVC video and AC‑4 audio. Some ATSC 3.0 broadcas
 
 ## ✅ Testing & Validation
 
-### 🔬 Phase 1 Testing Priorities
-1. **WiFi AP Hardware Validation** - Test OpenWrt container AP mode on actual Pi 5 hardware
-2. **Service Connectivity Verification** - Confirm DNAT redirects work for all services (3000/8096/9000)  
-3. **Captive Portal End-to-End** - Validate complete portal flow from connection to service access
-4. **USB WiFi Device Compatibility** - Test specific adapter models with container passthrough
-5. **Docker Service Stack Stability** - Verify all services start reliably and remain accessible
-6. **Power Consumption Baseline** - Measure current usage before adding additional hardware
+### 🔬 Phase 1 Completed Validations
+1. ✅ **WiFi AP Hardware Validation** - RaspAP working with native hostapd on Pi 5
+2. ✅ **Service Connectivity Verification** - All Docker services accessible via gateway IP
+3. ✅ **USB WiFi Device Compatibility** - ALFA AWUS036ACM confirmed working as AP (wlan1)
+4. ✅ **Docker Service Stack Stability** - All services start reliably and remain accessible
+5. ✅ **Dual WiFi Configuration** - wlan0 (builtin upstream) + wlan1 (USB AP) working
+6. ✅ **Internet Passthrough** - NAT routing from wlan0 → wlan1 operational
+
+### 📋 Future Testing Priorities
+1. **Power Consumption Baseline** - Measure current usage before adding additional hardware
+2. **Homepage UI/UX Refinement** - Continue improvements to service dashboard
+3. **Long-term Stability** - Extended runtime testing for reliability
+4. **Performance Optimization** - Tune for best experience on Pi 5 hardware
 
 ### 🧪 Validation Tests
 
-**Expected Client Experience (example values; change yours in production):**
-1. Connect to "Prepper Pi" SSID with password `ChangeMeNow!`
-2. Get DHCP address from OpenWrt container (10.20.30.x range)
-3. Be redirected to landing page (http://10.20.30.1) via captive portal
-4. Access all services through the landing page
+**Current Client Experience:**
+1. Connect to "Prepper Pi" SSID with password `ChangeMeNow!` (⚠️ change via RaspAP)
+2. Get DHCP address from RaspAP (10.20.30.100-199 range)
+3. Manually browse to http://10.20.30.1:3000 for Homepage dashboard
+4. Access all services through the Homepage or direct URLs
+5. Internet access works via wlan0→wlan1 passthrough
 
-**Manual Verification Commands:**
+**Manual Verification Commands (on Pi):**
 ```bash
-# Test DNS resolution from connected client
-nslookup example.com 10.20.30.1
+# Check WiFi AP status (native hostapd)
+sudo systemctl status hostapd
 
-# Test captive portal redirect (should return 302/303)
-curl -I http://neverssl.com/ | head -n 5
+# Check DHCP server
+sudo systemctl status dnsmasq
 
-# Run configuration verification script
-./scripts/verify-ap.sh
+# View connected clients
+iw dev wlan1 station dump  # wlan1 is AP interface (ALFA USB adapter)
+
+# Check interface configuration
+ip addr show wlan1
+
+# Verify internet routing
+sudo iptables -t nat -L POSTROUTING -v
+
+# Test services are accessible
+curl -I http://10.20.30.1:3000  # Homepage
+curl -I http://10.20.30.1:8080  # RaspAP
+curl -I http://10.20.30.1:9000  # Portainer
 ```
 
-**Success Indicators:**
-- `iw list` shows AP mode support
-- `iw dev` lists wireless interfaces
-- `logread` shows DHCP assignments
-- All services accessible via 10.20.30.1
+**Validated Success Indicators (Phase 1 Complete):**
+- ✅ WiFi SSID "Prepper Pi" is visible and connectable
+- ✅ Clients can connect and get 10.20.30.x addresses from DHCP
+- ✅ Homepage dashboard accessible at http://10.20.30.1:3000
+- ✅ All Docker services accessible via 10.20.30.1
+- ✅ Internet passthrough working (wlan0→wlan1 via NAT)
+- ✅ Dual WiFi configuration stable (builtin + USB adapter)
 
 ## 🙏 Acknowledgments
 
-**Networking & Router**
+**Networking & WiFi Management**
 
-* **[OpenWrt Project](https://openwrt.org/)** – Router firmware and network management
+* **[RaspAP](https://raspap.com/)** – WiFi hotspot management for Raspberry Pi with web UI
+* **[hostapd](https://w1.fi/hostapd/)** – WiFi access point daemon
 * **[dnsmasq](https://thekelleys.org.uk/dnsmasq/doc.html)** – Lightweight DNS/DHCP server
-* **[firewall4 / nftables](https://openwrt.org/docs/guide-user/firewall/firewall_configuration)** – OpenWrt firewall (firewall4/nftables) and packet filtering stack
-* **[LuCI](https://github.com/openwrt/luci)** – Web UI for OpenWrt configuration
-* **[OpenNDS (GitHub)](https://github.com/openNDS/openNDS) — [OpenNDS](https://opennds.readthedocs.io/en/stable/)** – Captive portal powering splash and status pages
-* **[uhttpd](https://openwrt.org/docs/guide-user/services/webserver/uhttpd)** – Embedded web server for portal and status pages
+* **[iptables](https://www.netfilter.org/)** – Linux firewall and NAT routing
 
 **Dashboards & Ops**
 
@@ -390,11 +418,6 @@ curl -I http://neverssl.com/ | head -n 5
 * **[Raspberry Pi Foundation](https://www.raspberrypi.org/)** – Single-board computer platform
 * **[Raspberry Pi OS](https://www.raspberrypi.com/software/)** / **[Debian](https://www.debian.org/)** – Base OS and packaging ecosystem
 * **[Victron Energy](https://www.victronenergy.com/)** – Solar charge controller and monitoring
-
-**Community Contributions**
-
-* **[Paul MacKinnon](https://github.com/paulmackinnon)** – Original [Docker macvlan guide](https://paul-mackinnon.medium.com/openwrt-raspberry-pi-docker-vlan-project-9cb1db10684c)
-
 
 **AI & Local LLMs**
 
