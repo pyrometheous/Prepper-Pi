@@ -103,6 +103,18 @@ Alternatively use explicit files:
 - Default SSID: "Prepper Pi", default password: `ChangeMeNow!` ⚠️ **Change immediately**
 - Supports dual WiFi setup: wlan0 (upstream/internet), wlan1 (AP for clients)
 
+###  Quick Access via QR Code
+
+Once connected to the **Prepper Pi** WiFi network, scan this QR code to access the homepage dashboard:
+
+<div align="center">
+  <img src="qr_code/homepage.svg" alt="Prepper Pi Homepage QR Code" width="300"/>
+  <br/>
+  <em>Scan to access: http://10.20.30.1:3000</em>
+</div>
+
+The QR code provides instant access to the Homepage dashboard where you can navigate to all services (Jellyfin, Nextcloud, Kavita, etc.).
+
 ### 🗑️ System Removal
 
 ```bash
