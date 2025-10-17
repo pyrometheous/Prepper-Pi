@@ -188,7 +188,7 @@ if grep -q "Raspberry Pi" /proc/cpuinfo 2>/dev/null || grep -q "BCM" /proc/cpuin
             fi
         fi
         
-        # Note: dnsmasq configuration will be handled by captive-portal-setup.sh
+        # Note: dnsmasq configuration will be handled by simple-passthrough.sh
         # to avoid DNS wildcard hijacking that breaks internet access
         
         # Configure AP interface with 10.20.30.1
@@ -208,7 +208,7 @@ EOF
         fi
         
         # Note: Captive portal configuration (DNS, firewall, detection) is handled by
-        # running scripts/captive-portal-setup.sh after Docker services are started
+        # running scripts/simple-passthrough.sh after Docker services are started
         
         # Configure nodogsplash for captive portal (if available)
         if command -v nodogsplash &> /dev/null; then
@@ -234,24 +234,22 @@ EOF
         print_warning "Default WiFi password: ChangeMeNow! (change via RaspAP)"
         print_warning "RaspAP admin: admin/secret (change immediately)"
         
-        # Configure captive portal and internet passthrough
+        # Configure simple internet passthrough (no captive portal)
         SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-        if [ -f "$SCRIPT_DIR/captive-portal-setup.sh" ]; then
-            print_status "Configuring captive portal and internet passthrough..."
-            bash "$SCRIPT_DIR/captive-portal-setup.sh"
+        if [ -f "$SCRIPT_DIR/simple-passthrough.sh" ]; then
+            print_status "Configuring internet passthrough..."
+            bash "$SCRIPT_DIR/simple-passthrough.sh"
         else
-            print_warning "captive-portal-setup.sh not found. Run it manually after setup."
+            print_warning "simple-passthrough.sh not found. Run it manually after setup."
         fi
     else
         print_status "RaspAP is already installed"
         
-        # Check if captive portal is configured
-        if ! systemctl is-active --quiet captive-portal; then
-            SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-            if [ -f "$SCRIPT_DIR/captive-portal-setup.sh" ]; then
-                print_status "Configuring captive portal and internet passthrough..."
-                bash "$SCRIPT_DIR/captive-portal-setup.sh"
-            fi
+        # Configure internet passthrough if not done
+        SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+        if [ -f "$SCRIPT_DIR/simple-passthrough.sh" ]; then
+            print_status "Configuring internet passthrough..."
+            bash "$SCRIPT_DIR/simple-passthrough.sh"
         fi
     fi
 else
