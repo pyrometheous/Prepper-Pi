@@ -35,9 +35,21 @@ scp admin@prepper-pi.local:~/backup-*.txt ./docs/backup/
    git clone https://github.com/pyrometheous/Prepper-Pi.git
    cd Prepper-Pi
    git checkout feature/native-hostapd
+   
+   # Option 1: Interactive SSH session (recommended)
    sudo bash scripts/first-run-setup.sh
+   
+   # Option 2: Via SSH from remote machine (requires -t flag)
+   # ssh -t admin@<pi-ip> "cd Prepper-Pi && sudo bash scripts/first-run-setup.sh"
    ```
-   Note: This automatically configures captive portal and internet passthrough
+   
+   **Note**: RaspAP installer requires a PTY. If running via SSH, use `-t` flag.
+   
+   This automatically configures:
+   - RaspAP WiFi access point
+   - Captive portal with internet passthrough
+   - DNS forwarding (no wildcard hijacking)
+   - Firewall rules for wlan1↔wlan0 traffic
 
 4. ⬜ Start Docker services
    ```bash

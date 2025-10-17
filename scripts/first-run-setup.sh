@@ -418,7 +418,7 @@ chmod +x logs.sh
 
 # Create README for post-setup
 print_status "Creating post-setup README..."
-cat > POST-SETUP.md << EOF
+cat > POST-SETUP.md << 'EOF'
 # Prepper Pi - Post Setup Instructions
 
 ## 🎉 Setup Complete!
@@ -426,16 +426,15 @@ cat > POST-SETUP.md << EOF
 Your Prepper Pi is now configured. Here's what's been set up:
 
 ### 🔧 Services Running:
-- **OpenWRT**: Router/firewall at `10.20.30.1`
-- **Homepage**: Landing page at `http://prepper-pi.local:3000`
-- **Portainer**: Container management at `http://10.20.30.1:9000`
-- **Jellyfin**: Media server at `http://10.20.30.1:8096`
-- **Samba**: File sharing (\\\\10.20.30.1)
+- **RaspAP**: WiFi AP management at http://10.20.30.1:8080
+- **Homepage**: Landing page at http://10.20.30.1:3000
+- **Portainer**: Container management at http://10.20.30.1:9000
+- **Jellyfin**: Media server at http://10.20.30.1:8096
+- **Samba**: File sharing (\\10.20.30.1)
 
 ### 📁 Directory Structure:
-- `media/`: Place your media files here for Jellyfin
-- `shares/`: Public file sharing via Samba
-- `openwrt/config/`: OpenWRT configuration files
+- media/: Place your media files here for Jellyfin
+- shares/: Public file sharing via Samba
 
 ### 🔨 Useful Commands:
 - `./status.sh`: Check system status
