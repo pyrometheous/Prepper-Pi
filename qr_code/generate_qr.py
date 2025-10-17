@@ -1,38 +1,49 @@
 ﻿#!/usr/bin/env python3
 """
-Generate SVG QR code for Prepper-Pi homepage with professional styling
-URL: http://10.20.30.1:3000
+Generate SVG QR code with customizable text labels
+Pre-configured for Prepper-Pi homepage: http://10.20.30.1:3000
 """
 
 import os
+import sys
 import qrcode
 
 # Configuration
-HOMEPAGE_URL = "http://10.20.30.1:3000"
-OUTPUT_DIR = "."  # Output to current directory (qr_code)
-SVG_FILE = "homepage.svg"
+QR_URL = "http://10.20.30.1:3000"
+TITLE_TEXT = "Prepper Pi"
+SUBTITLE_TEXT = "&#127957;"  # Camping emoji for off-grid
+OUTPUT_DIR = "."
+OUTPUT_FILE = "homepage.svg"
 
-def generate_svg_qr():
-    """Generate SVG QR code with text labels"""
+def generate_svg_qr(url, title, subtitle, output_file):
+    """Generate SVG QR code with custom text labels
     
-    print("Generating SVG QR code with labels...")
+    Args:
+        url: The URL to encode in the QR code
+        title: Main title text to display below QR code
+        subtitle: Subtitle text/emoji to display below title
+        output_file: Output filename for the SVG
+    """
+    
+    print(f"Generating SVG QR code for: {url}")
+    print(f"Title: {title}")
+    print(f"Subtitle: {subtitle}")
     
     # Generate QR code matrix
     qr = qrcode.QRCode(
         version=1,
         error_correction=qrcode.constants.ERROR_CORRECT_H,
-        box_size=16,  # 60% larger to fill white space much better
-        border=2,     # Minimal border to maximize QR space
+        box_size=16,
+        border=2,
     )
-    qr.add_data(HOMEPAGE_URL)
+    qr.add_data(url)
     qr.make(fit=True)
     
     # Get the QR code matrix
     matrix = qr.get_matrix()
     module_count = len(matrix)
-    box_size = 16  # 60% larger
-    border = 2     # Minimal border
-    
+    box_size = 16
+    border = 2
     qr_width = (module_count + border * 2) * box_size
     qr_height = qr_width
     
@@ -57,15 +68,15 @@ def generate_svg_qr():
                 y = row * box_size
                 lines.append(f'    <rect x="{x}" y="{y}" width="{box_size}" height="{box_size}" fill="#000000"/>')
     
-    # Add text
+    # Add text labels
     text_y_start = qr_width + padding + 70
     lines.append('  </g>')
-    lines.append(f'  <text x="{final_width/2}" y="{text_y_start}" font-family="Arial, Helvetica, sans-serif" font-size="70" font-weight="bold" fill="#FFFFFF" text-anchor="middle">Prepper Pi</text>')
-    lines.append(f'  <text x="{final_width/2}" y="{text_y_start + 85}" font-family="Segoe UI Emoji, Apple Color Emoji, Noto Color Emoji, sans-serif" font-size="80" fill="#FFFFFF" text-anchor="middle">&#127957;</text>')
+    lines.append(f'  <text x="{final_width/2}" y="{text_y_start}" font-family="Arial, Helvetica, sans-serif" font-size="70" font-weight="bold" fill="#FFFFFF" text-anchor="middle">{title}</text>')
+    lines.append(f'  <text x="{final_width/2}" y="{text_y_start + 85}" font-family="Segoe UI Emoji, Apple Color Emoji, Noto Color Emoji, sans-serif" font-size="80" fill="#FFFFFF" text-anchor="middle">{subtitle}</text>')
     lines.append('</svg>')
     
     # Save SVG
-    svg_path = os.path.join(OUTPUT_DIR, SVG_FILE)
+    svg_path = os.path.join(OUTPUT_DIR, output_file)
     with open(svg_path, 'w', encoding='utf-8') as f:
         f.write('\n'.join(lines))
     
@@ -75,18 +86,41 @@ def generate_svg_qr():
     return svg_path
 
 def main():
+    """Main entry point - supports command line arguments or uses defaults"""
+    
+    # Parse command line arguments or use defaults
+    if len(sys.argv) > 1:
+        url = sys.argv[1]
+        title = sys.argv[2] if len(sys.argv) > 2 else "QR Code"
+        subtitle = sys.argv[3] if len(sys.argv) > 3 else ""
+        output_file = sys.argv[4] if len(sys.argv) > 4 else "qrcode.svg"
+    else:
+        # Use pre-configured defaults for Prepper-Pi homepage
+        url = QR_URL
+        title = TITLE_TEXT
+        subtitle = SUBTITLE_TEXT
+        output_file = OUTPUT_FILE
+    
     print("=" * 70)
-    print("Prepper-Pi Homepage QR Code Generator")
+    print("Prepper-Pi QR Code Generator")
     print("=" * 70)
     print()
-    print(f"Target URL: {HOMEPAGE_URL}")
+    
+    if len(sys.argv) == 1:
+        print("Using default configuration for Prepper-Pi homepage")
+        print()
+        print("Usage for custom QR codes:")
+        print("  python generate_homepage_qr.py <url> [title] [subtitle] [output.svg]")
+        print()
+    
+    print(f"Target URL: {url}")
     print(f"Output Directory: {OUTPUT_DIR}")
     print()
     
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     
     try:
-        svg_path = generate_svg_qr()
+        svg_path = generate_svg_qr(url, title, subtitle, output_file)
         print()
         
         print("=" * 70)
@@ -98,8 +132,7 @@ def main():
         print("   - High error correction (Level H)")
         print("   - Black rounded rectangle background")
         print("   - White QR code area")
-        print("   - Prepper Pi title in white")
-        print("   - Camping emoji (off-grid symbol)")
+        print("   - Custom title and subtitle")
         print("   - QR code 60% larger (box_size=16, border=2)")
         print("=" * 70)
         
@@ -107,6 +140,7 @@ def main():
         print(f"Error: {e}")
         import traceback
         traceback.print_exc()
+        sys.exit(1)
 
 if __name__ == "__main__":
     main()
