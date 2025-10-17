@@ -175,27 +175,15 @@ class CaptivePortalHandler(http.server.BaseHTTPRequestHandler):
             View Homepage & Services
         </a>
         
-        <button onclick="bypass()" class="button secondary">
+        <a href="/bypass-success" class="button secondary">
             Continue Without Signing In
-        </button>
+        </a>
         
         <p style="font-size: 12px; color: #999; margin-top: 24px;">
             Network SSID: Prepper Pi<br>
             Gateway: 10.20.30.1
         </p>
     </div>
-    
-    <script>
-        function bypass() {{
-            // Close the captive portal popup without redirecting
-            // Most devices will interpret this as successful connection
-            if (window.close) {{
-                window.close();
-            }}
-            // Fallback: redirect to a success endpoint
-            window.location.href = '/bypass-success';
-        }}
-    </script>
 </body>
 </html>'''
             self.wfile.write(html.encode())
@@ -203,9 +191,80 @@ class CaptivePortalHandler(http.server.BaseHTTPRequestHandler):
         
         # Handle bypass success (tells device network is working)
         elif path == '/bypass-success':
-            self.send_response(204)  # No Content - network is good
+            # Return a success page that will close the captive portal
+            self.send_response(200)
+            self.send_header('Content-Type', 'text/html; charset=UTF-8')
+            self.send_header('Cache-Control', 'no-cache, no-store, must-revalidate')
+            self.send_header('Pragma', 'no-cache')
+            self.send_header('Expires', '0')
             self.end_headers()
-            logging.info(f"  -> Sent bypass success (204 No Content)")
+            
+            html = '''<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connected</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            max-width: 400px;
+            width: 100%;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+        h1 {
+            color: #11998e;
+            margin: 0 0 16px 0;
+            font-size: 24px;
+        }
+        p {
+            color: #666;
+            line-height: 1.6;
+        }
+        .icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+        .close-hint {
+            font-size: 12px;
+            color: #999;
+            margin-top: 24px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="icon">✓</div>
+        <h1>You're Connected!</h1>
+        <p>Internet access is now available. You can close this page and start browsing.</p>
+        <p class="close-hint">This page will close automatically in a few seconds.</p>
+    </div>
+    <script>
+        // Try to close the captive portal window
+        setTimeout(function() {
+            window.close();
+            // If window.close() doesn't work, try these
+            if (window.opener) window.opener = null;
+            window.open('', '_self').close();
+        }, 2000);
+    </script>
+</body>
+</html>'''
+            self.wfile.write(html.encode())
+            logging.info(f"  -> Sent bypass success page")
         
         # For all other requests, show the same portal page
         else:
