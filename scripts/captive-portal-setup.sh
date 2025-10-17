@@ -4,6 +4,20 @@
 
 echo "=== Configuring Captive Portal ==="
 
+# Detect WiFi interfaces
+if ip link show wlan1 &> /dev/null; then
+    echo "Dual WiFi detected: wlan0 (upstream) and wlan1 (AP)"
+    AP_INTERFACE="wlan1"
+    UPSTREAM_INTERFACE="wlan0"
+else
+    echo "Single WiFi detected: using wlan0 for AP, eth0 for upstream"
+    AP_INTERFACE="wlan0"
+    UPSTREAM_INTERFACE="eth0"
+fi
+
+echo "AP Interface: $AP_INTERFACE"
+echo "Upstream Interface: $UPSTREAM_INTERFACE"
+
 # 1. Create captive portal Python script
 sudo tee /usr/local/bin/captive-portal.py << 'EOF'
 #!/usr/bin/env python3
@@ -97,8 +111,10 @@ echo "Configuring dnsmasq..."
 sudo cp /etc/dnsmasq.d/090_raspap.conf /etc/dnsmasq.d/090_raspap.conf.bak 2>/dev/null || true
 
 # Remove wildcard DNS hijacking and configure properly
-sudo tee /etc/dnsmasq.d/090_raspap.conf << 'EOF'
-interface=wlan1
+# 3. Configure dnsmasq
+echo "Configuring dnsmasq for DHCP and DNS..."
+sudo tee /etc/dnsmasq.d/090_raspap.conf << EOF
+interface=$AP_INTERFACE
 domain-needed
 bogus-priv
 dhcp-range=10.20.30.100,10.20.30.199,255.255.255.0,24h
@@ -119,6 +135,18 @@ address=/detectportal.firefox.com/10.20.30.1
 address=/clients3.google.com/10.20.30.1
 address=/connecttest.txt/10.20.30.1
 EOF
+
+# 4. Configure NAT for internet passthrough
+echo "Configuring firewall rules..."
+sudo iptables -t nat -C POSTROUTING -o $UPSTREAM_INTERFACE -j MASQUERADE 2>/dev/null || 
+    sudo iptables -t nat -A POSTROUTING -o $UPSTREAM_INTERFACE -j MASQUERADE
+
+# 5. Add FORWARD rules to allow traffic from AP to upstream
+sudo iptables -C FORWARD -i $AP_INTERFACE -o $UPSTREAM_INTERFACE -j ACCEPT 2>/dev/null || 
+    sudo iptables -I FORWARD 1 -i $AP_INTERFACE -o $UPSTREAM_INTERFACE -j ACCEPT
+
+sudo iptables -C FORWARD -i $UPSTREAM_INTERFACE -o $AP_INTERFACE -m state --state RELATED,ESTABLISHED -j ACCEPT 2>/dev/null || 
+    sudo iptables -I FORWARD 2 -i $UPSTREAM_INTERFACE -o $AP_INTERFACE -m state --state RELATED,ESTABLISHED -j ACCEPT
 
 # 4. Configure NAT for internet passthrough
 echo "Configuring firewall rules..."
@@ -145,9 +173,11 @@ sudo systemctl restart captive-portal
 echo "=== Captive Portal Configuration Complete ==="
 echo ""
 echo "✅ Configuration Summary:"
+echo "- AP Interface: $AP_INTERFACE"
+echo "- Upstream Interface: $UPSTREAM_INTERFACE"
 echo "- Captive portal running on port 80"
 echo "- HTTP redirects to http://10.20.30.1:3000"
-echo "- Internet passthrough enabled (wlan1 -> wlan0)"
+echo "- Internet passthrough enabled ($AP_INTERFACE -> $UPSTREAM_INTERFACE)"
 echo "- DNS properly configured with upstream servers (8.8.8.8, 8.8.4.4)"
 echo "- Captive portal detection configured for iOS, Android, Windows"
 echo ""

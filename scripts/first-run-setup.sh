@@ -161,21 +161,50 @@ if grep -q "Raspberry Pi" /proc/cpuinfo 2>/dev/null || grep -q "BCM" /proc/cpuin
             sed -i 's/server.port.*=.*80/server.port = 8080/' /etc/lighttpd/lighttpd.conf
         fi
         
-        # Configure hostapd with custom SSID
+        # Detect WiFi interfaces - we need two: one for upstream (wlan0), one for AP (wlan1)
+        print_status "Detecting WiFi interfaces..."
+        if ip link show wlan1 &> /dev/null; then
+            print_status "Dual WiFi detected: wlan0 (upstream) and wlan1 (AP)"
+            AP_INTERFACE="wlan1"
+            UPSTREAM_INTERFACE="wlan0"
+        else
+            print_warning "Only one WiFi interface detected - using wlan0 for AP"
+            AP_INTERFACE="wlan0"
+            UPSTREAM_INTERFACE="eth0"
+        fi
+        
+        # Configure hostapd to use the correct AP interface
         if [ -f /etc/hostapd/hostapd.conf ]; then
+            print_status "Configuring hostapd on $AP_INTERFACE..."
+            sed -i "s/^interface=.*/interface=$AP_INTERFACE/" /etc/hostapd/hostapd.conf
             sed -i 's/^ssid=.*/ssid=Prepper Pi/' /etc/hostapd/hostapd.conf
             sed -i 's/^wpa_passphrase=.*/wpa_passphrase=ChangeMeNow!/' /etc/hostapd/hostapd.conf
+            
+            # Add or update channel and hardware mode for better compatibility
+            if ! grep -q "^channel=" /etc/hostapd/hostapd.conf; then
+                echo "channel=6" >> /etc/hostapd/hostapd.conf
+            else
+                sed -i 's/^channel=.*/channel=6/' /etc/hostapd/hostapd.conf
+            fi
         fi
         
         # Note: dnsmasq configuration will be handled by captive-portal-setup.sh
         # to avoid DNS wildcard hijacking that breaks internet access
         
-        # Configure wlan0 interface with 10.20.30.1
+        # Configure AP interface with 10.20.30.1
         if [ -f /etc/dhcpcd.conf ]; then
-            sed -i '/interface wlan0/,/static domain_name_servers/c\
-interface wlan0\
-    static ip_address=10.20.30.1/24\
-    nohook wpa_supplicant' /etc/dhcpcd.conf
+            print_status "Configuring $AP_INTERFACE with static IP 10.20.30.1..."
+            # Remove any existing wlan0/wlan1 configuration
+            sed -i '/interface wlan[01]/,/nohook wpa_supplicant/d' /etc/dhcpcd.conf
+            
+            # Add configuration for AP interface
+            cat >> /etc/dhcpcd.conf << EOF
+
+# Prepper Pi AP Interface Configuration
+interface $AP_INTERFACE
+    static ip_address=10.20.30.1/24
+    nohook wpa_supplicant
+EOF
         fi
         
         # Note: Captive portal configuration (DNS, firewall, detection) is handled by
@@ -184,8 +213,8 @@ interface wlan0\
         # Configure nodogsplash for captive portal (if available)
         if command -v nodogsplash &> /dev/null; then
             print_status "Configuring nodogsplash captive portal..."
-            cat > /etc/nodogsplash/nodogsplash.conf << 'EOF'
-GatewayInterface wlan0
+            cat > /etc/nodogsplash/nodogsplash.conf << EOF
+GatewayInterface $AP_INTERFACE
 GatewayAddress 10.20.30.1
 MaxClients 250
 AuthIdleTimeout 480
