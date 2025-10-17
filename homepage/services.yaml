@@ -1,6 +1,27 @@
 ﻿---
+# WiFi Network Information
+- Network Info:
+    - WiFi Network:
+        icon: wifi.png
+        description: "SSID: Prepper Pi | Password: ChangeMeNow!"
+        widget:
+            type: customapi
+            url: http://10.20.30.1:8080
+            mappings:
+                - field: ssid
+                  label: Network Name
+                  format: text
+                - field: password  
+                  label: WiFi Password
+                  format: text
+
 # System Management
-- System:
+- Administration:
+    - RaspAP:
+        href: http://10.20.30.1:8080
+        icon: raspberrypi.png
+        description: WiFi Router & Network Control (admin/secret)
+
     - Portainer:
         href: http://10.20.30.1:9000
         icon: portainer.png
@@ -11,11 +32,8 @@
             env: 2
             key: REPLACE_ME
 
-    - RaspAP:
-        href: http://10.20.30.1:8080
-        icon: raspberrypi.png
-        description: WiFi Router & Network Control
-
+# System Monitoring
+- System:
     - System Monitor:
         href: http://10.20.30.1:3000/system
         icon: system-monitor.png

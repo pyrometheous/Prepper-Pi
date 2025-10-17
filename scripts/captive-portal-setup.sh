@@ -30,30 +30,40 @@ REDIRECT_URL = "http://10.20.30.1:3000"
 
 # Captive portal detection URLs that need special handling
 PORTAL_CHECK_PATHS = [
-    '/hotspot-detect.html',  # iOS
-    '/generate_204',          # Android
-    '/connecttest.txt',       # Windows
-    '/success.txt',           # Firefox
+    '/hotspot-detect.html',        # iOS
+    '/library/test/success.html',  # iOS alternate
+    '/generate_204',                # Android/Chrome
+    '/gen_204',                     # Android alternate
+    '/connecttest.txt',             # Windows
+    '/redirect',                    # Windows alternate  
+    '/success.txt',                 # Firefox
+    '/canonical.html',              # Ubuntu
+    '/connectivity-check.html',     # Various Linux
 ]
 
 class CaptivePortalHandler(http.server.BaseHTTPRequestHandler):
     def do_GET(self):
         path = urlparse(self.path).path
 
-        # For captive portal detection URLs, return success page
-        if path in PORTAL_CHECK_PATHS or 'generate_204' in path:
+        # For captive portal detection URLs, return response that triggers portal
+        if any(check in path for check in PORTAL_CHECK_PATHS) or 'generate_204' in path or 'gen_204' in path:
+            # Return HTTP 200 with content (not 204) to trigger captive portal
             self.send_response(200)
             self.send_header('Content-Type', 'text/html')
+            self.send_header('Cache-Control', 'no-cache, no-store, must-revalidate')
+            self.send_header('Pragma', 'no-cache')
+            self.send_header('Expires', '0')
             self.end_headers()
-            # Return simple HTML that redirects to homepage
+            # Return HTML that will trigger captive portal popup
             html = f'''<!DOCTYPE html>
 <html>
 <head>
     <meta http-equiv="refresh" content="0; url={REDIRECT_URL}">
-    <title>Prepper Pi - Welcome</title>
+    <title>Prepper Pi - Network Portal</title>
 </head>
 <body>
-    <p>Redirecting to Prepper Pi dashboard...</p>
+    <h1>Welcome to Prepper Pi</h1>
+    <p>Redirecting to dashboard...</p>
     <p>If not redirected, <a href="{REDIRECT_URL}">click here</a></p>
 </body>
 </html>'''
@@ -62,12 +72,14 @@ class CaptivePortalHandler(http.server.BaseHTTPRequestHandler):
             # For all other URLs, send 302 redirect
             self.send_response(302)
             self.send_header('Location', REDIRECT_URL)
+            self.send_header('Cache-Control', 'no-cache')
             self.end_headers()
 
     def do_HEAD(self):
-        # For HEAD requests, just return success
+        # For HEAD requests, return 200 to indicate captive portal
         self.send_response(200)
         self.send_header('Content-Type', 'text/html')
+        self.send_header('Content-Length', '0')
         self.end_headers()
 
     def do_POST(self):
