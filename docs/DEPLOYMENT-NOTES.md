@@ -42,7 +42,19 @@ ssh admin@192.168.50.99 "cd Prepper-Pi && sudo bash scripts/first-run-setup.sh"
    - Set hostname: `prepper-pi`
    - Set user: `admin`
 
-2. **Clone Repository**
+2. **⚠️ CRITICAL: USB WiFi Adapter Timing**
+   - **DO NOT** plug in USB WiFi adapter (ALFA AWUS036ACM) before first boot
+   - Boot the Pi with only built-in WiFi
+   - Wait for Pi to connect to your network and show up (ping prepper-pi.local)
+   - Verify SSH access works
+   - **THEN** plug in the USB WiFi adapter
+   - The adapter will be detected as wlan1 (AP interface)
+   - Built-in WiFi remains as wlan0 (upstream internet)
+   
+   **Why this matters**: If the USB adapter is plugged in during boot, interface names 
+   may be assigned differently, causing RaspAP to configure the wrong interface as the AP.
+
+3. **Clone Repository**
    ```bash
    ssh admin@<pi-ip>
    git clone https://github.com/pyrometheous/Prepper-Pi.git
@@ -50,7 +62,7 @@ ssh admin@192.168.50.99 "cd Prepper-Pi && sudo bash scripts/first-run-setup.sh"
    git checkout feature/native-hostapd
    ```
 
-3. **Run Setup Script**
+4. **Run Setup Script**
    ```bash
    sudo bash scripts/first-run-setup.sh
    ```
@@ -60,7 +72,7 @@ ssh admin@192.168.50.99 "cd Prepper-Pi && sudo bash scripts/first-run-setup.sh"
    ssh -t admin@<pi-ip> "cd Prepper-Pi && sudo bash scripts/first-run-setup.sh"
    ```
 
-4. **What Gets Installed Automatically**:
+5. **What Gets Installed Automatically**:
    - ✅ Docker & Docker Compose
    - ✅ RaspAP (WiFi AP management)
    - ✅ Captive portal (Python HTTP server)

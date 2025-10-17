@@ -64,19 +64,26 @@ class CaptivePortalHandler(http.server.BaseHTTPRequestHandler):
         logging.info("%s - %s" % (self.client_address[0], format % args))
     
     def do_GET(self):
-        path = urlparse(self.path).path
+        parsed_url = urlparse(self.path)
+        path = parsed_url.path
+        query = parse_qs(parsed_url.query)
         host = self.headers.get('Host', '')
         user_agent = self.headers.get('User-Agent', '').lower()
         
         logging.info(f"Request from {self.client_address[0]}: {host}{path}")
+        logging.info(f"  Query string: {parsed_url.query}")
+        logging.info(f"  Parsed query: {query}")
         logging.info(f"  User-Agent: {user_agent}")
         
         # Check if this is a gaming console or IoT device
         is_gaming_device = any(game_ua.lower() in user_agent for game_ua in GAMING_USER_AGENTS)
         
+        # Check if user has bypassed (using query parameter)
+        has_bypassed = 'bypassed' in query or 'bypass' in parsed_url.query.lower()
+        
         # For Nintendo Switch and gaming consoles, return success immediately (no portal)
-        if is_gaming_device:
-            logging.info(f"  -> Gaming device detected, allowing through")
+        if is_gaming_device or has_bypassed:
+            logging.info(f"  -> Gaming device or bypassed (gaming={is_gaming_device}, bypass={has_bypassed}), allowing through")
             self.send_response(204)  # No Content - tells device network is good
             self.end_headers()
             return
@@ -175,7 +182,7 @@ class CaptivePortalHandler(http.server.BaseHTTPRequestHandler):
             View Homepage & Services
         </a>
         
-        <a href="/bypass-success" class="button secondary">
+        <a href="http://connectivitycheck.gstatic.com/generate_204?bypassed=true" class="button secondary">
             Continue Without Signing In
         </a>
         
@@ -188,83 +195,6 @@ class CaptivePortalHandler(http.server.BaseHTTPRequestHandler):
 </html>'''
             self.wfile.write(html.encode())
             logging.info(f"  -> Sent captive portal page with bypass option")
-        
-        # Handle bypass success (tells device network is working)
-        elif path == '/bypass-success':
-            # Return a success page that will close the captive portal
-            self.send_response(200)
-            self.send_header('Content-Type', 'text/html; charset=UTF-8')
-            self.send_header('Cache-Control', 'no-cache, no-store, must-revalidate')
-            self.send_header('Pragma', 'no-cache')
-            self.send_header('Expires', '0')
-            self.end_headers()
-            
-            html = '''<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Connected</title>
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-        .container {
-            background: white;
-            border-radius: 12px;
-            padding: 32px;
-            max-width: 400px;
-            width: 100%;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-            text-align: center;
-        }
-        h1 {
-            color: #11998e;
-            margin: 0 0 16px 0;
-            font-size: 24px;
-        }
-        p {
-            color: #666;
-            line-height: 1.6;
-        }
-        .icon {
-            font-size: 64px;
-            margin-bottom: 16px;
-        }
-        .close-hint {
-            font-size: 12px;
-            color: #999;
-            margin-top: 24px;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="icon">✓</div>
-        <h1>You're Connected!</h1>
-        <p>Internet access is now available. You can close this page and start browsing.</p>
-        <p class="close-hint">This page will close automatically in a few seconds.</p>
-    </div>
-    <script>
-        // Try to close the captive portal window
-        setTimeout(function() {
-            window.close();
-            // If window.close() doesn't work, try these
-            if (window.opener) window.opener = null;
-            window.open('', '_self').close();
-        }, 2000);
-    </script>
-</body>
-</html>'''
-            self.wfile.write(html.encode())
-            logging.info(f"  -> Sent bypass success page")
         
         # For all other requests, show the same portal page
         else:

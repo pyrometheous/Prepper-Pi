@@ -24,13 +24,20 @@ scp admin@prepper-pi.local:~/backup-*.txt ./docs/backup/
    - Enable SSH
    - Configure WiFi for upstream (wlan0)
 
-2. ⬜ Boot and update
+2. ⬜ **IMPORTANT**: Boot WITHOUT USB WiFi adapter plugged in
+   - Let Pi boot and connect to your WiFi network using built-in wlan0
+   - Wait for Pi to show up on network (check router or use `ping prepper-pi.local`)
+   - Verify SSH access: `ssh admin@prepper-pi.local`
+   - **THEN** plug in USB WiFi adapter (ALFA AWUS036ACM)
+   - Verify both interfaces: `ip link show` should show wlan0 and wlan1
+
+3. ⬜ Update system packages
    ```bash
    ssh admin@prepper-pi.local
    sudo apt update && sudo apt upgrade -y
    ```
 
-3. ⬜ Clone and setup (includes RaspAP + captive portal configuration)
+4. ⬜ Clone and setup (includes RaspAP + captive portal configuration)
    ```bash
    git clone https://github.com/pyrometheous/Prepper-Pi.git
    cd Prepper-Pi
