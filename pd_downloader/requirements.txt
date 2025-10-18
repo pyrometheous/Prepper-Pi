@@ -1,0 +1,18 @@
+# Requirements for Public Domain Downloader Scripts
+# 
+# Install with: pip install -r requirements.txt
+#
+# Scripts covered:
+# - public_domain_movies.py (public domain movies from Internet Archive, Wikimedia Commons, etc.)
+# - Project_Gutenberg_top_genres_to_kavita.py (Project Gutenberg ebooks with Kavita metadata)
+# - standard_ebooks_to_kavita.py (Standard Ebooks library downloader with Kavita metadata)
+
+# Required for Project Gutenberg script (EPUB processing and web scraping)
+requests>=2.31.0
+lxml>=4.9.0
+
+# Note: public_domain_movies.py uses only Python standard library
+# (urllib, json, csv, hashlib, pathlib, etc.) and requires no external dependencies.
+#
+# Both ebook scripts (Project Gutenberg and Standard Ebooks) require requests.
+# Only the Project Gutenberg script requires lxml for EPUB processing.
