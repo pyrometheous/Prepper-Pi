@@ -193,7 +193,7 @@ python Project_Gutenberg_top_genres_to_kavita.py --out ./KavitaLibrary --no-coll
 
 Downloads the entire Standard Ebooks library with Kavita-ready metadata.
 
-**⚠️ REQUIRES API KEY:** You must be a Standard Ebooks Patrons Circle member to access their OPDS feed.
+**⚠️ REQUIRES API KEY:** You must be a Standard Ebooks Patrons Circle member to access their OPDS feed. [Become a patron to get access](https://standardebooks.org/donate#patrons-circle).
 
 ```powershell
 # Basic usage (downloads entire library)
