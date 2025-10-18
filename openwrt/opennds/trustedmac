@@ -1,6 +1,0 @@
-# Prepper Pi OpenNDS Trusted MAC Addresses
-# Format: MAC addresses that bypass captive portal
-# Example: aa:bb:cc:dd:ee:ff
-
-# Add MAC addresses of trusted devices here
-# (Empty by default - no trusted devices)

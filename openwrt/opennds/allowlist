@@ -1,8 +1,0 @@
-# Prepper Pi OpenNDS Allow List
-# Format: IP addresses or CIDR blocks that bypass captive portal
-# Example: 192.168.1.100
-# Example: 10.0.0.0/24
-
-# Local services that should always be accessible
-10.20.30.1
-127.0.0.1
