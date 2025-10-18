@@ -1,8 +1,8 @@
-# Public Domain Movie Downloader
+# Public Domain Media Downloader Suite
 
 ## ⚠️ IMPORTANT LEGAL NOTICE
 
-This tool is designed **EXCLUSIVELY** for downloading public domain films from verified sources. It must **ONLY** be used for legitimate purposes of obtaining media that is free from copyright restrictions.
+These tools are designed **EXCLUSIVELY** for downloading public domain content (films and ebooks) from verified sources. They must **ONLY** be used for legitimate purposes of obtaining media that is free from copyright restrictions.
 
 ### Acceptable Use
 - ✅ Downloading films confirmed to be in the public domain
@@ -22,14 +22,34 @@ This tool is designed **EXCLUSIVELY** for downloading public domain films from v
 
 ## Overview
 
-The Public Domain Movie Downloader (`pd_downloader.py`) is a Python script that downloads verified public domain films from trusted sources including:
-- **Internet Archive** (archive.org) - A digital library with extensive public domain collections
+This suite contains three Python scripts for downloading public domain media with built-in copyright protection measures:
+
+### 1. **Public Domain Movies** (`public_domain_movies.py`)
+Downloads verified public domain films from trusted sources:
+- **Internet Archive** (archive.org) - Digital library with extensive PD film collections
 - **Wikimedia Commons** - Community-verified public domain media
 - **Direct URLs** - Pre-verified public domain sources
 
-All downloads are tracked with SHA256 checksums and provenance information to ensure authenticity and traceability.
+All downloads are tracked with SHA256 checksums and provenance information.
 
-## Copyright Protection Measures
+### 2. **Project Gutenberg Ebooks** (`Project_Gutenberg_top_genres_to_kavita.py`)
+Downloads top-rated ebooks from Project Gutenberg by genre:
+- Scrapes popular subjects from PG's catalog
+- Downloads EPUBs and **cleans out Project Gutenberg boilerplate/branding**
+- Embeds **Kavita-friendly OPF metadata** (subjects, collections, series info)
+- Outputs in Kavita-ready folder structure (one folder per Series/Title)
+- Generates CSV reports with validation status
+
+### 3. **Standard Ebooks Library** (`standard_ebooks_to_kavita.py`)
+Downloads the entire Standard Ebooks library:
+- Uses OPDS feed with API key authentication (Patrons Circle required)
+- Standard Ebooks editions are CC0 (public domain dedication)
+- Embeds Kavita-compatible metadata with "Standard Ebooks" collection tags
+- Supports resume capability (skips existing files)
+- Optional subject filtering
+- Sequential downloads with configurable rate limiting
+
+## Copyright Protection Measures for **Public Domain Movies** (`public_domain_movies.py`)
 
 This tool implements multiple safeguards to prevent copyright infringement:
 
@@ -61,30 +81,44 @@ The manifest includes important warnings:
 - Requires explicit manifest entry for each film
 - No bulk or automated scraping capabilities
 
-## How to Use
+## Installation & Prerequisites
 
-### Prerequisites
-
+### Python Requirements
 ```powershell
 # Python 3.6 or higher required
 python --version
 ```
 
-No external dependencies needed - uses only Python standard library.
-
-### Basic Usage
-
+### Install Dependencies
 ```powershell
-# Download films from the manifest
-python pd_downloader.py --manifest manifest.csv --out downloads
+# Install required packages for ebook downloaders
+pip install -r requirements.txt
+
+# This installs:
+# - requests>=2.31.0 (for HTTP operations)
+# - lxml>=4.9.0 (for EPUB/XML processing)
 ```
 
-### Command-Line Arguments
+**Note:** `public_domain_movies.py` uses only Python standard library and requires no external dependencies.
 
+---
+
+## Usage Guide
+
+### 📽️ Public Domain Movies
+
+Downloads public domain films from a curated manifest.
+
+```powershell
+# Basic usage
+python public_domain_movies.py --manifest manifest.csv --out downloads
+```
+
+**Command-Line Arguments:**
 - `--manifest` (required): Path to the CSV manifest file
 - `--out` (required): Output directory for downloaded films
 
-### Manifest Format
+**Manifest Format:**
 
 The `manifest.csv` file uses the following columns:
 
@@ -106,6 +140,96 @@ Night of the Living Dead,1968,ia_search,,Night of the Living Dead 1968,Use origi
 - `ia_search`: Search Internet Archive and download top result
 - `commons`: Wikimedia Commons file title
 - `direct`: Direct download URL
+
+---
+
+### 📚 Project Gutenberg Ebooks
+
+Downloads top ebooks by genre from Project Gutenberg with Kavita-ready metadata.
+
+```powershell
+# Download top 20 titles from top 10 genres (default)
+python Project_Gutenberg_top_genres_to_kavita.py --out ./KavitaLibrary
+
+# Download 30 titles per genre from top 15 genres
+python Project_Gutenberg_top_genres_to_kavita.py --out ./KavitaLibrary --count-per-genre 30 --genres-top 15
+
+# Download specific genres only
+python Project_Gutenberg_top_genres_to_kavita.py --out ./KavitaLibrary --genres "Science fiction,Horror tales,Fantasy fiction"
+
+# Adjust download speed (seconds between requests)
+python Project_Gutenberg_top_genres_to_kavita.py --out ./KavitaLibrary --sleep 3
+
+# Different languages (comma-separated ISO codes)
+python Project_Gutenberg_top_genres_to_kavita.py --out ./KavitaLibrary --languages "en,fr,de"
+
+# Disable collection metadata embedding
+python Project_Gutenberg_top_genres_to_kavita.py --out ./KavitaLibrary --no-collections
+```
+
+**Command-Line Arguments:**
+- `--out`: Output library root (default: `./KavitaLibrary`)
+- `--count-per-genre`: Titles per subject (default: 20)
+- `--genres-top`: How many top subjects to auto-scrape (default: 10)
+- `--genres`: Comma-separated subject list (overrides auto-scraping)
+- `--languages`: Comma-separated language codes (default: `en`)
+- `--sleep`: Seconds between downloads (default: 2.0)
+- `--mirror`: Download mirror base (default: `https://gutenberg.pglaf.org`)
+- `--no-collections`: Skip embedding belongs-to-collection metadata
+
+**What it does:**
+1. Scrapes popular subjects from Gutenberg's catalog
+2. Queries Gutendex API for top titles per subject
+3. Downloads EPUBs from mirror with polite rate limiting
+4. **Removes all Project Gutenberg branding and boilerplate** from EPUB internals
+5. Embeds/normalizes OPF metadata (title, author, language, subjects)
+6. Adds EPUB3 collection tags for Kavita Reading Lists
+7. Organizes by Series (if present) or Title folders
+8. Generates `_reports/kavita_epub_report.csv` and `_reports/collections.csv`
+
+---
+
+### 📖 Standard Ebooks Library
+
+Downloads the entire Standard Ebooks library with Kavita-ready metadata.
+
+**⚠️ REQUIRES API KEY:** You must be a Standard Ebooks Patrons Circle member to access their OPDS feed.
+
+```powershell
+# Basic usage (downloads entire library)
+python standard_ebooks_to_kavita.py --api-key YOUR_API_KEY --out ./KavitaSE
+
+# With custom sleep interval
+python standard_ebooks_to_kavita.py --api-key YOUR_API_KEY --out ./KavitaSE --sleep 1.5
+
+# Filter by subjects
+python standard_ebooks_to_kavita.py --api-key YOUR_API_KEY --out ./KavitaSE --subjects "Science fiction,Horror,Fantasy"
+
+# Overwrite existing files
+python standard_ebooks_to_kavita.py --api-key YOUR_API_KEY --out ./KavitaSE --overwrite
+
+# Custom headers/cookies (if needed)
+python standard_ebooks_to_kavita.py --api-key YOUR_API_KEY --out ./KavitaSE --header "X-Custom: value" --cookie "session=abc123"
+```
+
+**Command-Line Arguments:**
+- `--api-key` (required): Your Patrons Circle API key/token
+- `--opds-url`: OPDS catalog URL (default: `https://standardebooks.org/feeds/opds`)
+- `--out`: Output library root (default: `./KavitaSE`)
+- `--sleep`: Seconds between requests (default: 1.5)
+- `--subjects`: Optional comma-separated subject filters (blank = fetch all)
+- `--header`: Extra header(s) in format `Name: value` (can repeat)
+- `--cookie`: Cookie(s) in format `name=value` (can repeat)
+- `--overwrite`: Overwrite existing files (default: skip existing)
+
+**What it does:**
+1. Authenticates with Standard Ebooks OPDS feed
+2. Follows pagination to fetch all entries
+3. Downloads EPUBs with embedded metadata
+4. Adds Kavita-friendly subjects and "Standard Ebooks" collection tag
+5. Organizes by Series (if present) or Title folders
+6. Generates `_reports/se_library_report.csv`
+7. Supports resume (safely skip already-downloaded files)
 
 ## Verifying Public Domain Status
 
@@ -130,26 +254,49 @@ Before adding films to the manifest, verify their public domain status:
 - [Stanford Copyright Renewal Database](https://collections.stanford.edu/copyrightrenewals/)
 - [Cornell Public Domain Chart](https://copyright.cornell.edu/publicdomain)
 
-## Output
+---
 
-### Downloaded Files
+## Output Structure & Reports
+
+### Movies Output
 Films are saved with sanitized filenames:
 ```
-The_Brain_That_Wouldn_t_Die_1962.mpg
-Night_of_the_Living_Dead_1968.mp4
+downloads/
+  The_Brain_That_Wouldn_t_Die_1962.mpg
+  Night_of_the_Living_Dead_1968.mp4
+  _provenance.csv
 ```
 
-### Provenance File
-`_provenance.csv` contains:
+**Provenance File** (`_provenance.csv`):
 ```csv
 title,year,source_type,source_id,download_url,saved_as,sha256
 Night of the Living Dead,1968,ia_search,night_of_the_living_dead,https://...,downloads/Night_of_the_Living_Dead_1968.mp4,abc123...
 ```
+Use for: file integrity verification (SHA256), source documentation, audit trails
 
-Use this file to:
-- Verify file integrity (SHA256 checksums)
-- Document source and public domain status
-- Maintain audit trail for commercial use
+### Ebooks Output (Kavita-Ready)
+Both ebook scripts organize content for Kavita media server:
+```
+KavitaLibrary/
+  The_Time_Machine/
+    The_Time_Machine - Gutenberg123.epub
+  Sherlock_Holmes/
+    A_Study_in_Scarlet - Gutenberg456.epub
+    The_Hound_of_the_Baskervilles - Gutenberg789.epub
+  _reports/
+    kavita_epub_report.csv
+    collections.csv
+    README.txt
+```
+
+**Key Features:**
+- **One folder per Series** (Kavita requirement)
+- For books without series → Title becomes the series folder
+- Embedded OPF metadata includes:
+  - `dc:title`, `dc:creator`, `dc:language`, `dc:subject`
+  - EPUB3 `belongs-to-collection` tags for Kavita Collections/Reading Lists
+  - Preserves existing `calibre:series` metadata
+- Reports document download status, compliance, and collection mappings
 
 ## Resale Rights
 
@@ -186,54 +333,189 @@ While this tool downloads public domain films, **you are responsible for verifyi
 
 **Please be considerate of the free services provided by Internet Archive and other sources.**
 
+---
+
 ## Troubleshooting
 
-### "No files for IA identifier"
+### Movies
+
+**"No files for IA identifier"**
 - The Internet Archive item may have been removed
 - Try searching manually on archive.org to verify availability
 
-### "No suitable downloadable file"
+**"No suitable downloadable file"**
 - The item may only contain non-video formats
 - Check the Internet Archive page for available formats
 
-### Download timeout
+**Download timeout**
 - Large files may take time; the script retries up to 3 times
 - Check your internet connection
 - Some IA servers may be slow; try again later
 
-## Example Workflow
+### Project Gutenberg
 
+**"No IA search results"**
+- Title/year combination may not match any items
+- Try adjusting the query in manifest.csv
+- Check Gutendex API manually: https://gutendex.com/books
+
+**NONCOMPLIANT status in report**
+- Project Gutenberg markers were not fully removed (rare)
+- Or item not clearly flagged as PD in USA
+- Review the notes column for specifics
+
+**HTTP errors**
+- Gutenberg mirror may be temporarily down
+- Try again later or specify different `--mirror`
+
+### Standard Ebooks
+
+**401 Unauthorized**
+- Invalid API key or expired Patrons Circle membership
+- Check your key at https://standardebooks.org/donate#patrons-circle
+
+**HTTP 403/404**
+- OPDS feed URL may have changed
+- Check Standard Ebooks website for current feed URL
+
+**SSL/Certificate errors**
+- Update Python's certifi package: `pip install --upgrade certifi`
+
+### General
+
+**ModuleNotFoundError: requests/lxml**
+- Run: `pip install -r requirements.txt`
+
+**Out of disk space**
+- Full libraries can be 10GB+ for ebooks, much larger for movies
+- Monitor disk space and adjust `--count-per-genre` or use `--subjects` filter
+
+**Slow downloads**
+- Increase `--sleep` value to be more polite to servers
+- Check your internet connection speed
+- Some sources throttle based on IP; wait and retry later
+
+---
+
+## Example Workflows
+
+### Complete Movie Collection Setup
 ```powershell
-# 1. Review and customize manifest.csv
+# 1. Review and customize manifest
 notepad manifest.csv
 
-# 2. Create output directory
-mkdir pd_movies
+# 2. Download films
+python public_domain_movies.py --manifest manifest.csv --out pd_movies
 
-# 3. Download films (this may take hours for many films)
-python pd_downloader.py --manifest manifest.csv --out pd_movies
-
-# 4. Verify downloads
+# 3. Verify downloads
 Get-ChildItem pd_movies\*.mp4, pd_movies\*.mpg
 
-# 5. Review provenance
+# 4. Review provenance
 Import-Csv pd_movies\_provenance.csv | Format-Table
 ```
 
+### Complete Ebook Library Setup
+```powershell
+# 1. Install dependencies
+pip install -r requirements.txt
+
+# 2. Download Project Gutenberg library (top 10 genres, 20 each = ~200 books)
+python Project_Gutenberg_top_genres_to_kavita.py --out ./KavitaPG --sleep 2
+
+# 3. Download Standard Ebooks library (requires API key)
+python standard_ebooks_to_kavita.py --api-key YOUR_KEY --out ./KavitaSE --sleep 1.5
+
+# 4. Check reports
+Import-Csv ./KavitaPG/_reports/kavita_epub_report.csv | Where-Object {$_.status -eq "OK"} | Measure-Object
+Import-Csv ./KavitaSE/_reports/se_library_report.csv | Where-Object {$_.status -eq "OK"} | Measure-Object
+
+# 5. Point Kavita at your library folders
+# In Kavita: Libraries → Add Library → Browse to KavitaPG and KavitaSE
+```
+
+### Selective Genre Download
+```powershell
+# Download only specific genres you want
+python Project_Gutenberg_top_genres_to_kavita.py \
+  --out ./KavitaLibrary \
+  --genres "Science fiction,Horror tales,Detective and mystery stories,Fantasy fiction" \
+  --count-per-genre 50 \
+  --sleep 2
+```
+
+---
+
+## Kavita Media Server Integration
+
+Both ebook downloaders are optimized for **Kavita**, a free, open-source comics/ebooks/manga server.
+
+### Why Kavita?
+- Modern web-based interface
+- OPDS support for reading apps
+- Collections and Reading Lists
+- Progress tracking across devices
+- Metadata-driven organization
+
+### Setting Up Kavita
+
+1. **Install Kavita**: https://www.kavitareader.com/
+2. **Add Library**:
+   - Go to Libraries → Add Library
+   - Browse to your KavitaLibrary folder
+   - Set Library Type to "Book"
+3. **Enable Collections** (for genre-based grouping):
+   - Settings → Libraries → Manage Collections
+   - Enable "Import from metadata"
+4. **Scan Library**: Kavita will parse embedded OPF metadata
+5. **Enjoy**: Browse by Series, Collections, or Reading Lists
+
+### Metadata Mapping
+The scripts embed metadata that Kavita automatically reads:
+- `dc:title` → Chapter/Book Title
+- `dc:creator` → Author(s)
+- `dc:language` → Language
+- `dc:subject` → Genres/Tags
+- `calibre:series` → Series Name
+- `calibre:series_index` → Volume Number
+- `belongs-to-collection` → Collections/Reading Lists (if enabled)
+
+---
+
 ## License & Disclaimer
 
-This tool is provided as-is for legitimate use only. The authors are not responsible for misuse or copyright violations. Users are solely responsible for ensuring compliance with applicable laws and regulations.
+These tools are provided as-is for legitimate use only. The authors are not responsible for misuse or copyright violations. Users are solely responsible for ensuring compliance with applicable laws and regulations.
 
-**The presence of a film in the manifest does NOT constitute legal advice or guarantee of public domain status.** Always verify independently before commercial use.
+**The presence of content in manifests or scripts does NOT constitute legal advice or guarantee of public domain status.** Always verify independently before commercial use.
+
+**Project Gutenberg Compliance:** The PG script removes branding/boilerplate to comply with Project Gutenberg's [trademark policy](https://www.gutenberg.org/policy/trademark_policy.html) regarding redistribution.
+
+**Standard Ebooks:** All SE editions are released under CC0 (public domain dedication), but API access requires Patrons Circle membership.
 
 ---
 
 ## Support & Questions
 
-For issues specific to this downloader, check:
-1. Manifest format is correct
-2. Python 3.6+ is installed
-3. Internet connection is stable
-4. Source URLs are still valid
+### For Script Issues
+1. Verify Python 3.6+ is installed
+2. Install dependencies: `pip install -r requirements.txt`
+3. Check your internet connection
+4. Review error messages in console output
+5. Check generated CSV reports for specific failures
 
-For public domain verification questions, consult the verification resources listed above or seek legal counsel.
+### For Public Domain Verification
+Consult the verification resources listed above or seek legal counsel.
+
+### For Kavita Setup
+- Kavita Documentation: https://wiki.kavitareader.com/
+- Kavita Discord: https://discord.gg/kavita
+
+---
+
+## Contributing & Updates
+
+This is a static toolset designed for archival and personal library building. To add more sources or titles:
+- **Movies**: Edit `manifest.csv` with new verified PD films
+- **PG Ebooks**: Adjust `--genres` or `--count-per-genre` parameters
+- **SE Ebooks**: Filter by `--subjects` or download entire library
+
+For bugs or feature requests related to the Prepper-Pi project, see the main repository.
