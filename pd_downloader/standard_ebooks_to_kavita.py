@@ -1,24 +1,9 @@
 #!/usr/bin/env python3
-# se_library_kavita_full.py
-#
-# Download the ENTIRE Standard Ebooks library via OPDS using a required API key/token,
-# save as EPUB in a Kavita-friendly layout (one folder per Series; else Title),
-# and embed OPF metadata that Kavita reads (subjects + a "Standard Ebooks" collection tag).
-#
-# - Requires: --api-key (Patrons Circle access)
-# - OPDS pagination is followed until exhausted (no --limit by default).
-# - Sequential downloads with polite sleep; can resume safely (skips existing files).
-# - Generates a CSV report under _reports/.
-#
-# Usage:
-#   pip install requests
-#   python se_library_kavita_full.py --api-key YOUR_TOKEN --out ./KavitaSE --sleep 1.5
-#   # Optional: subject filters, extra headers/cookies, or overwrite existing files:
-#   python se_library_kavita_full.py --api-key YOUR_TOKEN --subjects "Science fiction,Short stories" --overwrite
-#
-# Notes:
-# - Standard Ebooks editions are CC0 (public-domain dedication); we DO NOT alter book content beyond
-#   adding/merging OPF metadata fields that Kavita reads (subjects + collection tag).
+"""
+Standard Ebooks Library Downloader
+Downloads entire Standard Ebooks library via OPDS with Kavita-ready metadata.
+See README.md for usage instructions and requirements.
+"""
 
 import argparse
 import csv
@@ -50,12 +35,16 @@ def slugify(s: str) -> str:
     return s or "Untitled"
 
 
-def build_session(api_key: str, headers: List[str], cookies: List[str]) -> requests.Session:
+def build_session(
+    api_key: str, headers: List[str], cookies: List[str]
+) -> requests.Session:
     sess = requests.Session()
-    sess.headers.update({
-        "User-Agent": DEFAULT_UA,
-        "Accept": "application/atom+xml,application/xml;q=0.9,*/*;q=0.8"
-    })
+    sess.headers.update(
+        {
+            "User-Agent": DEFAULT_UA,
+            "Accept": "application/atom+xml,application/xml;q=0.9,*/*;q=0.8",
+        }
+    )
     # Default Authorization header; user can override via --header/--cookie as needed.
     sess.headers.setdefault("Authorization", f"Bearer {api_key.strip()}")
     for h in headers:
@@ -87,8 +76,14 @@ def parse_entries(feed_root: ET.Element) -> List[Dict]:
     for entry in feed_root.findall("atom:entry", ns):
         title = (entry.findtext("atom:title", default="", namespaces=ns) or "").strip()
         id_url = (entry.findtext("atom:id", default="", namespaces=ns) or "").strip()
-        authors = [a.findtext("atom:name", default="", namespaces=ns) or "" for a in entry.findall("atom:author", ns)]
-        cats = [(c.get("label") or c.get("term") or "").strip() for c in entry.findall("atom:category", ns)]
+        authors = [
+            a.findtext("atom:name", default="", namespaces=ns) or ""
+            for a in entry.findall("atom:author", ns)
+        ]
+        cats = [
+            (c.get("label") or c.get("term") or "").strip()
+            for c in entry.findall("atom:category", ns)
+        ]
         # Links: pick epub
         epub_href = None
         for ln in entry.findall("atom:link", ns):
@@ -97,17 +92,20 @@ def parse_entries(feed_root: ET.Element) -> List[Dict]:
             if EPUB_MIME in typ and href:
                 epub_href = href
                 break
-        out.append({
-            "title": title,
-            "id": id_url,
-            "authors": [a for a in authors if a],
-            "categories": [c for c in cats if c],
-            "epub": epub_href
-        })
+        out.append(
+            {
+                "title": title,
+                "id": id_url,
+                "authors": [a for a in authors if a],
+                "categories": [c for c in cats if c],
+                "epub": epub_href,
+            }
+        )
     return out
 
 
 # ---------- EPUB/OPF helpers ----------
+
 
 def find_opf_path(zf: zipfile.ZipFile) -> Optional[str]:
     # Try META-INF/container.xml first
@@ -140,7 +138,10 @@ def get_text(el: Optional[ET.Element]) -> str:
 
 
 def add_dc_subjects(md: ET.Element, subjects: List[str]) -> None:
-    existing = {get_text(e).lower() for e in md.findall("{http://purl.org/dc/elements/1.1/}subject")}
+    existing = {
+        get_text(e).lower()
+        for e in md.findall("{http://purl.org/dc/elements/1.1/}subject")
+    }
     for s in subjects:
         if s and s.lower() not in existing:
             el = ET.SubElement(md, "{http://purl.org/dc/elements/1.1/}subject")
@@ -149,7 +150,10 @@ def add_dc_subjects(md: ET.Element, subjects: List[str]) -> None:
 
 def has_se_collection(md: ET.Element) -> bool:
     for meta in md.findall("{http://www.idpf.org/2007/opf}meta"):
-        if meta.attrib.get("property") == "belongs-to-collection" and (meta.text or "").strip().lower() == "standard ebooks":
+        if (
+            meta.attrib.get("property") == "belongs-to-collection"
+            and (meta.text or "").strip().lower() == "standard ebooks"
+        ):
             return True
     return False
 
@@ -168,14 +172,19 @@ def read_series_name(md: ET.Element) -> Optional[str]:
             return meta.text.strip()
     # Then EPUB3 belongs-to-collection of type 'series' (best-effort; many OPFs omit explicit type)
     for meta in md.findall("{http://www.idpf.org/2007/opf}meta"):
-        if meta.attrib.get("property") == "belongs-to-collection" and (meta.text or "").strip():
+        if (
+            meta.attrib.get("property") == "belongs-to-collection"
+            and (meta.text or "").strip()
+        ):
             # Heuristic: if there's also a 'collection-type' meta refining this, prefer when type=series
             # (We skip deep refines resolution to keep things simple and robust.)
             return meta.text.strip()
     return None
 
 
-def embed_kavita_metadata(epub_bytes: bytes, subjects: List[str]) -> Tuple[bytes, Optional[str]]:
+def embed_kavita_metadata(
+    epub_bytes: bytes, subjects: List[str]
+) -> Tuple[bytes, Optional[str]]:
     """
     Merge OPDS subjects into OPF <dc:subject>, add "Standard Ebooks" collection
     if missing, and return (new_epub_bytes, series_name_detected).
@@ -223,7 +232,15 @@ def embed_kavita_metadata(epub_bytes: bytes, subjects: List[str]) -> Tuple[bytes
 
 # ---------- Main download loop ----------
 
-def save_epub(epub_bytes: bytes, library_root: Path, title: str, series: Optional[str], se_id_hint: str, overwrite: bool) -> Path:
+
+def save_epub(
+    epub_bytes: bytes,
+    library_root: Path,
+    title: str,
+    series: Optional[str],
+    se_id_hint: str,
+    overwrite: bool,
+) -> Path:
     series_folder = slugify(series or title)
     dest_dir = library_root / series_folder
     dest_dir.mkdir(parents=True, exist_ok=True)
@@ -237,14 +254,16 @@ def save_epub(epub_bytes: bytes, library_root: Path, title: str, series: Optiona
     return path
 
 
-def run(opds_url: str,
-        out_dir: Path,
-        api_key: str,
-        headers: List[str],
-        cookies: List[str],
-        subjects: List[str],
-        sleep_s: float,
-        overwrite: bool) -> None:
+def run(
+    opds_url: str,
+    out_dir: Path,
+    api_key: str,
+    headers: List[str],
+    cookies: List[str],
+    subjects: List[str],
+    sleep_s: float,
+    overwrite: bool,
+) -> None:
 
     sess = build_session(api_key, headers, cookies)
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -295,7 +314,14 @@ def run(opds_url: str,
                 mod_epub, series = embed_kavita_metadata(raw_epub, e["categories"])
 
                 # Save in Kavita layout
-                final_path = save_epub(mod_epub, out_dir, title=title, series=series, se_id_hint=se_id_hint, overwrite=overwrite)
+                final_path = save_epub(
+                    mod_epub,
+                    out_dir,
+                    title=title,
+                    series=series,
+                    se_id_hint=se_id_hint,
+                    overwrite=overwrite,
+                )
                 saved_path = str(final_path)
                 fetched += 1
                 time.sleep(sleep_s)
@@ -307,16 +333,18 @@ def run(opds_url: str,
                 status = "ERROR"
                 notes.append(str(ex))
 
-            report_rows.append({
-                "title": title,
-                "authors": author_str,
-                "id": e["id"],
-                "download_url": dl_url,
-                "categories": "; ".join(e["categories"]),
-                "saved_path": saved_path,
-                "status": status,
-                "notes": "; ".join(notes)
-            })
+            report_rows.append(
+                {
+                    "title": title,
+                    "authors": author_str,
+                    "id": e["id"],
+                    "download_url": dl_url,
+                    "categories": "; ".join(e["categories"]),
+                    "saved_path": saved_path,
+                    "status": status,
+                    "notes": "; ".join(notes),
+                }
+            )
 
         next_url = find_next_link(root)
         if not next_url:
@@ -328,7 +356,16 @@ def run(opds_url: str,
     rep_dir.mkdir(parents=True, exist_ok=True)
     report_csv = rep_dir / "se_library_report.csv"
     with report_csv.open("w", newline="", encoding="utf-8") as f:
-        cols = ["title", "authors", "id", "download_url", "categories", "saved_path", "status", "notes"]
+        cols = [
+            "title",
+            "authors",
+            "id",
+            "download_url",
+            "categories",
+            "saved_path",
+            "status",
+            "notes",
+        ]
         w = csv.DictWriter(f, fieldnames=cols)
         w.writeheader()
         for row in report_rows:
@@ -338,15 +375,50 @@ def run(opds_url: str,
 
 
 def parse_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
-    ap = argparse.ArgumentParser(description="Download the entire Standard Ebooks library (EPUB), embedding Kavita-friendly metadata and organizing by Series/Title.")
-    ap.add_argument("--api-key", required=True, help="Your Patrons Circle API key/token (required). Sent as Authorization: Bearer by default.")
-    ap.add_argument("--opds-url", default=DEFAULT_OPDS_URL, help=f"OPDS catalog URL (default: {DEFAULT_OPDS_URL})")
-    ap.add_argument("--out", default="./KavitaSE", help="Output library root (default: ./KavitaSE)")
-    ap.add_argument("--sleep", type=float, default=1.5, help="Seconds to sleep between requests (default: 1.5)")
-    ap.add_argument("--subjects", default="", help="Optional comma-separated subject filters (case-insensitive). Leave blank to fetch ALL.")
-    ap.add_argument("--header", action="append", default=[], help="Extra header(s) 'Name: value'. Can repeat.")
-    ap.add_argument("--cookie", action="append", default=[], help="Cookie(s) 'name=value'. Can repeat.")
-    ap.add_argument("--overwrite", action="store_true", help="Overwrite existing files if present (default: skip existing).")
+    ap = argparse.ArgumentParser(
+        description="Download the entire Standard Ebooks library (EPUB), embedding Kavita-friendly metadata and organizing by Series/Title."
+    )
+    ap.add_argument(
+        "--api-key",
+        required=True,
+        help="Your Patrons Circle API key/token (required). Sent as Authorization: Bearer by default.",
+    )
+    ap.add_argument(
+        "--opds-url",
+        default=DEFAULT_OPDS_URL,
+        help=f"OPDS catalog URL (default: {DEFAULT_OPDS_URL})",
+    )
+    ap.add_argument(
+        "--out", default="./KavitaSE", help="Output library root (default: ./KavitaSE)"
+    )
+    ap.add_argument(
+        "--sleep",
+        type=float,
+        default=1.5,
+        help="Seconds to sleep between requests (default: 1.5)",
+    )
+    ap.add_argument(
+        "--subjects",
+        default="",
+        help="Optional comma-separated subject filters (case-insensitive). Leave blank to fetch ALL.",
+    )
+    ap.add_argument(
+        "--header",
+        action="append",
+        default=[],
+        help="Extra header(s) 'Name: value'. Can repeat.",
+    )
+    ap.add_argument(
+        "--cookie",
+        action="append",
+        default=[],
+        help="Cookie(s) 'name=value'. Can repeat.",
+    )
+    ap.add_argument(
+        "--overwrite",
+        action="store_true",
+        help="Overwrite existing files if present (default: skip existing).",
+    )
     return ap.parse_args(argv)
 
 
@@ -354,14 +426,16 @@ def main(argv: Optional[Sequence[str]] = None) -> None:
     args = parse_args(argv)
     out_dir = Path(args.out).resolve()
     subjects = [s.strip() for s in args.subjects.split(",") if s.strip()]
-    run(opds_url=args.opds_url,
+    run(
+        opds_url=args.opds_url,
         out_dir=out_dir,
         api_key=args.api_key,
         headers=args.header,
         cookies=args.cookie,
         subjects=subjects,
         sleep_s=args.sleep,
-        overwrite=args.overwrite)
+        overwrite=args.overwrite,
+    )
 
 
 if __name__ == "__main__":
