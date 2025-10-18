@@ -1,7 +1,8 @@
 ---
-providers:
-  openweathermap: openweathermapapikey
-  weatherapi: weatherapiapikey
+# Remove provider placeholders that cause errors
+# providers:
+#   openweathermap: openweathermapapikey
+#   weatherapi: weatherapiapikey
 
 resources:
   backend: resources/widgets.py

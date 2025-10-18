@@ -136,19 +136,129 @@ print_status "Setting up media directories..."
 mkdir -p media/movies media/tv-shows media/music media/audiobooks
 mkdir -p media/documentaries media/podcasts media/radio-recordings
 
-# Detect if running on Raspberry Pi and set up compose files
+# Install RaspAP for WiFi AP management
 if grep -q "Raspberry Pi" /proc/cpuinfo 2>/dev/null || grep -q "BCM" /proc/cpuinfo 2>/dev/null; then
-    print_status "Raspberry Pi detected - using Pi-specific configuration"
-    COMPOSE_FILES=(-f docker-compose.yml -f compose/docker-compose.pi.yml)
+    print_status "Raspberry Pi detected - installing RaspAP for WiFi management"
+    
+    # Check if RaspAP is already installed
+    if [ ! -d "/var/www/html/raspap" ]; then
+        print_status "Downloading and installing RaspAP..."
+        
+        # Download RaspAP installer
+        curl -sL https://install.raspap.com > /tmp/raspap_install.sh
+        
+        # Run RaspAP Quick Installer (non-interactive)
+        print_status "Installing RaspAP with default settings..."
+        bash /tmp/raspap_install.sh --yes --openvpn 0 --adblock 0 --wireguard 0
+        
+        print_success "RaspAP installed successfully"
+        
+        # Configure RaspAP with custom Prepper Pi settings
+        print_status "Configuring Prepper Pi network settings..."
+        
+        # Configure lighttpd to use port 8080
+        if [ -f /etc/lighttpd/lighttpd.conf ]; then
+            sed -i 's/server.port.*=.*80/server.port = 8080/' /etc/lighttpd/lighttpd.conf
+        fi
+        
+        # Detect WiFi interfaces - we need two: one for upstream (wlan0), one for AP (wlan1)
+        print_status "Detecting WiFi interfaces..."
+        if ip link show wlan1 &> /dev/null; then
+            print_status "Dual WiFi detected: wlan0 (upstream) and wlan1 (AP)"
+            AP_INTERFACE="wlan1"
+            UPSTREAM_INTERFACE="wlan0"
+        else
+            print_warning "Only one WiFi interface detected - using wlan0 for AP"
+            AP_INTERFACE="wlan0"
+            UPSTREAM_INTERFACE="eth0"
+        fi
+        
+        # Configure hostapd to use the correct AP interface
+        if [ -f /etc/hostapd/hostapd.conf ]; then
+            print_status "Configuring hostapd on $AP_INTERFACE..."
+            sed -i "s/^interface=.*/interface=$AP_INTERFACE/" /etc/hostapd/hostapd.conf
+            sed -i 's/^ssid=.*/ssid=Prepper Pi/' /etc/hostapd/hostapd.conf
+            sed -i 's/^wpa_passphrase=.*/wpa_passphrase=ChangeMeNow!/' /etc/hostapd/hostapd.conf
+            
+            # Add or update channel and hardware mode for better compatibility
+            if ! grep -q "^channel=" /etc/hostapd/hostapd.conf; then
+                echo "channel=6" >> /etc/hostapd/hostapd.conf
+            else
+                sed -i 's/^channel=.*/channel=6/' /etc/hostapd/hostapd.conf
+            fi
+        fi
+        
+        # Note: dnsmasq configuration will be handled by simple-passthrough.sh
+        # to avoid DNS wildcard hijacking that breaks internet access
+        
+        # Configure AP interface with 10.20.30.1
+        if [ -f /etc/dhcpcd.conf ]; then
+            print_status "Configuring $AP_INTERFACE with static IP 10.20.30.1..."
+            # Remove any existing wlan0/wlan1 configuration
+            sed -i '/interface wlan[01]/,/nohook wpa_supplicant/d' /etc/dhcpcd.conf
+            
+            # Add configuration for AP interface
+            cat >> /etc/dhcpcd.conf << EOF
+
+# Prepper Pi AP Interface Configuration
+interface $AP_INTERFACE
+    static ip_address=10.20.30.1/24
+    nohook wpa_supplicant
+EOF
+        fi
+        
+        # Note: Captive portal configuration (DNS, firewall, detection) is handled by
+        # running scripts/simple-passthrough.sh after Docker services are started
+        
+        # Configure nodogsplash for captive portal (if available)
+        if command -v nodogsplash &> /dev/null; then
+            print_status "Configuring nodogsplash captive portal..."
+            cat > /etc/nodogsplash/nodogsplash.conf << EOF
+GatewayInterface $AP_INTERFACE
+GatewayAddress 10.20.30.1
+MaxClients 250
+AuthIdleTimeout 480
+RedirectURL http://10.20.30.1:3000
+EOF
+            systemctl enable nodogsplash
+        fi
+        
+        # Restart services
+        print_status "Restarting network services..."
+        systemctl restart dhcpcd
+        systemctl restart dnsmasq
+        systemctl restart hostapd
+        systemctl restart lighttpd
+        
+        print_success "Prepper Pi WiFi configured: SSID='Prepper Pi', Gateway=10.20.30.1"
+        print_warning "Default WiFi password: ChangeMeNow! (change via RaspAP)"
+        print_warning "RaspAP admin: admin/secret (change immediately)"
+        
+        # Configure simple internet passthrough (no captive portal)
+        SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+        if [ -f "$SCRIPT_DIR/simple-passthrough.sh" ]; then
+            print_status "Configuring internet passthrough..."
+            bash "$SCRIPT_DIR/simple-passthrough.sh"
+        else
+            print_warning "simple-passthrough.sh not found. Run it manually after setup."
+        fi
+    else
+        print_status "RaspAP is already installed"
+        
+        # Configure internet passthrough if not done
+        SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+        if [ -f "$SCRIPT_DIR/simple-passthrough.sh" ]; then
+            print_status "Configuring internet passthrough..."
+            bash "$SCRIPT_DIR/simple-passthrough.sh"
+        fi
+    fi
 else
-    print_status "Non-Pi system detected - using standard configuration"
-    COMPOSE_FILES=(-f docker-compose.yml)
+    print_warning "Not running on Raspberry Pi - skipping RaspAP installation"
 fi
 
 # Download Docker images
 print_status "Pulling Docker images..."
-echo "DEBUG: Running: docker compose ${COMPOSE_FILES[@]} pull"
-docker compose "${COMPOSE_FILES[@]}" pull
+docker compose pull
 
 # Create macvlan network helper script
 print_status "Creating network helper script..."
@@ -295,8 +405,9 @@ echo ""
 echo "Network Interfaces:"
 ip addr show | grep -E "(inet|UP|DOWN)"
 echo ""
-echo "OpenWRT Status:"
-docker exec openwrt uci show network 2>/dev/null || echo "OpenWRT not running"
+echo "RaspAP Status:"
+systemctl status lighttpd | grep -E "(Active|Main PID)" || echo "RaspAP not running"
+systemctl status hostapd | grep -E "(Active|Main PID)" || echo "hostapd not running"
 EOF
 
 chmod +x status.sh
@@ -305,14 +416,12 @@ chmod +x status.sh
 cat > restart.sh << 'EOF'
 #!/bin/bash
 echo "🔄 Restarting Prepper Pi services..."
-if grep -q "Raspberry Pi" /proc/cpuinfo 2>/dev/null || grep -q "BCM" /proc/cpuinfo 2>/dev/null; then
-    COMPOSE_FILES=(-f docker-compose.yml -f compose/docker-compose.pi.yml)
-else
-    COMPOSE_FILES=(-f docker-compose.yml)
-fi
-docker compose "${COMPOSE_FILES[@]}" down
+docker compose down
 [ "${ENABLE_MACVLAN:-0}" = "1" ] && ./setup-host-bridge.sh
-docker compose "${COMPOSE_FILES[@]}" up -d
+docker compose up -d
+echo "Restarting RaspAP services..."
+systemctl restart lighttpd
+systemctl restart hostapd
 echo "✅ Services restarted"
 EOF
 
@@ -336,7 +445,7 @@ chmod +x logs.sh
 
 # Create README for post-setup
 print_status "Creating post-setup README..."
-cat > POST-SETUP.md << EOF
+cat > POST-SETUP.md << 'EOF'
 # Prepper Pi - Post Setup Instructions
 
 ## 🎉 Setup Complete!
@@ -344,16 +453,15 @@ cat > POST-SETUP.md << EOF
 Your Prepper Pi is now configured. Here's what's been set up:
 
 ### 🔧 Services Running:
-- **OpenWRT**: Router/firewall at `10.20.30.1`
-- **Homepage**: Landing page at `http://prepper-pi.local:3000`
-- **Portainer**: Container management at `http://10.20.30.1:9000`
-- **Jellyfin**: Media server at `http://10.20.30.1:8096`
-- **Samba**: File sharing (\\\\10.20.30.1)
+- **RaspAP**: WiFi AP management at http://10.20.30.1:8080
+- **Homepage**: Landing page at http://10.20.30.1:3000
+- **Portainer**: Container management at http://10.20.30.1:9000
+- **Jellyfin**: Media server at http://10.20.30.1:8096
+- **Samba**: File sharing (\\10.20.30.1)
 
 ### 📁 Directory Structure:
-- `media/`: Place your media files here for Jellyfin
-- `shares/`: Public file sharing via Samba
-- `openwrt/config/`: OpenWRT configuration files
+- media/: Place your media files here for Jellyfin
+- shares/: Public file sharing via Samba
 
 ### 🔨 Useful Commands:
 - `./status.sh`: Check system status
@@ -408,7 +516,7 @@ print_status "Running final setup steps..."
 
 # Start services
 print_status "Starting Prepper Pi services..."
-docker compose "${COMPOSE_FILES[@]}" up -d
+docker compose up -d
 
 # Wait for services to start
 print_status "Waiting for services to initialize..."
@@ -422,11 +530,35 @@ print_success "Prepper Pi setup completed successfully!"
 print_success "Please read POST-SETUP.md for next steps"
 
 echo ""
-echo "🌟 Quick Access URLs:"
-echo "   - Landing Page: http://prepper-pi.local:3000"
-echo "   - OpenWRT Admin: http://10.20.30.1"
+echo "🌟 Quick Access URLs (from WiFi clients):"
+echo "   - Landing Page: http://10.20.30.1:3000 (auto-opens on connect)"
+echo "   - RaspAP Router: http://10.20.30.1:8080 (admin/secret)"
 echo "   - Portainer: http://10.20.30.1:9000"
 echo "   - Jellyfin: http://10.20.30.1:8096"
 echo ""
+echo "📡 WiFi Access Point:"
+echo "   SSID: Prepper Pi"
+echo "   Password: ChangeMeNow!"
+echo "   Gateway: 10.20.30.1"
+echo "   DHCP Range: 10.20.30.100-199"
+echo ""
+echo "🔒 IMPORTANT - Change these immediately:"
+echo "   1. WiFi password via RaspAP: http://10.20.30.1:8080"
+echo "   2. RaspAP admin password (currently: admin/secret)"
+echo "   3. Portainer admin password on first login"
+echo ""
 echo "📖 For detailed instructions, see: POST-SETUP.md"
 echo "🔧 Check status anytime with: ./status.sh"
+echo ""
+echo "⚠️  NEXT STEPS:"
+echo "   1. Start Docker services:"
+echo "      cp compose/docker-compose.pi.yml docker-compose.override.yml"
+echo "      docker compose up -d"
+echo ""
+echo "   2. Test connectivity from a WiFi client:"
+echo "      - Connect to 'Prepper Pi' WiFi"
+echo "      - Test internet access"
+echo "      - Browse to http://10.20.30.1:3000"
+echo ""
+echo "   See docs/QUICK-DEPLOY-CHECKLIST.md for full testing guide"
+echo ""

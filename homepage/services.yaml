@@ -1,80 +1,41 @@
 ﻿---
-# System Management
-- System:
+# System Management & Administration
+- Administration:
+    - RaspAP:
+        href: http://10.20.30.1:8080
+        icon: raspberrypi.png
+        description: WiFi Router & Network Control (admin/secret)
+
     - Portainer:
         href: http://10.20.30.1:9000
         icon: portainer.png
-        description: Container Management
-                widget:
-                    type: portainer
-                    url: http://portainer:9000
-                    env: 2
-                    key: REPLACE_ME
+        description: Docker Container Management
 
-    - OpenWRT:
-        href: http://10.20.30.1/cgi-bin/luci
-        icon: openwrt.png
-        description: Router & Network Control
-
-    - System Monitor:
-        href: http://10.20.30.1:3000/system
-        icon: system-monitor.png
-        description: Pi Resource Monitoring
-
-# Media Services
+# Media & Entertainment
 - Media:
     - Jellyfin:
         href: http://10.20.30.1:8096
         icon: jellyfin.png
         description: Media Streaming Server
-                widget:
-                    type: jellyfin
-                    url: http://jellyfin:8096
-                    key: REPLACE_ME
 
     - Tvheadend:
         href: http://10.20.30.1:9981
         icon: tv.png
-        description: TV backend (ATSC 1.0; ATSC 3.0 where supported; HEVC/AC-4; encryption varies)
+        description: TV Backend (ATSC 1.0/3.0, HEVC/AC-4)
 
+# Network & Storage
+- Network & Storage:
     - File Shares:
         href: smb://10.20.30.1
         icon: folder.png
         description: SMB/CIFS Network Shares
 
-    - Downloads:
-        href: http://10.20.30.1/downloads
-        icon: download.png
-        description: Download Manager (Future)
-
-# Network Tools
-- Network:
-    - Wi-Fi Settings:
-        href: http://10.20.30.1/cgi-bin/luci/admin/network/wireless
+    - WiFi Configuration:
+        href: http://10.20.30.1:8080/hotspot_conf
         icon: wifi.png
-        description: Wireless Configuration
+        description: Configure WiFi AP Settings
 
-    - DHCP Clients:
-        href: http://10.20.30.1/cgi-bin/luci/admin/status/overview
-        icon: dhcp.png
-        description: Connected Devices
-
-# Tools & Utilities
-- Tools:
-    # Leave these commented until implemented
-    # - Radio (SDR):
-    #     href: http://10.20.30.1/radio
-    #     icon: radio.png
-    #     description: Software Defined Radio (Future)
-    # - Wikipedia Offline:
-    #     href: http://10.20.30.1/wikipedia
-    #     icon: wikipedia.png
-    #     description: Offline Wikipedia (Future)
-    # - Maps Offline:
-    #     href: http://10.20.30.1/maps
-    #     icon: map.png
-    #     description: Offline Maps (Future)
-    # - E-Books:
-    #     href: http://10.20.30.1/books
-    #     icon: book.png
-    #     description: Digital Library (Future)
+    - Connected Devices:
+        href: http://10.20.30.1:8080/system_info
+        icon: devices.png
+        description: View Connected Clients & Network Info
