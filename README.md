@@ -1,10 +1,41 @@
-<!--
-SPDX-License-Identifier: CC-BY-NC-4.0
+﻿<!--
+SPD## 📑 Table of Contents
+
+- [📄 License & Commercial Use](#license-trademarks--commercial-use)
+- [✨ Core Features](#-core-features)
+- [🛠️ Hardware Assembly](#️-hardware-assembly)
+- [📚 Documentation](#-documentation)
+- [🔧 Software Setup](#-software-setup)
+- [📥 Public Domain Content Downloaders](#public-domain-content-downloaders)
+  - [🎵 Music Downloads](pd_downloader/music/README.md)-Identifier: CC-BY-NC-4.0
 -->
 
 # 🥧 Prepper Pi
 
 > **⚠️ DISCLAIMER:** Personal project, early development. No warranties or support. Use at your own risk.
+
+## Table of Contents
+
+- [📄 License & Commercial Use](#-license-trademarks--commercial-use)
+- [✨ Core Features](#-core-features)
+- [🛠️ Hardware Assembly](#️-hardware-assembly)
+- [📚 Documentation](#-documentation)
+- [🔧 Software Setup](#-software-setup)
+- [📥 Public Domain Content Downloaders](#-public-domain-content-downloaders)
+  - [🎵 Music Downloads](pd_downloader/music/README.md)
+  - [📽️ Movie Downloads](pd_downloader/movies/README.md)
+  - [📚 Gutenberg Books](pd_downloader/ebooks/GUTENBERG_README.md)
+  - [📖 Standard Ebooks](pd_downloader/ebooks/STANDARD_EBOOKS_README.md)
+- [🔒 Security Hardening](#-security-hardening-do-this-before-field-use)
+- [⚙️ Service Access & Configuration](#️-service-access--configuration)
+- [🧠 Local LLM on Raspberry Pi](#-local-llm-on-raspberry-pi-pifriendly-options)
+- [🌐 Network Architecture](#-network-architecture)
+- [📋 Hardware Requirements](#-hardware-requirements)
+- [🛣️ Development Roadmap](#️-development-roadmap)
+- [✅ Testing & Validation](#-testing--validation)
+- [🙏 Acknowledgments](#-acknowledgments)
+
+---
 
 ## 📄 License, Trademarks & Commercial Use
 
@@ -120,6 +151,107 @@ The QR code provides instant access to the Homepage dashboard where you can navi
 ```bash
 git clone https://github.com/pyrometheous/Prepper-Pi.git && cd Prepper-Pi && sudo bash scripts/cleanup.sh && cd .. && rm -rf Prepper-Pi
 ```
+
+## 📥 Public Domain Content Downloaders
+
+**Build your offline library with legal, verified public domain content:**
+
+The Prepper Pi includes automated downloaders for populating your offline media library with legal public domain and Creative Commons Zero (CC0) content. All downloaders include license verification, disk space management, and integration with Jellyfin (movies/music) and Kavita (ebooks).
+
+### 🎵 Music - Public Domain & CC0 Recordings
+Download classical music, historical jazz, and pre-1930 recordings with automatic disk space checking and unlimited download support.
+
+**Features:**
+- ✅ Three-layer license verification (source, metadata, Musopen cross-check)
+- ✅ Automatic disk space management (warns before large downloads)
+- ✅ Smart defaults (no query required)
+- ✅ Unlimited download mode for complete archives
+- ✅ Duplicate detection and resume support
+- ✅ Jellyfin/Navidrome ready with embedded metadata
+
+**Quick Start:**
+```powershell
+cd pd_downloader/music
+pip install -r requirements.txt
+python pd_music_downloader.py --out ./music --max-items 100
+```
+
+**Documentation:** [Music Downloader README](pd_downloader/music/README.md)
+
+---
+
+### 📽️ Movies - Public Domain Films
+Download verified public domain films from Internet Archive and Wikimedia Commons with provenance tracking.
+
+**Features:**
+- ✅ Curated manifest system prevents arbitrary downloads
+- ✅ SHA256 checksums for integrity verification
+- ✅ Provenance tracking for audit trails
+- ✅ Restoration copyright warnings
+- ✅ Trademark considerations documented
+
+**Quick Start:**
+```powershell
+cd pd_downloader/movies
+python public_domain_movies.py --manifest manifest.csv --out ./movies
+```
+
+**Documentation:** [Movies Downloader README](pd_downloader/movies/README.md)
+
+---
+
+### 📚 Books - Project Gutenberg Library
+Download the entire Project Gutenberg library (70,000+ books) using self-hosted Gutendex with Docker.
+
+**Features:**
+- ✅ Self-hosted Docker solution (unlimited API access)
+- ✅ Fully automated setup with `automated_gutendex_download.py`
+- ✅ Kavita-ready metadata and folder organization
+- ✅ Automatic PG branding removal for redistribution compliance
+- ✅ Genre-based filtering and discovery mode
+
+**Quick Start:**
+```powershell
+cd pd_downloader/ebooks
+pip install -r requirements.txt
+python automated_gutendex_download.py --mode popular --count 100
+```
+
+**Documentation:** [Gutenberg Downloader README](pd_downloader/ebooks/GUTENBERG_README.md)
+
+---
+
+### 📖 Books - Standard Ebooks Library
+Download professionally edited, beautifully formatted public domain ebooks (requires Patrons Circle membership).
+
+**Features:**
+- ✅ All editions are CC0 (public domain)
+- ✅ Modern typography and semantic markup
+- ✅ 600+ professionally edited classics
+- ✅ Kavita integration with collection metadata
+- ✅ Series organization and OPDS support
+
+**Quick Start:**
+```powershell
+cd pd_downloader/ebooks
+pip install -r requirements.txt
+python standard_ebooks_to_kavita.py --api-key YOUR_KEY --out ./StandardEbooks
+```
+
+**Documentation:** [Standard Ebooks README](pd_downloader/ebooks/STANDARD_EBOOKS_README.md)
+
+---
+
+**📦 Complete Downloader Suite Documentation:** [pd_downloader/README.md](pd_downloader/README.md)
+
+**Storage Requirements:**
+- **Music:** 5 MB avg/track (MP3), 20 MB/track (FLAC). Unlimited downloads: 1-8 TB
+- **Movies:** 500 MB - 2 GB per film. Full archive: ~1 TB
+- **Books (Gutenberg):** 70,000+ books: ~60 GB total
+- **Books (Standard Ebooks):** 600+ books: ~2 GB total
+
+**Legal Compliance:**
+All downloaders implement multi-layer license verification and include interactive warnings about copyright. Users are responsible for verifying public domain status in their jurisdiction.
 
 ## 🔒 Security Hardening (do this before field use)
 1. **Change all defaults** (RaspAP admin password from "secret", WiFi SSID/passphrase from "Prepper Pi"/"ChangeMeNow!", Pi user password).
@@ -286,7 +418,7 @@ Raspberry Pi 5 (10.20.30.1 WiFi AP Gateway)
 ### Phase 3: Media Server & Storage
 - [📋] Jellyfin media server configuration and optimization
 - [📋] Kavita ebook server for digital library management
-- [📋] Media library organization on NVMe SSD storage
+- [⭐] **Media library organization on NVMe SSD storage** - *Public domain downloader suite complete (music, movies, ebooks)*
 - [📋] File sharing with Samba for local network access
 - [📋] Mobile-optimized interfaces for media streaming and reading
 - [📋] Performance testing with multiple concurrent streams

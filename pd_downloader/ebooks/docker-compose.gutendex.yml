@@ -1,0 +1,158 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: gutendex-postgres
+    environment:
+      POSTGRES_DB: gutendex
+      POSTGRES_USER: gutendex
+      POSTGRES_PASSWORD: gutendex_password_change_me
+    volumes:
+      - gutendex-db:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U gutendex"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - gutendex-network
+
+  gutendex:
+    image: python:3.12-slim
+    container_name: gutendex-app
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_NAME: gutendex
+      DATABASE_USER: gutendex
+      DATABASE_PASSWORD: gutendex_password_change_me
+      DATABASE_HOST: postgres
+      DATABASE_PORT: 5432
+      SECRET_KEY: "change-this-to-a-random-50-character-secret-key-asap"
+      DEBUG: "false"
+      ALLOWED_HOSTS: "127.0.0.1,localhost,gutendex"
+      ADMIN_NAMES: "Admin"
+      ADMIN_EMAILS: "admin@localhost"
+      MANAGER_NAMES: "Manager"
+      MANAGER_EMAILS: "manager@localhost"
+      EMAIL_HOST: ""
+      EMAIL_HOST_USER: ""
+      EMAIL_HOST_PASSWORD: ""
+      EMAIL_HOST_ADDRESS: "gutendex@localhost"
+      STATIC_ROOT: "/app/staticfiles"
+      MEDIA_ROOT: "/app/mediafiles"
+    volumes:
+      - gutendex-app:/app
+      - gutendex-catalog:/app/catalog_files
+      - gutendex-static:/app/staticfiles
+      - gutendex-media:/app/mediafiles
+    ports:
+      - "8000:8000"
+    networks:
+      - gutendex-network
+    working_dir: /app
+    command: >
+      sh -c "
+        echo '=== Installing system dependencies ===' &&
+        apt-get update &&
+        apt-get install -y git postgresql-client build-essential libpq-dev rsync &&
+        
+        echo '=== Cloning Gutendex repository ===' &&
+        if [ ! -f manage.py ]; then
+          git clone https://github.com/garethbjohnson/gutendex.git /tmp/gutendex &&
+          cp -r /tmp/gutendex/* /app/ &&
+          rm -rf /tmp/gutendex
+        fi &&
+        
+        echo '=== Installing Python dependencies ===' &&
+        pip install --no-cache-dir -r requirements.txt &&
+        pip install gunicorn &&
+        
+        echo '=== Waiting for database ===' &&
+        until pg_isready -h postgres -U gutendex; do
+          echo 'Waiting for PostgreSQL...'
+          sleep 2
+        done &&
+        
+        echo '=== Running database migrations ===' &&
+        python manage.py migrate &&
+        
+        echo '=== Collecting static files ===' &&
+        python manage.py collectstatic --noinput &&
+        
+        echo '=== Checking for existing catalog ===' &&
+        if python manage.py shell -c 'from books.models import Book; exit(0 if Book.objects.count() > 1000 else 1)' 2>/dev/null; then
+          echo '=== Catalog already loaded - skipping download ==='
+        else
+          echo '=== Downloading Project Gutenberg catalog ===' &&
+          echo 'This will take 5-10 minutes on first run...' &&
+          rm -rf /app/catalog_files/tmp &&
+          (python manage.py updatecatalog || echo 'Catalog update completed (email error is normal)')
+        fi &&
+        
+        echo '=== Starting Gutendex server ===' &&
+        echo 'API available at http://localhost:8000/books' &&
+        gunicorn gutendex.wsgi:application --bind 0.0.0.0:8000 --workers 4 --timeout 120 --access-logfile -
+      "
+    restart: unless-stopped
+
+  # Optional: Cron job container for daily catalog updates
+  catalog-updater:
+    image: python:3.12-slim
+    container_name: gutendex-updater
+    depends_on:
+      - gutendex
+    environment:
+      DATABASE_NAME: gutendex
+      DATABASE_USER: gutendex
+      DATABASE_PASSWORD: gutendex_password_change_me
+      DATABASE_HOST: postgres
+      DATABASE_PORT: 5432
+      SECRET_KEY: "change-this-to-a-random-50-character-secret-key-asap"
+      DEBUG: "false"
+      ALLOWED_HOSTS: "127.0.0.1,localhost"
+      STATIC_ROOT: "/app/staticfiles"
+      MEDIA_ROOT: "/app/mediafiles"
+    volumes:
+      - gutendex-app:/app
+      - gutendex-catalog:/app/catalog_files
+    networks:
+      - gutendex-network
+    working_dir: /app
+    command: >
+      sh -c "
+        echo '=== Installing dependencies for updater ===' &&
+        apt-get update &&
+        apt-get install -y postgresql-client cron &&
+        pip install --no-cache-dir -r requirements.txt &&
+        
+        echo '=== Setting up daily catalog update (2 AM) ===' &&
+        echo '0 2 * * * cd /app && python manage.py updatecatalog >> /var/log/gutendex-update.log 2>&1' > /etc/cron.d/gutendex-update &&
+        chmod 0644 /etc/cron.d/gutendex-update &&
+        crontab /etc/cron.d/gutendex-update &&
+        
+        echo '=== Starting cron daemon ===' &&
+        cron -f
+      "
+    restart: unless-stopped
+
+volumes:
+  gutendex-db:
+    name: gutendex-postgres-data
+  gutendex-app:
+    name: gutendex-application
+  gutendex-catalog:
+    name: gutendex-catalog-files
+  gutendex-static:
+    name: gutendex-static-files
+  gutendex-media:
+    name: gutendex-media-files
+
+networks:
+  gutendex-network:
+    name: gutendex-network
+    driver: bridge
