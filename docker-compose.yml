@@ -1,0 +1,179 @@
+# SPDX-License-Identifier: LicenseRef-PP-NC-1.0
+version: '3.8'
+
+services:
+  # Note: WiFi AP functionality is provided by native RaspAP (not containerized)
+  # Access RaspAP web interface at http://<pi-ip>:8080
+  
+  # Container management
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    restart: unless-stopped
+    ports:
+      - "9000:9000"  # For production: bind to LAN only with "127.0.0.1:9000:9000" or enable HTTPS
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9000/ || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Media server
+  # jellyfin:
+  #   image: jellyfin/jellyfin:latest
+  #   container_name: jellyfin
+  #   restart: unless-stopped
+  #   ports:
+  #     - "8096:8096"
+  #   volumes:
+  #     - jellyfin_config:/config
+  #     - jellyfin_cache:/cache
+  #     - ./media:/media:ro
+  #   environment:
+  #     - JELLYFIN_PublishedServerUrl=http://jellyfin.local
+  #   cap_drop:
+  #     - ALL
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "curl -f http://localhost:8096/health || exit 1"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 3
+
+  # Landing page / dashboard
+  homepage:
+    image: ghcr.io/gethomepage/homepage:latest
+    container_name: homepage
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - HOMEPAGE_ALLOWED_HOSTS=10.20.30.1:3000,localhost:3000,10.20.30.1,localhost
+    volumes:
+      - ./homepage:/app/config
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    read_only: true
+    tmpfs:
+      - /tmp:size=16m
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3000/ || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # File sharing
+  samba:
+    image: dperson/samba:latest
+    container_name: samba
+    restart: unless-stopped
+    ports:
+      - "139:139"  # For production: restrict to LAN subnets via firewall
+      - "445:445"  # or bind to specific interface: "10.20.30.1:445:445"
+    volumes:
+      - ./media:/media
+      - ./shares:/shares
+    environment:
+      - USERID=1000
+      - GROUPID=1000
+    command: >
+      -s "Media;/media;yes;no;yes;all;none;all;Prepper Pi Media Share"
+      -s "Public;/shares;yes;no;yes;all;none;all;Public File Share"
+    healthcheck:
+      test: ["CMD-SHELL", "smbclient -L localhost -N || exit 1"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+
+  # TV Backend (Phase 4) - Uncomment when TV tuner hardware is available
+  # tvheadend:
+  #   image: lscr.io/linuxserver/tvheadend:latest
+  #   container_name: tvheadend
+  #   restart: unless-stopped
+  #   devices:
+  #     - "/dev/dvb:/dev/dvb"  # TV tuner devices
+  #   ports:
+  #     - "9981:9981"  # Web interface
+  #     - "9982:9982"  # HTSP streaming
+  #   volumes:
+  #     - ./data/tvheadend:/config
+  #     - ./media/recordings:/recordings
+  #     - /dev/dvb:/dev/dvb
+  #   environment:
+  #     - PUID=1000
+  #     - PGID=1000
+  #     - TZ=America/Los_Angeles
+
+  # Radio Streaming Server (Phase 4) - Uncomment when RTL-SDR hardware is available
+  # icecast:
+  #   image: moul/icecast:latest
+  #   container_name: icecast
+  #   restart: unless-stopped
+  #   ports:
+  #     - "8000:8000"  # Icecast web interface and streams
+  #   environment:
+  #     - ICECAST_SOURCE_PASSWORD=sourcepass
+  #     - ICECAST_ADMIN_PASSWORD=adminpass
+  #     - ICECAST_RELAY_PASSWORD=relaypass
+  #     - ICECAST_PASSWORD=listeners
+  #   volumes:
+  #     - ./data/icecast:/config
+
+  # FM Radio Stream (Phase 4) - Uncomment when RTL-SDR hardware is available
+  # rtl_fm_fm:
+  #   image: ghcr.io/pyrometheous/rtl-sdr:latest  # Custom image with rtl-sdr + sox + curl
+  #   container_name: rtl_fm_fm
+  #   restart: unless-stopped
+  #   depends_on:
+  #     - icecast
+  #   devices:
+  #     - "/dev/bus/usb:/dev/bus/usb"  # RTL-SDR dongles
+  #   command: >
+  #     bash -c "rtl_fm -M wbfm -f 99.5M -s 200k -g 20 |
+  #               sox -t raw -r 200k -e s -b 16 -c 1 - -t mp3 -C 128 - |
+  #               curl -H 'Content-Type: audio/mpeg' -u source:sourcepass
+  #               --data-binary @- http://icecast:8000/fm.mp3"
+
+  # NOAA Weather Radio Stream (Phase 4) - Uncomment when RTL-SDR hardware is available
+  # rtl_fm_noaa:
+  #   image: ghcr.io/pyrometheous/rtl-sdr:latest  # Custom image with rtl-sdr + sox + curl
+  #   container_name: rtl_fm_noaa
+  #   restart: unless-stopped
+  #   depends_on:
+  #     - icecast
+  #   devices:
+  #     - "/dev/bus/usb:/dev/bus/usb"  # RTL-SDR dongles
+  #   command: >
+  #     bash -c "rtl_fm -M fm -f 162.550M -s 24k -g 20 |
+  #               sox -t raw -r 24k -e s -b 16 -c 1 - -t mp3 -C 64 - |
+  #               curl -H 'Content-Type: audio/mpeg' -u source:sourcepass
+  #               --data-binary @- http://icecast:8000/noaa.mp3"
+
+  # LoRa Mesh Networking (Phase 5) - Uncomment when LoRa hardware is available
+  # meshtasticd:
+  #   image: meshtastic/meshtasticd:latest
+  #   container_name: meshtasticd
+  #   restart: unless-stopped
+  #   devices:
+  #     - "/dev/bus/usb:/dev/bus/usb"  # USB LoRa devices
+  #     # - "/dev/spidev0.0:/dev/spidev0.0"  # SPI LoRa HAT alternative
+  #   ports:
+  #     - "2443:2443"  # Meshtastic HTTP API
+  #     - "4403:4403"  # Meshtastic Web UI
+  #   volumes:
+  #     - ./data/meshtastic:/root/.meshtasticd
+
+volumes:
+  portainer_data:
+  jellyfin_config:
+  jellyfin_cache:
+
+networks:
+  # Default bridge network for containerized services
+  default:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+          gateway: 172.20.0.1

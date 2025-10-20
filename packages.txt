@@ -1,0 +1,52 @@
+# Prepper Pi Required Packages
+# Note: Docker is installed from Docker's official repository via the setup script
+# Prerequisites for Docker installation
+ca-certificates
+curl
+gnupg
+lsb-release
+
+# Network utilities
+iproute2
+iptables
+net-tools
+bridge-utils
+curl
+wget
+
+# WiFi and Wireless
+hostapd
+dnsmasq
+wireless-tools
+wpasupplicant
+
+# System utilities
+git
+htop
+tmux
+nano
+ufw
+
+# Development and debugging
+python3
+python3-pip
+nodejs
+npm
+
+# Media and file handling
+ffmpeg
+samba
+samba-common-bin
+
+# Hardware support
+usb-modeswitch
+usb-modeswitch-data
+
+# RTL-SDR support (for future expansion)
+rtl-sdr
+librtlsdr-dev
+
+# Additional network tools
+nmap
+iperf3
+tcpdump

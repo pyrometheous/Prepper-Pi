@@ -1,0 +1,41 @@
+﻿---
+# System Management & Administration
+- Administration:
+    - RaspAP:
+        href: http://10.20.30.1:8080
+        icon: raspberrypi.png
+        description: WiFi Router & Network Control (admin/secret)
+
+    - Portainer:
+        href: http://10.20.30.1:9000
+        icon: portainer.png
+        description: Docker Container Management
+
+# Media & Entertainment
+- Media:
+    - Jellyfin:
+        href: http://10.20.30.1:8096
+        icon: jellyfin.png
+        description: Media Streaming Server
+
+    - Tvheadend:
+        href: http://10.20.30.1:9981
+        icon: tv.png
+        description: TV Backend (ATSC 1.0/3.0, HEVC/AC-4)
+
+# Network & Storage
+- Network & Storage:
+    - File Shares:
+        href: smb://10.20.30.1
+        icon: folder.png
+        description: SMB/CIFS Network Shares
+
+    - WiFi Configuration:
+        href: http://10.20.30.1:8080/hotspot_conf
+        icon: wifi.png
+        description: Configure WiFi AP Settings
+
+    - Connected Devices:
+        href: http://10.20.30.1:8080/system_info
+        icon: devices.png
+        description: View Connected Clients & Network Info

@@ -1,0 +1,16 @@
+---
+# Remove provider placeholders that cause errors
+# providers:
+#   openweathermap: openweathermapapikey
+#   weatherapi: weatherapiapikey
+
+resources:
+  backend: resources/widgets.py
+  cpu: true
+  memory: true
+  disk: /
+  cputemp: true
+  uptime: true
+  units: metric
+  refresh: 3000
+  diskUnits: bytes
