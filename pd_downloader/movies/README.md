@@ -4,9 +4,23 @@
 
 ---
 
+## Table of Contents
+
+- [Legal Notice](#️-important-legal-notice)
+- [Overview & Features](#overview)
+- [Installation](#installation--prerequisites)
+- [Usage](#usage)
+- [Copyright Protection](#copyright-protection-measures)
+- [Verifying Public Domain](#verifying-public-domain-status)
+- [Resale Rights](#resale-rights)
+- [Troubleshooting](#troubleshooting)
+
+---
+
 ## Navigation
 
 - 🏠 **[Main README](../README.md)** - Overview of all downloaders
+- 🎵 **[Music README](../music/README.md)** - Public domain music
 - 📚 **[Gutenberg README](../ebooks/GUTENBERG_README.md)** - Project Gutenberg ebooks
 - 📖 **[Standard Ebooks README](../ebooks/STANDARD_EBOOKS_README.md)** - Standard Ebooks library
 

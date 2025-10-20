@@ -5,8 +5,19 @@
 
 ---
 
+## Table of Contents
+
+- [Legal Notice](#️-important-legal-notice)
+- [About This Project](#about-this-project)
+- [Overview](#overview)
+- [Installation](#installation)
+- [Getting Started](#getting-started)
+
+---
+
 ## Quick Links
 
+- 🎵 **[Music README](music/README.md)** - Public domain music downloader
 - 📽️ **[Movies README](movies/README.md)** - Public domain film downloader
 - 📚 **[Gutenberg README](ebooks/GUTENBERG_README.md)** - Project Gutenberg ebook downloader (includes self-hosted Docker option)
 - 📖 **[Standard Ebooks README](ebooks/STANDARD_EBOOKS_README.md)** - Standard Ebooks library downloader

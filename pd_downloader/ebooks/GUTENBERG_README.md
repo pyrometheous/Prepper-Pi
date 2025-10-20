@@ -4,9 +4,23 @@
 
 ---
 
+## Table of Contents
+
+- [Legal Notice](#️-important-legal-notice)
+- [Overview & Options](#overview)
+- [Self-Hosted Setup (Recommended)](#option-1-self-hosted-gutendex--recommended)
+- [Quick Start](#quick-start-fully-automated)
+- [Usage Examples](#usage-examples)
+- [Kavita Integration](#kavita-media-server-integration)
+- [Troubleshooting](#troubleshooting)
+- [Advanced Configuration](#advanced-configuration)
+
+---
+
 ## Navigation
 
 - 🏠 **[Main README](../README.md)** - Overview of all downloaders
+- 🎵 **[Music README](../music/README.md)** - Public domain music
 - 📽️ **[Movies README](../movies/README.md)** - Public domain films
 - 📖 **[Standard Ebooks README](STANDARD_EBOOKS_README.md)** - Standard Ebooks library
 

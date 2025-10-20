@@ -4,9 +4,23 @@
 
 ---
 
+## Table of Contents
+
+- [Legal Notice](#️-important-legal-notice)
+- [Overview & Features](#overview)
+- [Installation](#prerequisites)
+- [Usage Examples](#usage)
+- [Command-Line Reference](#command-line-arguments)
+- [Kavita Integration](#kavita-integration)
+- [About Standard Ebooks](#about-standard-ebooks)
+- [Troubleshooting](#troubleshooting)
+
+---
+
 ## Navigation
 
 - 🏠 **[Main README](../README.md)** - Overview of all downloaders
+- 🎵 **[Music README](../music/README.md)** - Public domain music
 - 📽️ **[Movies README](../movies/README.md)** - Public domain films
 - 📚 **[Gutenberg README](GUTENBERG_README.md)** - Project Gutenberg ebooks
 
