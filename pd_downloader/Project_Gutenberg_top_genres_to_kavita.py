@@ -32,6 +32,12 @@ GUTENDEX_API = "https://gutendex.com/books"
 MIRROR_BASE = "https://gutenberg.pglaf.org"
 UA = "PG-Top-Genres-EPUB-Kavita/0.6 (+no-email)"
 
+# Retry configuration for API calls
+MAX_RETRIES = 5
+INITIAL_BACKOFF = 1.0  # seconds
+MAX_BACKOFF = 30.0  # seconds
+REQUEST_TIMEOUT = 30  # seconds
+
 # Case-insensitive patterns we nuke from EPUB internals during cleaning
 TRADEMARK_TERMS = [
     r"project\s+gutenberg",
@@ -58,6 +64,35 @@ session.headers.update({"User-Agent": UA})
 
 def log(msg: str) -> None:
     print(f"[pg-kavita-ready] {msg}", flush=True)
+
+
+def retry_with_backoff(func, *args, **kwargs):
+    """
+    Retry a function with exponential backoff.
+    Handles transient API errors like 500s from Gutendex.
+    """
+    for attempt in range(MAX_RETRIES):
+        try:
+            return func(*args, **kwargs)
+        except requests.exceptions.RequestException as e:
+            if attempt == MAX_RETRIES - 1:
+                # Last attempt failed, re-raise
+                raise
+            
+            # Calculate backoff time
+            backoff = min(INITIAL_BACKOFF * (2 ** attempt), MAX_BACKOFF)
+            
+            # Log the error and retry
+            status_code = getattr(e.response, 'status_code', None) if hasattr(e, 'response') else None
+            log(f"Request failed (attempt {attempt + 1}/{MAX_RETRIES}): {e}")
+            if status_code:
+                log(f"  HTTP Status: {status_code}")
+            log(f"  Retrying in {backoff:.1f}s...")
+            
+            time.sleep(backoff)
+    
+    # Should not reach here, but just in case
+    raise RuntimeError(f"Failed after {MAX_RETRIES} attempts")
 
 
 def slugify(s: str) -> str:
@@ -89,9 +124,32 @@ SUBJECT_LINE_RE = re.compile(
 def scrape_top_subjects(limit: int) -> List[str]:
     """Scrape Gutenberg's 'Subjects by downloads' page to get top N names."""
     log(f"Fetching subjects by popularity: {PG_SUBJECTS_URL}")
-    r = session.get(PG_SUBJECTS_URL, timeout=30)
-    r.raise_for_status()
-    text = unescape(r.text)
+    
+    def _fetch():
+        r = session.get(PG_SUBJECTS_URL, timeout=REQUEST_TIMEOUT)
+        r.raise_for_status()
+        return r
+    
+    try:
+        r = retry_with_backoff(_fetch)
+        text = unescape(r.text)
+    except Exception as e:
+        log(f"ERROR: Failed to fetch subjects page: {e}")
+        log("Using fallback subject list instead.")
+        names = [
+            "Science fiction",
+            "Short stories",
+            "Adventure stories",
+            "Historical fiction",
+            "Horror tales",
+            "Detective and mystery stories",
+            "Fantasy fiction",
+            "Love stories",
+            "Psychological fiction",
+            "Gothic fiction",
+        ][:limit]
+        return names
+    
     names: List[str] = []
     for m in SUBJECT_LINE_RE.finditer(text):
         name = m.group("name").strip()
@@ -129,9 +187,13 @@ def topic_query_epub(topic: str, languages: str, page: int = 1) -> dict:
         "sort": "popular",
         "page": page,
     }
-    r = session.get(GUTENDEX_API, params=params, timeout=30)
-    r.raise_for_status()
-    return r.json()
+    
+    def _fetch():
+        r = session.get(GUTENDEX_API, params=params, timeout=REQUEST_TIMEOUT)
+        r.raise_for_status()
+        return r.json()
+    
+    return retry_with_backoff(_fetch)
 
 
 def rewrite_to_mirror(url: str, mirror_base: str) -> str:
@@ -427,9 +489,12 @@ def validate_epub_clean(epub_bytes: bytes) -> Tuple[bool, List[str]]:
 
 
 def download(url: str, sleep_s: float) -> bytes:
-    r = session.get(url, timeout=60)
-    r.raise_for_status()
-    data = r.content
+    def _fetch():
+        r = session.get(url, timeout=REQUEST_TIMEOUT * 2)  # EPUBs can be larger, allow more time
+        r.raise_for_status()
+        return r.content
+    
+    data = retry_with_backoff(_fetch)
     time.sleep(sleep_s)
     return data
 
@@ -460,26 +525,33 @@ def run(
         log(f"[{gi}/{len(subjects)}] Subject: {subject}")
         picked: List[dict] = []
         page = 1
+        
+        # Try to query the API, but continue with partial results if it fails completely
         while len(picked) < count_per_genre:
-            data = topic_query_epub(topic=subject, languages=languages, page=page)
-            results = data.get("results", [])
-            if not results:
-                break
-            for b in results:
-                if len(picked) >= count_per_genre:
+            try:
+                data = topic_query_epub(topic=subject, languages=languages, page=page)
+                results = data.get("results", [])
+                if not results:
                     break
-                gid = b.get("id")
-                if gid in seen_global:
-                    continue  # avoid dupes across subjects
-                fmts = b.get("formats", {})
-                epub_url = fmts.get("application/epub+zip")
-                if not epub_url:
-                    continue
-                picked.append(b)
-                seen_global.add(gid)
-            if not data.get("next"):
+                for b in results:
+                    if len(picked) >= count_per_genre:
+                        break
+                    gid = b.get("id")
+                    if gid in seen_global:
+                        continue  # avoid dupes across subjects
+                    fmts = b.get("formats", {})
+                    epub_url = fmts.get("application/epub+zip")
+                    if not epub_url:
+                        continue
+                    picked.append(b)
+                    seen_global.add(gid)
+                if not data.get("next"):
+                    break
+                page += 1
+            except Exception as e:
+                log(f"  ERROR: Failed to query Gutendex API for subject '{subject}', page {page}: {e}")
+                log(f"  Continuing with {len(picked)} books found so far for this subject...")
                 break
-            page += 1
 
         log(f"  Selected {len(picked)} EPUBs")
 
