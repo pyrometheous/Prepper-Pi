@@ -37,7 +37,7 @@ SPD## 📑 Table of Contents
 
 ---
 
-## License, Trademarks & Commercial Use
+## 📄 License, Trademarks & Commercial Use
 
 **Project code:** **Prepper Pi Noncommercial License (PP-NC-1.0)** (see `LICENSE`).  
 **Docs & media:** **CC BY-NC 4.0** (see `LICENSE-DOCS`).  
@@ -152,7 +152,7 @@ The QR code provides instant access to the Homepage dashboard where you can navi
 git clone https://github.com/pyrometheous/Prepper-Pi.git && cd Prepper-Pi && sudo bash scripts/cleanup.sh && cd .. && rm -rf Prepper-Pi
 ```
 
-## Public Domain Content Downloaders
+## 📥 Public Domain Content Downloaders
 
 **Build your offline library with legal, verified public domain content:**
 
