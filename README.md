@@ -1,5 +1,13 @@
 ﻿<!--
-SPDX-License-Identifier: CC-BY-NC-4.0
+SPD## 📑 Table of Contents
+
+- [📄 License & Commercial Use](#license-trademarks--commercial-use)
+- [✨ Core Features](#-core-features)
+- [🛠️ Hardware Assembly](#️-hardware-assembly)
+- [📚 Documentation](#-documentation)
+- [🔧 Software Setup](#-software-setup)
+- [📥 Public Domain Content Downloaders](#public-domain-content-downloaders)
+  - [🎵 Music Downloads](pd_downloader/music/README.md)-Identifier: CC-BY-NC-4.0
 -->
 
 # 🥧 Prepper Pi
