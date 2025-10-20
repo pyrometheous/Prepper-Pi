@@ -257,8 +257,13 @@ def download_books(
     languages: str,
     sleep: float,
     no_collections: bool,
-) -> bool:
-    """Run the book download script."""
+    debug: bool = False,
+) -> tuple[bool, int]:
+    """
+    Run the book download script.
+    Returns: (success: bool, exit_code: int)
+      exit_code: 0 = all succeeded, 1 = some failed, 2 = all failed
+    """
     log("Starting book download...", "HEADER")
 
     cmd = [
@@ -285,18 +290,30 @@ def download_books(
 
     if no_collections:
         cmd.append("--no-collections")
+    
+    if debug:
+        cmd.append("--debug")
 
     try:
         log(f"Running: {' '.join(cmd)}", "INFO")
-        result = subprocess.run(cmd, check=True)
-        log("Download completed successfully!", "SUCCESS")
-        return True
-    except subprocess.CalledProcessError as e:
-        log(f"Download failed with exit code {e.returncode}", "ERROR")
-        return False
+        result = subprocess.run(cmd, check=False)  # Don't raise on non-zero
+        
+        if result.returncode == 0:
+            log("Download completed successfully!", "SUCCESS")
+            return True, 0
+        elif result.returncode == 1:
+            log("Download completed with some failures", "WARNING")
+            return False, 1
+        elif result.returncode == 2:
+            log("Download failed - no books downloaded", "ERROR")
+            return False, 2
+        else:
+            log(f"Download failed with exit code {result.returncode}", "ERROR")
+            return False, result.returncode
+            
     except Exception as e:
         log(f"Unexpected error during download: {e}", "ERROR")
-        return False
+        return False, 2
 
 
 def stop_containers() -> bool:
@@ -435,6 +452,11 @@ Examples:
     parser.add_argument(
         "--show-logs", action="store_true", help="Show container logs before exiting"
     )
+    parser.add_argument(
+        "--debug",
+        action="store_true",
+        help="Print first book's data structure for debugging"
+    )
 
     args = parser.parse_args()
 
@@ -505,7 +527,7 @@ Examples:
         return 0
 
     # Download books
-    success = download_books(
+    success, exit_code = download_books(
         mode=args.mode,
         genres=args.genres,
         count_per_genre=args.count_per_genre,
@@ -514,6 +536,7 @@ Examples:
         languages=args.languages,
         sleep=args.sleep,
         no_collections=args.no_collections,
+        debug=args.debug,
     )
 
     # Show logs if requested
@@ -528,16 +551,27 @@ Examples:
         log("Keeping containers running (--keep-running)", "INFO")
         log("To stop later: docker-compose -f docker-compose.gutendex.yml down", "INFO")
 
-    if success:
+    # Final summary based on exit code
+    print()  # Blank line
+    if exit_code == 0:
         log("=" * 60, "SUCCESS")
         log("All operations completed successfully!", "SUCCESS")
         log("=" * 60, "SUCCESS")
         return 0
-    else:
-        log("=" * 60, "ERROR")
-        log("Download failed. Check logs above for details.", "ERROR")
-        log("=" * 60, "ERROR")
+    elif exit_code == 1:
+        log("=" * 60, "WARNING")
+        log("Completed with partial success - some downloads failed", "WARNING")
+        log("Check the detailed summary above for error breakdown", "WARNING")
+        log("=" * 60, "WARNING")
         return 1
+    else:  # exit_code == 2 or other
+        log("=" * 60, "ERROR")
+        log("Download failed - no books were successfully downloaded", "ERROR")
+        log("Common issues:", "ERROR")
+        log("  - 404 errors: EPUB files may not exist at expected URLs", "ERROR")
+        log("  - Try different EPUB formats or check Gutendex API response", "ERROR")
+        log("=" * 60, "ERROR")
+        return 2
 
 
 if __name__ == "__main__":

@@ -43,13 +43,13 @@ services:
       EMAIL_HOST_USER: ""
       EMAIL_HOST_PASSWORD: ""
       EMAIL_HOST_ADDRESS: "gutendex@localhost"
-      STATIC_ROOT: "/app/static"
-      MEDIA_ROOT: "/app/media"
+      STATIC_ROOT: "/app/staticfiles"
+      MEDIA_ROOT: "/app/mediafiles"
     volumes:
       - gutendex-app:/app
       - gutendex-catalog:/app/catalog_files
-      - gutendex-static:/app/static
-      - gutendex-media:/app/media
+      - gutendex-static:/app/staticfiles
+      - gutendex-media:/app/mediafiles
     ports:
       - "8000:8000"
     networks:
@@ -59,7 +59,7 @@ services:
       sh -c "
         echo '=== Installing system dependencies ===' &&
         apt-get update &&
-        apt-get install -y git postgresql-client build-essential libpq-dev &&
+        apt-get install -y git postgresql-client build-essential libpq-dev rsync &&
         
         echo '=== Cloning Gutendex repository ===' &&
         if [ ! -f manage.py ]; then
@@ -84,9 +84,15 @@ services:
         echo '=== Collecting static files ===' &&
         python manage.py collectstatic --noinput &&
         
-        echo '=== Downloading Project Gutenberg catalog ===' &&
-        echo 'This will take 5-10 minutes on first run...' &&
-        python manage.py updatecatalog &&
+        echo '=== Checking for existing catalog ===' &&
+        if python manage.py shell -c 'from books.models import Book; exit(0 if Book.objects.count() > 1000 else 1)' 2>/dev/null; then
+          echo '=== Catalog already loaded - skipping download ==='
+        else
+          echo '=== Downloading Project Gutenberg catalog ===' &&
+          echo 'This will take 5-10 minutes on first run...' &&
+          rm -rf /app/catalog_files/tmp &&
+          (python manage.py updatecatalog || echo 'Catalog update completed (email error is normal)')
+        fi &&
         
         echo '=== Starting Gutendex server ===' &&
         echo 'API available at http://localhost:8000/books' &&
@@ -109,8 +115,8 @@ services:
       SECRET_KEY: "change-this-to-a-random-50-character-secret-key-asap"
       DEBUG: "false"
       ALLOWED_HOSTS: "127.0.0.1,localhost"
-      STATIC_ROOT: "/app/static"
-      MEDIA_ROOT: "/app/media"
+      STATIC_ROOT: "/app/staticfiles"
+      MEDIA_ROOT: "/app/mediafiles"
     volumes:
       - gutendex-app:/app
       - gutendex-catalog:/app/catalog_files

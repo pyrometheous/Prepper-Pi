@@ -146,7 +146,7 @@ def topic_query_epub(api_url: str, topic: str, languages: str, page: int = 1) ->
     return retry_with_backoff(_fetch)
 
 
-def get_popular_books(api_url: str, languages: str, limit: int) -> List[dict]:
+def get_popular_books(api_url: str, languages: str, limit: int, debug: bool = False) -> List[dict]:
     """Get the most popular books."""
     params = {
         "mime_type": "application/epub+zip",
@@ -172,6 +172,15 @@ def get_popular_books(api_url: str, languages: str, limit: int) -> List[dict]:
             results = data.get("results", [])
             if not results:
                 break
+            
+            # Debug: print first book's data
+            if debug and len(books) == 0 and results:
+                import json
+                log("=" * 70)
+                log("DEBUG: First book data from API:")
+                log("=" * 70)
+                print(json.dumps(results[0], indent=2))
+                log("=" * 70)
             
             books.extend(results)
             
@@ -444,8 +453,22 @@ def download(url: str, sleep_s: float) -> bytes:
 
 
 def rewrite_to_mirror(url: str, mirror_base: str) -> str:
+    """
+    Rewrite Gutenberg.org URL to use proper download paths.
+    Project Gutenberg EPUB files are at: /cache/epub/{id}/pg{id}-images.epub
+    """
     parsed = urlparse(url)
     if "gutenberg.org" in parsed.netloc or "pglaf.org" in parsed.netloc:
+        # Extract book ID from URLs like /ebooks/84.epub3.images
+        import re
+        match = re.search(r'/ebooks/(\d+)\.epub', parsed.path)
+        if match:
+            book_id = match.group(1)
+            # Construct proper cache path
+            # Try with images first: /cache/epub/{id}/pg{id}-images.epub
+            return f"{mirror_base.rstrip('/')}/cache/epub/{book_id}/pg{book_id}-images.epub"
+        
+        # If not an ebooks URL, use as-is
         return mirror_base.rstrip("/") + parsed.path
     return url
 
@@ -465,11 +488,16 @@ def run(
     genres_list: Optional[List[str]],
     no_collections: bool,
     discover_subjects: bool,
-) -> None:
+    debug: bool = False,
+) -> int:
+    """
+    Run the download process.
+    Returns: 0 on success, 1 if some downloads failed, 2 if all downloads failed.
+    """
 
     # Test Gutendex connection first
     if not test_gutendex_connection(gutendex_api):
-        return
+        return 2
 
     ensure_dirs(out_dir)
     
@@ -484,6 +512,8 @@ def run(
     elif mode == "popular":
         log(f"Downloading top {count_per_genre} most popular books...")
         subjects = ["Popular"]
+        if debug:
+            log("Debug mode enabled - will show first book's data structure")
     elif genres_list:
         subjects = genres_list
     else:
@@ -499,13 +529,19 @@ def run(
     report_rows: List[Dict[str, str]] = []
     collections_rows: List[Dict[str, str]] = []
     seen_global = set()
+    
+    # Track success/failure statistics
+    total_attempted = 0
+    total_success = 0
+    total_failed = 0
+    error_summary: Dict[str, int] = {}
 
     for gi, subject in enumerate(subjects, 1):
         log(f"[{gi}/{len(subjects)}] Subject: {subject}")
         
         if mode == "popular" and subject == "Popular":
             # Get most popular books regardless of subject
-            picked = get_popular_books(gutendex_api, languages, count_per_genre)
+            picked = get_popular_books(gutendex_api, languages, count_per_genre, debug=debug)
             for b in picked:
                 gid = b.get("id")
                 if gid:
@@ -544,6 +580,7 @@ def run(
         log(f"  Selected {len(picked)} EPUBs")
 
         for idx, b in enumerate(picked, 1):
+            total_attempted += 1
             gid = b.get("id")
             title = (b.get("title") or "").strip().replace("\n", " ")
             authors = [a.get("name", "") for a in b.get("authors", []) if a.get("name")]
@@ -586,6 +623,8 @@ def run(
                 file_slug = slugify(f"{title} - Gutenberg{gid}.epub")
                 final_path = series_dir / file_slug
                 final_path.write_bytes(embedded)
+                
+                total_success += 1
 
                 if collection_name:
                     collections_rows.append({
@@ -599,8 +638,20 @@ def run(
                     })
 
             except Exception as e:
+                total_failed += 1
                 status = "ERROR"
-                notes.append(str(e))
+                error_msg = str(e)
+                notes.append(error_msg)
+                
+                # Track error types
+                if "404" in error_msg:
+                    error_summary["404 Not Found"] = error_summary.get("404 Not Found", 0) + 1
+                elif "Connection" in error_msg or "connection" in error_msg:
+                    error_summary["Connection Error"] = error_summary.get("Connection Error", 0) + 1
+                elif "Timeout" in error_msg or "timeout" in error_msg:
+                    error_summary["Timeout"] = error_summary.get("Timeout", 0) + 1
+                else:
+                    error_summary["Other Error"] = error_summary.get("Other Error", 0) + 1
 
             report_rows.append({
                 "subject": subject,
@@ -641,11 +692,49 @@ def run(
 - Reports in `_reports/`:
   - `kavita_epub_report.csv`: Per-title status
   - `collections.csv`: Collection mapping
+
+## Download Statistics
+- Total attempted: {total_attempted}
+- Successful: {total_success}
+- Failed: {total_failed}
+- Success rate: {(total_success / total_attempted * 100) if total_attempted > 0 else 0:.1f}%
 """
     (out_reports / "README.txt").write_text(readme, encoding="utf-8")
 
-    log(f"\nDone! Library root: {out_dir}")
+    # Print summary
+    print()  # Blank line for readability
+    log("=" * 60)
+    log(f"Download Summary:")
+    log(f"  Total attempted: {total_attempted}")
+    log(f"  Successful:      {total_success}")
+    log(f"  Failed:          {total_failed}")
+    
+    if total_attempted > 0:
+        success_rate = (total_success / total_attempted) * 100
+        
+        if total_failed == 0:
+            log(f"  Success rate:    {success_rate:.1f}% ✓")
+        elif total_success > 0:
+            log(f"  Success rate:    {success_rate:.1f}% ⚠")
+        else:
+            log(f"  Success rate:    {success_rate:.1f}% ✗")
+    
+    if error_summary:
+        log(f"\nError breakdown:")
+        for error_type, count in sorted(error_summary.items(), key=lambda x: x[1], reverse=True):
+            log(f"  {error_type}: {count}")
+    
+    log("=" * 60)
+    log(f"\nLibrary root: {out_dir}")
     log(f"Reports in: {out_reports}")
+    
+    # Return appropriate exit code
+    if total_failed == total_attempted and total_attempted > 0:
+        return 2  # All failed
+    elif total_failed > 0:
+        return 1  # Some failed
+    else:
+        return 0  # All succeeded
 
 
 def parse_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
@@ -712,10 +801,15 @@ def parse_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
         action="store_true",
         help="Skip collection metadata"
     )
+    ap.add_argument(
+        "--debug",
+        action="store_true",
+        help="Print first book's data structure for debugging"
+    )
     return ap.parse_args(argv)
 
 
-def main(argv: Optional[Sequence[str]] = None) -> None:
+def main(argv: Optional[Sequence[str]] = None) -> int:
     args = parse_args(argv)
     out_dir = Path(args.out).resolve()
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -726,7 +820,7 @@ def main(argv: Optional[Sequence[str]] = None) -> None:
         else None
     )
     
-    run(
+    return run(
         gutendex_api=args.gutendex_url,
         out_dir=out_dir,
         mode=args.mode,
@@ -738,8 +832,10 @@ def main(argv: Optional[Sequence[str]] = None) -> None:
         genres_list=genres_list,
         no_collections=args.no_collections,
         discover_subjects=(args.mode == "discover"),
+        debug=args.debug,
     )
 
 
 if __name__ == "__main__":
-    main()
+    import sys
+    sys.exit(main())
